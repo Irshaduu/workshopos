@@ -3,9 +3,9 @@
 How work is done here.
 What is planned: `docs/PLAN.md`. Structure: `docs/ARCHITECTURE.md`. Why: `docs/adr/`.
 
-Tools named below (CI, `ruff`, `pre-commit`, `pytest`) arrive in Phase 1.
-**Until then, commits go straight to `main`.** Branches and pull requests
-start once CI and branch protection exist.
+`ruff`, `pre-commit` and `pytest` are set up (ADR-0013); CI comes next in
+Phase 1. **Until CI and branch protection exist, commits go straight to
+`main`.** Branches and pull requests start then.
 
 ---
 

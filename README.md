@@ -19,6 +19,12 @@ You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 17
 4. `uv run python manage.py migrate`
 5. `uv run python manage.py runserver`
 
+## Checks and tests
+
+- `uv run pre-commit install` once: the checks then run before every commit.
+- `uv run pytest` runs the tests.
+- `uv run ruff check .` and `uv run ruff format .` check and format by hand.
+
 ## Documentation
 
 - [Plan](docs/PLAN.md): what is built, in what order, and where we are

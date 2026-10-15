@@ -1,0 +1,26 @@
+# Checks that run before every commit (ADR-0013).
+# Install once with: uv run pre-commit install
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
+
+repos:
+  # Keep this version the same as ruff in uv.lock.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.0
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: plain-writing
+        name: plain writing in docs and code (no em dashes, arrows or symbols)
+        language: pygrep
+        entry: "—|→|←|·|×|⚠|…"
+        files: \.(md|py)$
+      - id: plain-commit-message
+        name: plain writing in the commit message
+        language: pygrep
+        entry: "—|→|←|·|×|⚠|…"
+        stages: [commit-msg]

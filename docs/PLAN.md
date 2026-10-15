@@ -107,7 +107,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] Final product name (the repository can be renamed to match)
 - [x] Django 6.1 now, then 6.2 LTS (ADR-0009)
 - [x] Python 3.14, managed with uv (ADR-0010)
-- [ ] Test runner: `pytest-django`
+- [x] Code checks and tests: ruff, pre-commit, pytest-django (ADR-0013)
 - [ ] Interactivity: `htmx`, or plain JS modules
 - [x] Local database: PostgreSQL 17 on the machine, no Docker (ADR-0012)
 - [ ] Translatable text from day one (Malayalam later)
@@ -117,22 +117,24 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] Pull request template carrying the definition of done
 
 **Quality**
-- [ ] `ruff` (lint and format); `pre-commit`
-- [ ] A `pre-commit` check for the writing rule: no em dashes, arrows or
+- [x] `ruff` (lint and format); `pre-commit`
+- [x] A `pre-commit` check for the writing rule: no em dashes, arrows or
       decorative symbols in docs
 - [ ] Import rules between apps, checked in CI (`import-linter`)
-- [ ] Dependencies pinned; every new library has an ADR
+- [x] Dependencies pinned (`uv.lock`); every new library has an ADR
 
 **Tests**
-- [ ] `pytest-django`, factories, coverage report
+- [x] `pytest-django` and a coverage report
+- [ ] Factories (factory-boy), with the first model
 
 **CI**
 - [ ] On every pull request: lint, tests, missing-migration check,
       dependency audit, secret scan
 
 **Settings**
-- [ ] Local and CI environments
-- [ ] Settings only from environment variables; `.env.example`
+- [x] Local environment
+- [ ] CI environment
+- [x] Settings only from environment variables; `.env.example`
 - [ ] Health-check endpoint
 
 **Moved out of Phase 1**

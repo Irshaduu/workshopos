@@ -24,7 +24,10 @@ def load_env_file(path: Path) -> None:
 
 
 def env(name: str, default: str | None = None) -> str:
-    """Return an environment variable. With no default, a missing or empty value stops the start-up."""
+    """Return an environment variable.
+
+    With no default, a missing or empty value stops the start-up.
+    """
     value = os.environ.get(name, "")
     if value:
         return value

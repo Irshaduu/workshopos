@@ -37,13 +37,14 @@ workshopos/
 ├── config/            settings (base, local, test, production), urls, wsgi
 ├── templates/         base layout and shared components
 ├── static/            design system CSS and shared JS
-├── tests/e2e/         browser tests (Playwright)
+├── tests/             project-wide tests (settings); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
 ├── pyproject.toml     dependencies, ruff and pytest settings
 ├── uv.lock            exact versions of every dependency
-└── manage.py, README.md, CLAUDE.md, CONTRIBUTING.md, LICENSE, .env.example
+└── manage.py, README.md, CLAUDE.md, CONTRIBUTING.md, LICENSE, .env.example,
+    .pre-commit-config.yaml
 ```
 
 ## Apps: small, each answering one question

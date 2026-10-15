@@ -17,6 +17,7 @@ costs.
 | [0010](0010-python-3-14-and-uv.md) | Python 3.14, managed with uv | Accepted |
 | [0011](0011-module-switches-per-workshop.md) | Module switches per workshop | Accepted |
 | [0012](0012-local-postgresql-without-docker.md) | Local PostgreSQL 17, without Docker | Accepted |
+| [0013](0013-code-checks-and-tests.md) | Code checks and tests: ruff, pre-commit, pytest-django | Accepted |
 
 ## Rules
 
