@@ -3,7 +3,21 @@
 Management system for premium automotive workshops: job cards, billing,
 parts and stock, supplier ledgers, cash, staff pay and owner reports.
 
-> **Status: planning.** No application code yet. See [the plan](docs/PLAN.md).
+> **Status: Phase 1, foundation.** The Django project is set up; no business
+> features yet. See [the plan](docs/PLAN.md).
+
+## Run it locally
+
+You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 17
+([ADR-0010](docs/adr/0010-python-3-14-and-uv.md),
+[ADR-0012](docs/adr/0012-local-postgresql-without-docker.md)).
+
+1. `uv sync` installs Python 3.14 and every dependency.
+2. Copy `.env.example` to `.env` and fill in the values.
+3. Create the PostgreSQL user and database named in `.env`. The user needs
+   permission to create databases, for the tests.
+4. `uv run python manage.py migrate`
+5. `uv run python manage.py runserver`
 
 ## Documentation
 

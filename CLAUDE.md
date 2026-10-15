@@ -6,9 +6,9 @@ reports.
 
 ## Status
 
-**Phase 1: foundation. No Django project exists yet.** The Phase 1 ADRs
-(Django version, Python version, package manager) come before `startproject`,
-apps or dependencies.
+**Phase 1: foundation.** The Django project exists (`manage.py`, `config/`);
+no apps yet. Run every command through `uv run` (see `README.md`). Every new
+dependency needs an ADR first.
 
 ## The documents: each fact has one home
 
