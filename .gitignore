@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Django
+staticfiles/
+media/
+*.sqlite3
+*.log
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+
+# Tests and tools
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+test-results/
+playwright-report/
+node_modules/
+
+# Data that must never be committed
+backups/
+*.dump
+*.sql
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Claude Code — local only
+.claude/settings.local.json
+.claude/worktrees/
