@@ -1,15 +1,15 @@
 # Modules
 
 What the system does, module by module, and when each one is built.
-Order of work: `docs/PLAN.md` · Where the code lives: `docs/ARCHITECTURE.md`
+Order of work: `docs/PLAN.md`. Where the code lives: `docs/ARCHITECTURE.md`.
 
 **When:**
-- **Go-live** — needed for daily work on day one
-- **After** — built after go-live
-- **SaaS** — built when a second workshop wants the system (ADR-0004)
+- **Go-live:** needed for daily work on day one
+- **After:** built after go-live
+- **SaaS:** built when a second workshop wants the system (ADR-0004)
 
 The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
-"Alongside — the client").
+"Alongside: the client").
 
 ---
 
@@ -19,18 +19,18 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 |---|---|---|---|
 | Phone, tablet and laptop | Laid out for each device; installs on a phone like an app | `core` | Go-live |
 | Sign-in and password reset | Lockout after repeated wrong tries; reset code by email | `accounts` | Go-live |
-| Roles | Owner, Office, Floor — each sees only what it needs (ADR-0007) | `accounts` | Go-live |
+| Roles | Owner, Office, Floor; each sees only what it needs (ADR-0007) | `accounts` | Go-live |
 | Staff logins and devices | Staff list, staff logins, signed-in devices, remote sign-out | `accounts` | Go-live |
 | Owner alerts | Push alerts to the owners' phones, and an alert feed | `notifications` | Go-live |
 | Change history | Every deleted, edited and back-dated entry, month by month | `audit` | Go-live |
 | Master lists | Brands, models, parts and concerns, with rename and merge | `vehicles`, `jobs` | Go-live |
 | Confirmations and sounds | A clear question before anything important; a sound for each result | `core` | Go-live |
 | Backups and money checks | Database copies; every typed amount checked before saving | `core` | Go-live |
-| System guide and map | A tour of every section | — | After |
+| System guide and map | A tour of every section | to decide | After |
 | **Workshop and branches** (new in v2) | The business and its locations (ADR-0006) | `workshops` | Go-live |
-| **Workshop profile** (new in v2) | Logo, name, address, GSTIN, UPI QR — read by every printed document | `workshops` | Go-live |
+| **Workshop profile** (new in v2) | Logo, name, address, GSTIN, UPI QR, used by every printed document | `workshops` | Go-live |
 | **Workshop settings** (new in v2) | Discount limit, edit window, back-date limit, markup; bill-number series per branch | `workshops` | Go-live |
-| **Workshop status** (new in v2) | Active or suspended — a suspended workshop cannot sign in | `workshops` | Go-live |
+| **Workshop status** (new in v2) | Active or suspended. A suspended workshop cannot sign in | `workshops` | Go-live |
 | **Create a workshop** (new in v2) | One service creates a workshop, its first branch and its owner | `workshops` | Go-live |
 | **Platform accounts** (new in v2) | The company's own staff, kept apart from workshop members (ADR-0007) | `accounts` | Go-live |
 
@@ -77,7 +77,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Shop catalogue | What each shop sells, and which shops sell a product | `suppliers` | Go-live |
 | Restock bills | A supplier's bill puts the stock on the shelf, priced as billed | `suppliers` | Go-live |
 | Stock list and low stock | Products, categories, low stock, stock history, use by mechanic | `inventory` | Go-live |
-| Stock movement | Stock moves as job cards use parts and bills come in — through explicit service calls | `inventory` | Go-live |
+| Stock movement | Stock moves as job cards use parts and bills come in, through explicit service calls | `inventory` | Go-live |
 | Stock costing | Each part costed at what was really paid, bill by bill | `inventory` | Go-live |
 
 ## Go-live tools
@@ -95,7 +95,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Monthly salary | Leave and overtime; a settled month locks | `staff` | After |
 | Salary advances | Given any day, taken off at settlement | `staff` | After |
 | Rent | How much to hand over today, and every month's position | `finance` | After |
-| Owner withdrawals | What each owner took — never counted as an expense | `finance` | After |
+| Owner withdrawals | What each owner took, never counted as an expense | `finance` | After |
 
 ## Owner analysis
 
@@ -124,14 +124,14 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 
 | Module | What it does | App | When |
 |---|---|---|---|
-| GST invoicing | Tax invoices — only for a workshop with a valid GSTIN | `billing` | After |
+| GST invoicing | Tax invoices, only for a workshop with a valid GSTIN | `billing` | After |
 | WhatsApp messages | Estimates, bills, "car ready" and service reminders | `notifications` | After |
 | Customer history page | A car's service history for its owner, opened from a branded NFC card | `vehicles` | After |
 | Mechanic guide | A help page for the floor team | `jobs` | After |
 
 ---
 
-## SaaS — built when a second workshop wants the system
+## SaaS: built when a second workshop wants the system
 
 Everything these modules need in the data is already in **Foundation** above,
 so adding them changes no existing table.
@@ -144,7 +144,7 @@ so adding them changes no existing table.
 | Support access | Logged, time-limited access to a workshop, with its consent | SaaS |
 | Sales and partner accounts | Leads, a demo workshop with fake data, referral tracking | SaaS |
 | Plans and limits | Feature switches, user and branch limits per plan | SaaS |
-| Branch screens | Switching branch, stock transfers, combined reports — when a workshop with more than one branch joins | SaaS |
+| Branch screens | Switching branch, stock transfers, combined reports, when a workshop with more than one branch joins | SaaS |
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |
 | Setup wizard and help | First-day setup and help pages | SaaS |

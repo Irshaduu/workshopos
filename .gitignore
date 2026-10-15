@@ -39,6 +39,6 @@ backups/
 .DS_Store
 Thumbs.db
 
-# Claude Code — local only
+# Claude Code: local only
 .claude/settings.local.json
 .claude/worktrees/

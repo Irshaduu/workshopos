@@ -1,6 +1,6 @@
-# 0002 — Rebuild in a fresh repository; v1 frozen as the specification
+# 0002: Rebuild in a fresh repository; v1 frozen as the specification
 
-**Status:** Accepted · **Date:** 2026-10-08
+**Status:** Accepted (2026-10-08)
 
 ## Context
 
@@ -24,6 +24,6 @@
 
 - Edge cases could be lost in the rebuild. Each section's rules are therefore
   catalogued from v1 before it is built, and every rule gets a test.
-- Some work may be done twice — for example GST, if it is needed before the
+- Some work may be done twice, for example GST, if it is needed before the
   new system is ready.
 - The first months bring the client no new features.

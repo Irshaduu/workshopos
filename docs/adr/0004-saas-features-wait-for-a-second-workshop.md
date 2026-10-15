@@ -1,6 +1,6 @@
-# 0004 — SaaS business features wait for a second workshop
+# 0004: SaaS business features wait for a second workshop
 
-**Status:** Accepted · **Date:** 2026-10-08
+**Status:** Accepted (2026-10-08)
 
 ## Context
 
@@ -9,7 +9,7 @@ take time to build and add code to maintain.
 
 ## Decision
 
-- **Build now — the tenant foundation:** a workshop link on every business
+- **Build now (the tenant foundation):** a workshop link on every business
   record, memberships, per-workshop settings and number series.
 - **Build only when a second workshop wants the system:** self sign-up,
   subscription billing, a platform admin console, per-workshop feature

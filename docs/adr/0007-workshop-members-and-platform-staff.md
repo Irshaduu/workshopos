@@ -1,6 +1,6 @@
-# 0007 — Two kinds of account: workshop members and platform staff
+# 0007: Two kinds of account: workshop members and platform staff
 
-**Status:** Accepted · **Date:** 2026-10-15
+**Status:** Accepted (2026-10-15)
 
 ## Context
 
@@ -18,18 +18,18 @@
   user + workshop + role, optionally limited to some branches (ADR-0006). One
   user may hold memberships in more than one workshop.
 - **Workshop roles:**
-  - **Owner** — everything in the workshop, all branches, all money.
-  - **Office** — daily work and money for its branches.
-  - **Floor** — its own jobs; never prices or customer details.
+  - **Owner:** everything in the workshop, all branches, all money.
+  - **Office:** daily work and money for its branches.
+  - **Floor:** its own jobs; never prices or customer details.
   - A read-only **Accountant** role may be added later.
-- **Platform staff** — people of the company that runs the system — are kept
+- **Platform staff**, the people of the company that runs the system, are kept
   apart from memberships. Their roles (office, support, sales) are built with
   the SaaS features (ADR-0004).
 - **The Django superuser is for emergencies only:** two-factor sign-in, never
   used for daily work, never a workshop owner.
 - **Platform staff see no workshop's business data by default.** Support
   access, when built, is logged and time-limited.
-- **Permissions are checked in one place.** A test covers every page × every
+- **Permissions are checked in one place.** A test covers every page for every
   role.
 
 ## Consequences

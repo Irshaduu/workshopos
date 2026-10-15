@@ -18,14 +18,14 @@ How the code is organised. What is planned: `docs/PLAN.md`. Why: `docs/adr/`.
 ## Deployment model
 
 ```
-one repository → CI → staging → production servers
-                                  ├── dedicated: one workshop, the client's own hosting
-                                  └── shared:    many workshops (later)
+one repository -> CI -> staging -> production servers
+                                     ├── dedicated: one workshop, the client's own hosting
+                                     └── shared:    many workshops (later)
 ```
 
 - Same code and same version on every server.
 - What differs between servers is configuration (environment variables) or
-  per-workshop settings — never code.
+  per-workshop settings, never code.
 
 ---
 
@@ -38,15 +38,15 @@ workshopos/
 ├── templates/         base layout and shared components
 ├── static/            design system CSS and shared JS
 ├── tests/e2e/         browser tests (Playwright)
-├── design/lab/        UI lab prototypes — never imported by the app
+├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
 ├── pyproject.toml     dependencies, ruff and pytest settings
 ├── docker-compose.yml local PostgreSQL
-└── manage.py · README.md · CLAUDE.md · CONTRIBUTING.md · LICENSE · .env.example
+└── manage.py, README.md, CLAUDE.md, CONTRIBUTING.md, LICENSE, .env.example
 ```
 
-## Apps — small, each answering one question
+## Apps: small, each answering one question
 
 | App | Holds |
 |---|---|
@@ -63,28 +63,28 @@ workshopos/
 | `jobs` | job cards, concerns, work done, parts used, warranty, estimates |
 | `billing` | invoices, settling, GST, fleet accounts, old bills, printed documents |
 | `finance` | cashbook, rent, owner withdrawals |
-| `reports` | profit, cash tracking, deep analysis, dashboard — read-only |
+| `reports` | profit, cash tracking, deep analysis, dashboard; read-only |
 | `onboarding` | go-live import tools; the whole app can be removed once go-live import is done |
 
-## Layers — who may import whom
+## Layers: who may import whom
 
 ```
-Top        reports · onboarding               ← nothing imports these
-Business   billing · finance
+Top        reports, onboarding               <- nothing imports these
+Business   billing, finance
            jobs
            suppliers
-           inventory · vehicles · staff
-Services   audit · notifications · photos     ← any business app may call these
+           inventory, vehicles, staff
+Services   audit, notifications, photos     <- any business app may call these
 Base       accounts
            workshops
            core
 ```
 
-- An app may import only from apps in **lower rows** — never the same row,
+- An app may import only from apps in **lower rows**, never the same row,
   never above.
 - CI checks this with `import-linter`, so the rule cannot quietly break.
 
-## Inside every app — the same files every time
+## Inside every app: the same files every time
 
 ```
 jobs/
@@ -92,7 +92,7 @@ jobs/
 ├── services.py    rules that CHANGE data (create, settle, cancel)
 ├── selectors.py   rules that READ data (lists, totals)
 ├── forms.py       checks what was typed
-├── views.py       thin: request → form → service → response
+├── views.py       thin: request -> form -> service -> response
 ├── urls.py
 ├── admin.py
 ├── templates/jobs/
@@ -100,13 +100,13 @@ jobs/
 └── tests/
 ```
 
-| You are writing… | It goes in |
+| You are writing | It goes in |
 |---|---|
 | a database table | `models.py` |
 | anything that creates, changes or deletes data | `services.py` |
 | a query for a list, a total or a report | `selectors.py` |
 | a check on what a person typed | `forms.py` |
-| the handling of a page request | `views.py` — kept thin |
+| the handling of a page request | `views.py`, kept thin |
 | a page address | `urls.py` |
 | HTML | `templates/<app>/` |
 | page-specific CSS or JS | `static/<app>/` |
@@ -140,12 +140,12 @@ jobs/
 
 ## Shared rules
 
-- **Money** — `core`: `Decimal` only, bounds read from the column, a zero or
+- **Money** (`core`): `Decimal` only, bounds read from the column, a zero or
   negative amount refused by the parser itself.
-- **Dates** — `core`: India time, `timezone.localdate()`, never `date.today()`.
-- **Audit** — services call `audit` whenever money is changed, deleted or
+- **Dates** (`core`): India time, `timezone.localdate()`, never `date.today()`.
+- **Audit:** services call `audit` whenever money is changed, deleted or
   back-dated.
-- **Notifications** — services call `notifications`; views never do.
+- **Notifications:** services call `notifications`; views never do.
 
 ---
 
@@ -169,11 +169,11 @@ jobs/
 | Login, roles, sessions, lockout, password reset, Control Hub | `accounts` |
 | Business constants (discount threshold, edit window, back-date limit, markup), number series | `workshops` |
 | `money.py`, `money_dates.py`, base templates, design system | `core`, `templates/`, `static/` |
-| About page and system map | feature audit — keep or drop |
+| About page and system map | feature audit: keep or drop |
 
 ---
 
-## Open decisions — each becomes an ADR
+## Open decisions: each becomes an ADR
 
 1. Django version: 5.2 LTS or 6.x.
 2. Package manager: `uv` or `pip`.

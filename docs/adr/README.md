@@ -17,7 +17,7 @@ costs.
 
 - Write one when a choice is hard to undo, or someone would ask "why?".
 - Numbered in order, never reused. File name: `NNNN-short-title.md`.
-- Status: `Proposed` → `Accepted`. Later: `Superseded by NNNN`.
+- Status: `Proposed`, then `Accepted`. Later: `Superseded by NNNN`.
 - An accepted ADR is never rewritten. Only its status line changes; a new ADR
   carries the new decision.
 - Add every new ADR to the table above.
@@ -25,9 +25,9 @@ costs.
 ## Template
 
 ```markdown
-# NNNN — Title
+# NNNN: Title
 
-**Status:** Proposed · **Date:** YYYY-MM-DD
+**Status:** Proposed (YYYY-MM-DD)
 
 ## Context
 What forces the decision. Facts, not opinions.

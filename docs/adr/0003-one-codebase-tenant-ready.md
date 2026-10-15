@@ -1,6 +1,6 @@
-# 0003 — One codebase, tenant-ready; dedicated or shared deployments
+# 0003: One codebase, tenant-ready; dedicated or shared deployments
 
-**Status:** Accepted · **Date:** 2026-10-08
+**Status:** Accepted (2026-10-08)
 
 ## Context
 
@@ -16,7 +16,7 @@
 - **No forks, and no "dedicated mode" branches in the code.** A dedicated
   deployment is simply one with a single workshop.
 - What differs between deployments is configuration (environment variables) or
-  per-workshop settings — never code.
+  per-workshop settings, never code.
 - **One version everywhere.** Every release goes to staging, then to every
   production server.
 

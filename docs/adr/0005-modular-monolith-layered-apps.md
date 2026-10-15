@@ -1,6 +1,6 @@
-# 0005 — Modular monolith: layered apps, services and selectors
+# 0005: Modular monolith: layered apps, services and selectors
 
-**Status:** Proposed · **Date:** 2026-10-08
+**Status:** Proposed (2026-10-08)
 
 ## Context
 
@@ -20,7 +20,7 @@ rule live?" was often "in several places".
 ## Consequences
 
 - "Where does this rule live?" has one answer.
-- More files than v1, and some links between apps need care — see the open
+- More files than v1, and some links between apps need care. See the open
   decisions in `docs/ARCHITECTURE.md`.
 - No microservices: at this size they would add deployment and network cost
   with no benefit.

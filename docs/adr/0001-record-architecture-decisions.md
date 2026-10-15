@@ -1,6 +1,6 @@
-# 0001 — Record architecture decisions
+# 0001: Record architecture decisions
 
-**Status:** Accepted · **Date:** 2026-10-08
+**Status:** Accepted (2026-10-08)
 
 ## Context
 
@@ -16,6 +16,6 @@ supersedes an old one.
 
 ## Consequences
 
-- Anyone — a new developer or a new AI session — can find why something is
+- Anyone, a new developer or a new AI session, can find why something is
   the way it is.
 - A small extra effort for each decision.

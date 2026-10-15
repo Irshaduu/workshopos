@@ -1,6 +1,6 @@
-# 0006 — Branches inside a workshop; customers and vehicles shared by its branches
+# 0006: Branches inside a workshop; customers and vehicles shared by its branches
 
-**Status:** Accepted · **Date:** 2026-10-15
+**Status:** Accepted (2026-10-15)
 
 ## Context
 
@@ -23,7 +23,7 @@
   cash and staff.
 - **Bill numbers run per branch,** with a branch prefix. The format is
   confirmed with the workshop's accountant before GST invoicing.
-- **Two different workshops never share data** — not even a car's history.
+- **Two different workshops never share data**, not even a car's history.
 - A workshop with one branch never sees branch screens. Branch screens
   (switching, stock transfers, combined reports) are built when a workshop
   with more than one branch joins.
