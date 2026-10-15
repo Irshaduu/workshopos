@@ -64,12 +64,13 @@ workshopos/
 | `billing` | invoices, settling, GST, fleet accounts, old bills, printed documents |
 | `finance` | cashbook, rent, owner withdrawals |
 | `reports` | profit, cash tracking, deep analysis, dashboard; read-only |
+| `assistant` | the AI assistant: tools over read-only selectors (ADR-0008); read-only |
 | `onboarding` | go-live import tools; the whole app can be removed once go-live import is done |
 
 ## Layers: who may import whom
 
 ```
-Top        reports, onboarding               <- nothing imports these
+Top        reports, onboarding, assistant    <- nothing imports these
 Business   billing, finance
            jobs
            suppliers
@@ -146,6 +147,11 @@ jobs/
 - **Audit:** services call `audit` whenever money is changed, deleted or
   back-dated.
 - **Notifications:** services call `notifications`; views never do.
+- **History:** record when things happen. Status changes that matter store
+  their time (part ordered and received, work started and fixed, car in,
+  ready and delivered), and kilometres are a number at every visit.
+  Estimates, reports and the AI assistant are built on this history, which
+  cannot be filled in later.
 
 ---
 
@@ -187,3 +193,4 @@ jobs/
 7. Per-workshop settings: one settings model, or settings per app.
 8. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.
+9. AI provider and model for the assistant (ADR-0008).

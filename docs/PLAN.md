@@ -190,6 +190,9 @@ Can run alongside Phase 1.
 - [ ] Per-workshop settings (discount threshold, edit window, back-date
       limit, markup); bill-number series per branch
 - [ ] Customers and vehicles as real records (ADR-0006)
+- [ ] History from day one: kilometres as a number at every visit; times of
+      status changes (part ordered and received, work started and fixed,
+      car in, ready, delivered)
 - [ ] Shared cores: money, dates, audit log, notifications
 - [ ] Decide: how background and scheduled jobs run (backups, clean-ups, push)
 - [ ] Safe-migration rules written down
@@ -244,6 +247,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       rates, tax-invoice format, CGST + SGST or IGST, rounding, credit notes
 - [ ] WhatsApp: a click-to-chat link, or the official API (per-message cost,
       approved templates, which number sends)
+- [ ] AI assistant (ADR-0008): first version on fake data, an eval set in CI,
+      cost per question measured
 
 ### Phase 10: Running it
 

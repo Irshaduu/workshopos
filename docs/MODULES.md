@@ -48,6 +48,13 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Live report | Unfilled bills, parts on the way, each mechanic's open work | `reports` | Go-live |
 | Job card view | One read-only page for each car | `jobs` | Go-live |
 | Completed list | Cars ready to bill, with undo | `jobs` | Go-live |
+| Ready-date estimate | An expected ready date, from parts on the way and each shop's past delivery times; flags parts not ordered yet | `jobs` | After |
+
+## Appointments
+
+| Module | What it does | App | When |
+|---|---|---|---|
+| Appointments | Book a date for a car; see how full each day is; suggest free dates | `jobs` | After (client confirms) |
 
 ## Bills and cash
 
@@ -111,6 +118,8 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 |---|---|---|---|
 | Car profiles | Visits, billed, paid, still owed; every bill in one PDF | `vehicles` | After |
 | Service history sheet | Every visit, and how long each part lasted | `vehicles` | After |
+| Service rules and reminders | The workshop's own rules (a service every so many km or days, per model if needed); shows when a service is due | `vehicles` | After |
+| Customer consent | Records whether the customer agreed to messages and to AI use | `vehicles` | After |
 
 ## More tools
 
@@ -128,6 +137,19 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | WhatsApp messages | Estimates, bills, "car ready" and service reminders | `notifications` | After |
 | Customer history page | A car's service history for its owner, opened from a branded NFC card | `vehicles` | After |
 | Mechanic guide | A help page for the floor team | `jobs` | After |
+
+## AI assistant (ADR-0008)
+
+The assistant never calculates. It calls tested, read-only functions and
+explains the result in plain words, in English or Malayalam.
+
+| Module | What it does | App | When |
+|---|---|---|---|
+| Owner and office assistant | Answers questions about the workshop's own data; sees only what the role allows | `assistant` | After |
+| Customer assistant | On the customer history page: explains one car's service status and offers a booking or a call | `assistant` | After |
+| Bill from a photo | A photo of a supplier's bill fills a draft restock bill; Office checks it and saves | `assistant` | After |
+| Daily summary | A short daily message for the owners: cars waiting for parts, cash, big discounts | `assistant` | After |
+| Voice input | Speak a concern in Malayalam; it fills the line on the job card | `assistant` | After |
 
 ---
 

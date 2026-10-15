@@ -12,6 +12,7 @@ costs.
 | [0005](0005-modular-monolith-layered-apps.md) | Modular monolith: layered apps, services and selectors | Proposed |
 | [0006](0006-branches-and-shared-vehicles.md) | Branches inside a workshop; customers and vehicles shared by its branches | Accepted |
 | [0007](0007-workshop-members-and-platform-staff.md) | Two kinds of account: workshop members and platform staff | Accepted |
+| [0008](0008-ai-assistant-tools-over-tested-functions.md) | AI assistant: tools over tested read-only functions | Proposed |
 
 ## Rules
 
