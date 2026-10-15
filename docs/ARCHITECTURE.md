@@ -38,6 +38,7 @@ workshopos/
 ├── config/            settings (base, local, test, production), urls, wsgi, health check
 ├── templates/         base layout and shared components
 ├── static/            design system CSS and shared JS
+├── locale/            translations (Malayalam later, ADR-0015)
 ├── tests/             project-wide tests (settings); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/

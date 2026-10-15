@@ -64,6 +64,8 @@ through a pull request, and only when CI is green.
 - **Every business record belongs to a workshop.** No query without it.
 - **An app imports only from lower layers.**
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
+- **Every text a person sees is marked for translation** (ADR-0015):
+  `{% translate %}` in templates, `gettext_lazy` in Python.
 - **No business logic in signals.**
 - **No CSS or JS inside templates.**
 - **Delete code; never comment it out.** Git remembers.
