@@ -1,0 +1,97 @@
+# Every check, on every push to main and every pull request (ADR-0014).
+# Actions are pinned to a full commit ID; the comment names the version.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# The workflow can only read the repository.
+permissions:
+  contents: read
+
+env:
+  # Keep this the same as the uv on the laptop.
+  UV_VERSION: "0.13.1"
+
+jobs:
+  checks:
+    name: Code checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Install from uv.lock
+        run: uv sync --locked
+      - name: Every pre-commit check, on every file
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: workshopos
+          POSTGRES_PASSWORD: ci-only
+          POSTGRES_DB: workshopos
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Throwaway values that exist only in CI.
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      DJANGO_SECRET_KEY: ci-only
+      DB_NAME: workshopos
+      DB_USER: workshopos
+      DB_PASSWORD: ci-only
+      DB_HOST: localhost
+      DB_PORT: "5432"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Install from uv.lock
+        run: uv sync --locked
+      - name: No model change without its migration
+        run: uv run python manage.py makemigrations --check --dry-run
+      - name: Tests, with a coverage report
+        run: uv run pytest --cov
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Known security issues in any package in uv.lock
+        run: uv audit --locked --preview-features audit-command
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The whole history, not only the last commit.
+          fetch-depth: 0
+      - name: Install gitleaks 8.30.1, checked against its published checksum
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -sSfL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum --check
+          tar -xzf gitleaks.tar.gz gitleaks
+      - name: Keys and passwords in any commit
+        # --redact hides what it finds, because CI logs are public.
+        run: ${{ runner.temp }}/gitleaks git --redact --verbose

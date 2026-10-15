@@ -35,7 +35,7 @@ one repository -> CI -> staging -> production servers
 ```
 workshopos/
 ├── apps/              all Django apps (below)
-├── config/            settings (base, local, test, production), urls, wsgi
+├── config/            settings (base, local, test, production), urls, wsgi, health check
 ├── templates/         base layout and shared components
 ├── static/            design system CSS and shared JS
 ├── tests/             project-wide tests (settings); e2e/ browser tests (Playwright)

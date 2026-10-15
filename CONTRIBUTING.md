@@ -3,9 +3,10 @@
 How work is done here.
 What is planned: `docs/PLAN.md`. Structure: `docs/ARCHITECTURE.md`. Why: `docs/adr/`.
 
-`ruff`, `pre-commit` and `pytest` are set up (ADR-0013); CI comes next in
-Phase 1. **Until CI and branch protection exist, commits go straight to
-`main`.** Branches and pull requests start then.
+`ruff`, `pre-commit` and `pytest` are set up (ADR-0013), and CI runs every
+check on GitHub (ADR-0014). Branch protection comes next in Phase 1. **Until
+it exists, commits go straight to `main`.** Branches and pull requests start
+then.
 
 ---
 
@@ -94,7 +95,7 @@ Phase 1. **Until CI and branch protection exist, commits go straight to
 ## Definition of done
 
 - [ ] Rules listed with IDs; each rule has a test
-- [ ] CI green: lint, tests, migrations, import rules, audit
+- [ ] CI green: lint, tests, migrations, import rules, audit, secret scan
 - [ ] Checked by hand in a browser at phone, tablet and laptop widths
 - [ ] Behaviour matches v1, or the difference is decided and recorded
 - [ ] Docs updated in the same pull request

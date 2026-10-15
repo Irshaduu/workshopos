@@ -108,12 +108,15 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] Django 6.1 now, then 6.2 LTS (ADR-0009)
 - [x] Python 3.14, managed with uv (ADR-0010)
 - [x] Code checks and tests: ruff, pre-commit, pytest-django (ADR-0013)
+- [x] CI: GitHub Actions, uv audit, gitleaks; the health check (ADR-0014)
 - [ ] Interactivity: `htmx`, or plain JS modules
 - [x] Local database: PostgreSQL 17 on the machine, no Docker (ADR-0012)
 - [ ] Translatable text from day one (Malayalam later)
 
 **Repository**
 - [ ] `main` protected; changes only through pull requests
+- [ ] GitHub push protection on, so a secret is stopped before the push
+      (ADR-0014)
 - [ ] Pull request template carrying the definition of done
 
 **Quality**
@@ -128,14 +131,14 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] Factories (factory-boy), with the first model
 
 **CI**
-- [ ] On every pull request: lint, tests, missing-migration check,
-      dependency audit, secret scan
+- [x] On every push to `main` and every pull request: lint, tests,
+      missing-migration check, dependency audit, secret scan (ADR-0014)
 
 **Settings**
 - [x] Local environment
-- [ ] CI environment
+- [x] CI environment
 - [x] Settings only from environment variables; `.env.example`
-- [ ] Health-check endpoint
+- [x] Health-check endpoint
 
 **Moved out of Phase 1**
 - Browser tests: Phase 5, with the first real flow

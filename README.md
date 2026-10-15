@@ -24,6 +24,12 @@ You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 17
 - `uv run pre-commit install` once: the checks then run before every commit.
 - `uv run pytest` runs the tests.
 - `uv run ruff check .` and `uv run ruff format .` check and format by hand.
+- `uv audit --preview-features audit-command` checks every package in
+  `uv.lock` for known security issues.
+- CI runs all of these on GitHub, plus a secret scan, on every push to `main`
+  and every pull request ([ADR-0014](docs/adr/0014-ci-on-github-actions.md)).
+- `/health/` answers 200 when the site and its database work, 503 when the
+  database does not answer.
 
 ## Documentation
 
