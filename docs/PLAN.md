@@ -111,7 +111,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] CI: GitHub Actions, uv audit, gitleaks; the health check (ADR-0014)
 - [ ] Interactivity: `htmx`, or plain JS modules
 - [x] Local database: PostgreSQL 17 on the machine, no Docker (ADR-0012)
-- [ ] Translatable text from day one (Malayalam later)
+- [x] Translatable text from day one; Malayalam later (ADR-0015)
 
 **Repository**
 - [x] `main` protected; changes only through pull requests, merged with
@@ -124,7 +124,6 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] `ruff` (lint and format); `pre-commit`
 - [x] A `pre-commit` check for the writing rule: no em dashes, arrows or
       decorative symbols in docs
-- [ ] Import rules between apps, checked in CI (`import-linter`)
 - [x] Dependencies pinned (`uv.lock`); every new library has an ADR
 
 **Tests**
@@ -142,6 +141,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] Health-check endpoint
 
 **Moved out of Phase 1**
+- Import rules between apps (`import-linter`): Phase 4, with the first apps
 - Browser tests: Phase 5, with the first real flow
 - JavaScript unit tests: with the first JS module
 - Staging, deploys, error tracking, backups: Phase 7
@@ -184,6 +184,10 @@ Can run alongside Phase 1.
 ### Phase 4: Core architecture
 
 - [ ] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
+- [ ] Import rules between apps checked in CI (`import-linter`, with its
+      ADR), from the first app
+- [ ] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
+      (ADR-0015)
 - [ ] Tenancy: `Workshop` and `Branch` (ADR-0006); a workshop link on every
       business record, a branch link on operational ones; scoped queries
 - [ ] Leak test: one workshop can never read another's data
@@ -204,7 +208,8 @@ Can run alongside Phase 1.
       car in, ready, delivered)
 - [ ] Module switches (ADR-0011): a registry of modules and what each needs;
       one check for menus, pages and assistant tools; off never deletes
-- [ ] Shared cores: money, dates, audit log, notifications
+- [ ] Shared cores: money, dates (with Indian date and number formats),
+      audit log, notifications
 - [ ] Decide: how background and scheduled jobs run (backups, clean-ups, push)
 - [ ] Safe-migration rules written down
 
@@ -262,6 +267,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       rates, tax-invoice format, CGST + SGST or IGST, rounding, credit notes
 - [ ] WhatsApp: a click-to-chat link, or the official API (per-message cost,
       approved templates, which number sends)
+- [ ] Malayalam, when the client wants it: translations, a language choice
+      per person, a font check on screens and printed documents (ADR-0015)
 - [ ] AI assistant (ADR-0008): first version on fake data, an eval set in CI,
       cost per question measured
 

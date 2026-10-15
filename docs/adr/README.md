@@ -19,6 +19,7 @@ costs.
 | [0012](0012-local-postgresql-without-docker.md) | Local PostgreSQL 17, without Docker | Accepted |
 | [0013](0013-code-checks-and-tests.md) | Code checks and tests: ruff, pre-commit, pytest-django | Accepted |
 | [0014](0014-ci-on-github-actions.md) | CI on GitHub Actions | Accepted |
+| [0015](0015-translatable-text-from-day-one.md) | Translatable text from day one; Malayalam later | Accepted |
 
 ## Rules
 
