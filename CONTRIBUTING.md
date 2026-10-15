@@ -4,9 +4,8 @@ How work is done here.
 What is planned: `docs/PLAN.md`. Structure: `docs/ARCHITECTURE.md`. Why: `docs/adr/`.
 
 `ruff`, `pre-commit` and `pytest` are set up (ADR-0013), and CI runs every
-check on GitHub (ADR-0014). Branch protection comes next in Phase 1. **Until
-it exists, commits go straight to `main`.** Branches and pull requests start
-then.
+check on GitHub (ADR-0014). **`main` is protected:** every change reaches it
+through a pull request, and only when CI is green.
 
 ---
 
@@ -15,8 +14,12 @@ then.
 1. An **issue** describes the change.
 2. A **branch**: `feat/<short-name>`, `fix/...`, `docs/...`, `refactor/...`, `chore/...`.
 3. **Small commits**, each with its tests.
-4. A **pull request** into `main`. CI must pass.
-5. **Merge**, and staging deploys. A **release tag** deploys to production, on every server.
+4. A **pull request** into `main`. Its template carries the definition of
+   done. CI must pass.
+5. **Rebase and merge**: each commit lands on `main` with its own checked
+   message, in a straight line, and the branch is deleted. Staging deploys.
+   A **release tag** deploys to production, on every server.
+6. On the laptop: `git switch main`, then `git pull`.
 
 ## Commit messages
 
@@ -94,12 +97,8 @@ then.
 
 ## Definition of done
 
-- [ ] Rules listed with IDs; each rule has a test
-- [ ] CI green: lint, tests, migrations, import rules, audit, secret scan
-- [ ] Checked by hand in a browser at phone, tablet and laptop widths
-- [ ] Behaviour matches v1, or the difference is decided and recorded
-- [ ] Docs updated in the same pull request
-- [ ] No dead code, no stray files
+The checklist lives in the pull request template
+(`.github/pull_request_template.md`), so every pull request carries it.
 
 ## Never commit
 
