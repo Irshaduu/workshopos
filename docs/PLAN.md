@@ -114,10 +114,11 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] Translatable text from day one (Malayalam later)
 
 **Repository**
-- [ ] `main` protected; changes only through pull requests
-- [ ] GitHub push protection on, so a secret is stopped before the push
+- [x] `main` protected; changes only through pull requests, merged with
+      "Rebase and merge" once CI is green
+- [x] GitHub push protection on, so a secret is stopped before the push
       (ADR-0014)
-- [ ] Pull request template carrying the definition of done
+- [x] Pull request template carrying the definition of done
 
 **Quality**
 - [x] `ruff` (lint and format); `pre-commit`
