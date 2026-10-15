@@ -13,6 +13,10 @@ costs.
 | [0006](0006-branches-and-shared-vehicles.md) | Branches inside a workshop; customers and vehicles shared by its branches | Accepted |
 | [0007](0007-workshop-members-and-platform-staff.md) | Two kinds of account: workshop members and platform staff | Accepted |
 | [0008](0008-ai-assistant-tools-over-tested-functions.md) | AI assistant: tools over tested read-only functions | Proposed |
+| [0009](0009-django-6-1-then-6-2-lts.md) | Django 6.1 now, then 6.2 LTS | Accepted |
+| [0010](0010-python-3-14-and-uv.md) | Python 3.14, managed with uv | Accepted |
+| [0011](0011-module-switches-per-workshop.md) | Module switches per workshop | Accepted |
+| [0012](0012-local-postgresql-without-docker.md) | Local PostgreSQL 17, without Docker | Accepted |
 
 ## Rules
 

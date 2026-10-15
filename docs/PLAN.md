@@ -27,6 +27,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - **Branches inside a workshop; customers and vehicles shared by its
   branches.** (ADR-0006)
 - **Two kinds of account: workshop members and platform staff.** (ADR-0007)
+- **Modules can be switched on or off per workshop.** Off hides, never
+  deletes. (ADR-0011)
 - **SaaS business features are planned now and built when a second workshop
   wants the system.** The list is in `docs/MODULES.md`. (ADR-0004)
 - **v2 is its own product.** Code does not wait for the client's signature;
@@ -103,12 +105,11 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 **Decide (one ADR each)**
 - [ ] Final product name (the repository can be renamed to match)
-- [ ] Django version: 5.2 LTS or 6.x (check current releases first:
-      6.x has built-in CSP, template partials and a background-tasks framework)
-- [ ] Python version; package manager: `uv` or `pip`
+- [x] Django 6.1 now, then 6.2 LTS (ADR-0009)
+- [x] Python 3.14, managed with uv (ADR-0010)
 - [ ] Test runner: `pytest-django`
 - [ ] Interactivity: `htmx`, or plain JS modules
-- [ ] Local services: Docker Compose for PostgreSQL
+- [x] Local database: PostgreSQL 17 on the machine, no Docker (ADR-0012)
 - [ ] Translatable text from day one (Malayalam later)
 
 **Repository**
@@ -186,6 +187,8 @@ Can run alongside Phase 1.
       printed document
 - [ ] Accounts (ADR-0007): users; membership = user + workshop + role
       (+ branches); platform staff kept apart; superuser for emergencies only
+- [ ] Custom user model in `accounts`, made before any other app's first
+      migration (the local database is reset once at that point)
 - [ ] Permission matrix test: every page for every role
 - [ ] Per-workshop settings (discount threshold, edit window, back-date
       limit, markup); bill-number series per branch
@@ -193,6 +196,8 @@ Can run alongside Phase 1.
 - [ ] History from day one: kilometres as a number at every visit; times of
       status changes (part ordered and received, work started and fixed,
       car in, ready, delivered)
+- [ ] Module switches (ADR-0011): a registry of modules and what each needs;
+      one check for menus, pages and assistant tools; off never deletes
 - [ ] Shared cores: money, dates, audit log, notifications
 - [ ] Decide: how background and scheduled jobs run (backups, clean-ups, push)
 - [ ] Safe-migration rules written down
@@ -223,7 +228,11 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 
 - [ ] Decide hosting for the client: its own account, or the shared server
 - [ ] Staging (fake data) and production
+- [ ] `config/settings/production.py`: hosts and security settings from the
+      environment (`wsgi.py` and `asgi.py` already point to it)
 - [ ] Deploy configuration in the repo; migrations run before traffic moves
+- [ ] Decide (ADR): one Dockerfile as the deploy recipe, built in CI and used
+      by the host; no Docker needed on the laptop (ADR-0012)
 - [ ] `main` goes to staging automatically; a release tag goes to production, on every server
 - [ ] Error tracking (Sentry) and an uptime monitor
 - [ ] Logs never contain customer data

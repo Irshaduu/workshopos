@@ -33,6 +33,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | **Workshop status** (new in v2) | Active or suspended. A suspended workshop cannot sign in | `workshops` | Go-live |
 | **Create a workshop** (new in v2) | One service creates a workshop, its first branch and its owner | `workshops` | Go-live |
 | **Platform accounts** (new in v2) | The company's own staff, kept apart from workshop members (ADR-0007) | `accounts` | Go-live |
+| **Module switches** (new in v2) | Each workshop turns modules on or off; off hides, never deletes (ADR-0011) | `workshops` | Go-live |
 
 ## Job cards and the floor
 
@@ -165,7 +166,7 @@ so adding them changes no existing table.
 | Platform console | The company's view: workshops, plans, payments, suspension | SaaS |
 | Support access | Logged, time-limited access to a workshop, with its consent | SaaS |
 | Sales and partner accounts | Leads, a demo workshop with fake data, referral tracking | SaaS |
-| Plans and limits | Feature switches, user and branch limits per plan | SaaS |
+| Plans and limits | Which modules each plan includes; user and branch limits per plan (the switches are in Foundation) | SaaS |
 | Branch screens | Switching branch, stock transfers, combined reports, when a workshop with more than one branch joins | SaaS |
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |

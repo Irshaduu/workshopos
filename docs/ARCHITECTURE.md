@@ -42,7 +42,7 @@ workshopos/
 ├── docs/
 ├── .github/workflows/ CI
 ├── pyproject.toml     dependencies, ruff and pytest settings
-├── docker-compose.yml local PostgreSQL
+├── uv.lock            exact versions of every dependency
 └── manage.py, README.md, CLAUDE.md, CONTRIBUTING.md, LICENSE, .env.example
 ```
 
@@ -51,7 +51,7 @@ workshopos/
 | App | Holds |
 |---|---|
 | `core` | shared tools: money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
-| `workshops` | the tenant: the workshop, its branches, profile, status, settings, bill-number series |
+| `workshops` | the tenant: the workshop, its branches, profile, status, settings, module switches, bill-number series |
 | `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |
 | `notifications` | the bell, push alerts, email |
@@ -152,6 +152,9 @@ jobs/
   ready and delivered), and kilometres are a number at every visit.
   Estimates, reports and the AI assistant are built on this history, which
   cannot be filled in later.
+- **Module switches:** each workshop has its modules on or off (ADR-0011).
+  Menus, pages and the assistant's tools check this in one place. Off hides
+  a module; it never deletes data.
 
 ---
 
@@ -181,16 +184,14 @@ jobs/
 
 ## Open decisions: each becomes an ADR
 
-1. Django version: 5.2 LTS or 6.x.
-2. Package manager: `uv` or `pip`.
-3. Interactivity: `htmx`, or plain JS modules.
-4. **Shop parts and the supplier ledger.** Proposal: `suppliers` owns a
+1. Interactivity: `htmx`, or plain JS modules.
+2. **Shop parts and the supplier ledger.** Proposal: `suppliers` owns a
    purchase record; a job's shop-part line points to it (`jobs` imports
    `suppliers`). An unassigned spare is then simply a purchase no job uses yet.
-5. Background and scheduled jobs: backups, clean-ups, push.
-6. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
+3. Background and scheduled jobs: backups, clean-ups, push.
+4. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
    a second guard later?
-7. Per-workshop settings: one settings model, or settings per app.
-8. Photo storage: one bucket with a prefix per workshop, or a bucket per
+5. Per-workshop settings: one settings model, or settings per app.
+6. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.
-9. AI provider and model for the assistant (ADR-0008).
+7. AI provider and model for the assistant (ADR-0008).
