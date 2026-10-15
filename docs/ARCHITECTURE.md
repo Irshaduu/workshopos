@@ -1,7 +1,8 @@
 # Architecture
 
 > **Status: Proposed.** It becomes binding when ADR-0005 is accepted in
-> Phase 1. After that, change it only through a new ADR.
+> Phase 4, before the first app is created. After that, change it only
+> through a new ADR.
 
 How the code is organised. What is planned: `docs/PLAN.md`. Why: `docs/adr/`.
 
