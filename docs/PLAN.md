@@ -1,13 +1,11 @@
 # Plan
 
 What we build, in what order, and where we are.
-How we work: `CONTRIBUTING.md` · Structure: `docs/ARCHITECTURE.md` · Why: `docs/adr/`
+How we work: `CONTRIBUTING.md` · Structure: `docs/ARCHITECTURE.md` ·
+Modules: `docs/MODULES.md` · Why: `docs/adr/`
 
-**Now:** Phase 0 — the developer meets the client for the agreement. In this
-repo: the first commit and push.
-**Next:** Phase 1 — foundation.
-**No code until the agreement is signed** ("agreement before code", below),
-unless the developer decides otherwise. Discussion and docs are fine.
+**Now:** Phase 1 — foundation. Phase 2 can run alongside it.
+**Alongside:** the client agreement — needed before go-live, not before code.
 
 Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 
@@ -16,9 +14,9 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 ## Goal
 
 - Rebuild the workshop management system — previous version **v1**, once
-  called "WorkshopOS Titan" — as **v2**: a clean, tested, tenant-ready product.
-- The first client runs it on its own dedicated server.
-- The same code can later serve other workshops on a shared server.
+  called "WorkshopOS Titan" — as **v2**: a clean, tested, SaaS-ready product.
+- The first client goes live on it first.
+- Other workshops can join the same system later.
 - Built in small, reviewed, documented steps.
 
 ## Decided
@@ -26,17 +24,29 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 - **One codebase, tenant-ready from the first commit.** → ADR-0003
 - **Fresh repository. v1 frozen at tag `titan-final`**, used as the
   specification, not as a code template. → ADR-0002
-- **SaaS business features wait for a second workshop.** → ADR-0004
+- **Branches inside a workshop; customers and vehicles shared by its
+  branches.** → ADR-0006
+- **Two kinds of account: workshop members and platform staff.** → ADR-0007
+- **SaaS business features are planned now and built when a second workshop
+  wants the system.** The list is in `docs/MODULES.md`. → ADR-0004
+- **v2 is its own product.** Code does not wait for the client's signature;
+  the agreement is needed before go-live.
+- **Go live with the daily-work modules** (marked Go-live in
+  `docs/MODULES.md`). Everything else follows after go-live.
+- **"Complete for daily work", not "perfect".** Polish after go-live.
+- **No delivery date until Slice 1 (Phase 5) has been timed.**
+- **GST is printed only for a workshop with a valid GSTIN.** All tax rules
+  live in one place.
 - **No data migration from v1** — it never went live. The client enters only
   its go-live position: old bills, opening stock, opening balances.
-- **"Complete for daily work", not "perfect".** Polish after go-live.
-- **No delivery date until Phase 5 has been measured.**
 
 ## Lessons from v1
 
 | What happened | Rule now |
 |---|---|
-| Work began before a written agreement | Agreement before code |
+| Building began with no plan, module list or UI design | Plan, module list and UI lab before code |
+| Every module was built before anything went live | Go live with the daily-work modules first |
+| Work began before a written agreement | Agreement before go-live |
 | Changes merged with no review step | Every change reviewed and explained before merge |
 | Tests run by hand, sometimes only part of them | CI runs every check on every pull request |
 | No JavaScript ever ran under test | Browser tests for the key flows |
@@ -49,6 +59,7 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 | Client names and a phone number inside the repo | No real people or data in the repo |
 | Deploy settings lived only in the hosting dashboard | Everything about deploying lives in the repo |
 | Stock moved through signals — an invisible flow | Explicit service calls; no business logic in signals |
+| A service worker re-sent form POSTs, which some browsers dropped | A service worker never re-sends a POST |
 
 ---
 
@@ -56,29 +67,37 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 
 | # | Phase | Status |
 |---|---|---|
-| 0 | Agreement and v1 freeze | `[~]` |
+| 0 | Plan and v1 freeze | `[x]` |
 | 1 | Foundation | `[ ]` |
-| 2 | Understand v1 | `[ ]` |
+| 2 | Understand v1 (alongside Phase 1) | `[ ]` |
 | 3 | Design system (UI lab) | `[ ]` |
 | 4 | Core architecture | `[ ]` |
 | 5 | Slice 1, timed | `[ ]` |
-| 6 | All other sections | `[ ]` |
-| 7 | GST and WhatsApp (earlier if GST is legally due first) | `[ ]` |
+| 6 | Go-live modules | `[ ]` |
+| 7 | Ready to run live | `[ ]` |
 | 8 | Staging trial → go-live → close watch | `[ ]` |
-| 9 | Running it | `[ ]` |
+| 9 | After go-live: remaining modules, GST, WhatsApp | `[ ]` |
+| 10 | Running it | `[ ]` |
 | Later | SaaS business features | `[ ]` |
 
-### Phase 0 — Agreement and v1 freeze
+### Alongside — the client
 
-- [ ] Client agreement signed (the checklist is kept privately, outside this repo)
-- [ ] From the client: the GST deadline; which sections must be ready before
-      go-live; keep / simplify / drop for each v1 section
+- [ ] Agreement signed — before go-live (the checklist is kept privately,
+      outside this repo)
+- [ ] Go-live marks in `docs/MODULES.md` confirmed
+- [ ] Keep / simplify / drop for each v1 section
+- [ ] GST: a valid registration and the accountant's details (moves GST
+      before go-live if it is legally due first)
+
+### Phase 0 — Plan and v1 freeze
+
 - [x] v1 tagged `titan-final` and pushed
 - [x] v1 moved to `../v1/` (recreate its virtualenv before running it)
 - [x] Workspace and this repository created; plan documents written
 - [x] Private GitHub repository created: `Irshaduu/workshopos`
-- [ ] First commit; `origin` added; `main` pushed
+- [x] First commit; `origin` added; `main` pushed
 - [x] v1's GitHub repository renamed to `workshopos-v1`
+- [x] Module list (`docs/MODULES.md`); ADR-0006 and ADR-0007; this plan revised
 
 ### Phase 1 — Foundation
 
@@ -89,15 +108,13 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 - [ ] Python version; package manager: `uv` or `pip`
 - [ ] Test runner: `pytest-django`
 - [ ] Interactivity: `htmx`, or plain JS modules
-- [ ] CSS base (decided in the UI lab)
 - [ ] Local services: Docker Compose for PostgreSQL
 - [ ] Translatable text from day one (Malayalam later)
 
 **Repository**
-- [ ] `main` protected; changes only through pull requests
-- [ ] Pull request template and issue templates
-- [ ] Project board, one milestone per phase
-- [ ] `CHANGELOG.md`; tagged releases
+- [ ] Changes only through pull requests — a habit, not an enforced rule:
+      branch protection on a private repository needs a paid GitHub plan
+- [ ] Pull request template carrying the definition of done
 
 **Quality**
 - [ ] `ruff` (lint and format); `pre-commit`
@@ -106,33 +123,29 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 
 **Tests**
 - [ ] `pytest-django`, factories, coverage report
-- [ ] Playwright browser tests
-- [ ] JavaScript unit tests with Node's built-in runner
 
-**CI/CD**
-- [ ] CI on every pull request: lint, tests, missing-migration check,
+**CI**
+- [ ] On every pull request: lint, tests, missing-migration check,
       dependency audit, secret scan
-- [ ] `main` → staging automatically; release tag → production, every server
-- [ ] Deploy configuration in the repo; migrations run before traffic moves
 
-**Environments and settings**
-- [ ] Local, CI, staging (fake data), production
+**Settings**
+- [ ] Local and CI environments
 - [ ] Settings only from environment variables; `.env.example`
 - [ ] Health-check endpoint
 
-**Running live**
-- [ ] Error tracking (Sentry) and an uptime monitor
-- [ ] Logs never contain customer data
-- [ ] Automatic backups, an off-site copy, a monthly test restore
-
-**Docs added when first needed**
-- [ ] `docs/rules/` (rule catalogue), `docs/design/`, `RUNBOOK.md`
+**Moved out of Phase 1**
+- Browser tests → Phase 5, with the first real flow
+- JavaScript unit tests → with the first JS module
+- Staging, deploys, error tracking, backups → Phase 7
+- `CHANGELOG.md` and release tags → Phase 8
+- Project board, milestones, issue templates → dropped; this plan is the board
 
 ### Phase 2 — Understand v1
 
+Can run alongside Phase 1.
+
 - [ ] The map: every Django layer, and how one request flows through v1
 - [ ] How it runs on a server: request → host → gunicorn → Django → PostgreSQL
-- [ ] Feature audit with the client: keep / simplify / drop
 - [ ] Leave behind: dormant columns, dead templates, unused models
       (e.g. `JobCardLabourItem.amount`, `JobCard.is_deleted`,
       `ConsumptionRecord`, the unrendered bulk-payment templates)
@@ -143,13 +156,14 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
   - inline JS → static modules (allows a strict CSP)
   - date, back-date and edit-window rules repeated across nine money tables
     → one shared core
-  - `is_superuser` meaning "owner" → a membership per workshop
-  - bill-number floor in an env var, a single lock row → per-workshop settings
+  - `is_superuser` meaning "owner" → a membership per workshop (ADR-0007)
+  - bill-number floor in an env var, a single lock row → per-branch series
 - Rules are catalogued **section by section, as each is built** (the loop,
   step 1) — not all up front.
 
 ### Phase 3 — Design system (UI lab)
 
+- [ ] CSS base decided (ADR)
 - [ ] Tokens: colour, type, spacing, radius, shadow
 - [ ] About ten components. v1's approved patterns are the first candidates:
       the payment row (`.rpay-*`), the confirmation card (`.wcf-*`), the back
@@ -162,59 +176,75 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 ### Phase 4 — Core architecture
 
 - [ ] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
-- [ ] Tenancy: `Workshop`, a workshop link on every business record,
-      workshop-scoped queries
+- [ ] Tenancy: `Workshop` and `Branch` (ADR-0006); a workshop link on every
+      business record, a branch link on operational ones; scoped queries
 - [ ] Leak test: one workshop can never read another's data
-- [ ] Accounts: users; membership = user + workshop + role (Owner / Office / Floor)
+- [ ] Workshop status: active or suspended
+- [ ] One service creates a workshop with its first branch and owner
+- [ ] Workshop profile: logo, name, address, GSTIN, UPI QR — read by every
+      printed document
+- [ ] Accounts (ADR-0007): users; membership = user + workshop + role
+      (+ branches); platform staff kept apart; superuser for emergencies only
 - [ ] Permission matrix test: every page × every role
-- [ ] Per-workshop number series (JB / WR) and settings (discount threshold,
-      edit window, back-date limit, markup)
+- [ ] Per-workshop settings (discount threshold, edit window, back-date
+      limit, markup); bill-number series per branch
+- [ ] Customers and vehicles as real records (ADR-0006)
 - [ ] Shared cores: money, dates, audit log, notifications
-- [ ] Decide: Customer and Vehicle as real records (v1 keeps them as text
-      typed on each card)
 - [ ] Decide: how background and scheduled jobs run (backups, clean-ups, push)
 - [ ] Safe-migration rules written down
 
 ### Phase 5 — Slice 1, timed
 
 - [ ] Login → vehicle → job card → invoice → settle, end to end, with tests
-- [ ] Time recorded → a realistic delivery date for the client
+- [ ] Browser tests (Playwright) for this flow
+- [ ] Time recorded; every Go-live module sized small / medium / large
+- [ ] → a realistic delivery date for the client
 
-### Phase 6 — All other sections
+### Phase 6 — Go-live modules
 
-Each section follows the loop in `CONTRIBUTING.md`. Suggested order — the
-final order is agreed with the client:
+Every module marked Go-live in `docs/MODULES.md`, each through the loop in
+`CONTRIBUTING.md`. Suggested order — the final order is agreed with the client:
 
-- [ ] Spare shops and their payments
-- [ ] Inventory, Supplies Shops and stock costing
+- [ ] The rest of the job card and the floor: live board, live report,
+      completed list
+- [ ] The rest of billing: printed bill, pending and paid bills, discount audit
+- [ ] Spare shops, unassigned spares and payments
+- [ ] Supplies shops, inventory and stock costing
 - [ ] Cashbook
 - [ ] Fleet accounts
-- [ ] Estimates
-- [ ] Vehicle profile, service history, all invoices for a vehicle
-- [ ] Salary and advances
-- [ ] Rent and owner withdrawals
-- [ ] Profit and deep analysis
-- [ ] Change history, notifications, push
-- [ ] Warranty
-- [ ] Photos
-- [ ] Go-live data: old bills, opening stock, opening balances
-- [ ] Each section marked: needed before go-live, or after
+- [ ] Change history, alerts, push
+- [ ] Go-live tools: old bills, opening stock, opening balances
 
-### Phase 7 — GST and WhatsApp
+### Phase 7 — Ready to run live
 
+- [ ] Decide: hosting for the client — its own account, or the shared server
+- [ ] Staging (fake data) and production
+- [ ] Deploy configuration in the repo; migrations run before traffic moves
+- [ ] `main` → staging automatically; release tag → production, every server
+- [ ] Error tracking (Sentry) and an uptime monitor
+- [ ] Logs never contain customer data
+- [ ] Automatic backups, an off-site copy, a test restore
+- [ ] `RUNBOOK.md`
+
+### Phase 8 — Staging trial → go-live → close watch
+
+- [ ] Agreement signed
+- [ ] Trial on staging with the client
+- [ ] Short training for each role
+- [ ] Go-live checklist; a written rollback plan, practised on staging
+- [ ] `CHANGELOG.md`; first release tag
+- [ ] Daily error review in the first weeks
+
+### Phase 9 — After go-live
+
+- [ ] Every module marked After in `docs/MODULES.md`, through the loop, in
+      the order the client needs
 - [ ] GST details from the client and their accountant: GSTIN, HSN/SAC codes,
       rates, tax-invoice format, CGST + SGST or IGST, rounding, credit notes
 - [ ] WhatsApp: a click-to-chat link, or the official API (per-message cost,
       approved templates, which number sends)
 
-### Phase 8 — Go-live
-
-- [ ] Trial on staging with the client
-- [ ] Short training for each role
-- [ ] Go-live checklist; a written rollback plan, practised on staging
-- [ ] Daily error review in the first weeks
-
-### Phase 9 — Running it
+### Phase 10 — Running it
 
 - [ ] Releases: staging first, production outside working hours
 - [ ] Release notes in plain words
@@ -224,9 +254,7 @@ final order is agreed with the client:
 
 ### Later — SaaS business features (ADR-0004)
 
-- [ ] Self sign-up, subscription billing, platform admin console,
-      feature switches per workshop
-- [ ] Own hosting account and domain; terms of service; privacy policy
-      (India's DPDP Act)
+- [ ] The SaaS modules in `docs/MODULES.md`
+- [ ] Own hosting account and domain
 - [ ] Pilot workshops before any marketing
 - [ ] A "Dedicated" plan for workshops that want their own server

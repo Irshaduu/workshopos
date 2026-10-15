@@ -6,14 +6,16 @@ reports.
 
 ## Status
 
-**Planning. No Django project exists yet.** Do not run `startproject`, create
-apps or add dependencies until Phase 1 is approved in `docs/PLAN.md`.
+**Phase 1 — foundation. No Django project exists yet.** The Phase 1 ADRs
+(Django version, Python version, package manager) come before `startproject`,
+apps or dependencies.
 
 ## The documents — each fact has one home
 
 | Document | Answers |
 |---|---|
 | `docs/PLAN.md` | what we build, in what order, and **where we are now** |
+| `docs/MODULES.md` | what the system does, module by module, and when each is built |
 | `docs/ARCHITECTURE.md` | how the code is organised |
 | `docs/adr/` | why each big decision was made |
 | `CONTRIBUTING.md` | how work is done here |

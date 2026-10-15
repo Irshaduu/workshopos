@@ -8,6 +8,7 @@ parts and stock, supplier ledgers, cash, staff pay and owner reports.
 ## Documentation
 
 - [Plan](docs/PLAN.md) — what is built, in what order, and where we are
+- [Modules](docs/MODULES.md) — what the system does, and when each part is built
 - [Architecture](docs/ARCHITECTURE.md) — how the code is organised
 - [Decisions](docs/adr/README.md) — why
 - [Contributing](CONTRIBUTING.md) — how work is done

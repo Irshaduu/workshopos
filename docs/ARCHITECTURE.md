@@ -51,8 +51,8 @@ workshopos/
 | App | Holds |
 |---|---|
 | `core` | shared tools: money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
-| `workshops` | the tenant: the workshop, its settings, its number series |
-| `accounts` | users, memberships, roles, login security |
+| `workshops` | the tenant: the workshop, its branches, profile, status, settings, bill-number series |
+| `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |
 | `notifications` | the bell, push alerts, email |
 | `photos` | photos of cars and parts, linked generically to their subject |
@@ -123,12 +123,18 @@ jobs/
 
 ## Tenancy
 
-- `Workshop` lives in `workshops`.
+- `Workshop` and `Branch` live in `workshops`. A workshop is the business; a
+  branch is one of its locations (ADR-0006).
 - Every business model inherits an abstract base from `workshops`, which adds a
-  required, indexed `workshop` link.
-- Unique rules include the workshop (e.g. a bill number is unique per workshop).
+  required, indexed `workshop` link. Operational records (job cards, invoices,
+  stock, cash) also link to a branch.
+- Customers and vehicles belong to the workshop, so all its branches share them.
+- Unique rules include the workshop (e.g. a bill number is unique per branch
+  of a workshop).
 - Queries go through workshop-scoped managers. The current workshop comes from
   the signed-in user's membership.
+- Workshop members and platform staff are separate kinds of account
+  (ADR-0007).
 - Every app has a **leak test**: data from workshop A is never visible to
   workshop B.
 
@@ -175,10 +181,9 @@ jobs/
 4. **Shop parts and the supplier ledger.** Proposal: `suppliers` owns a
    purchase record; a job's shop-part line points to it (`jobs` imports
    `suppliers`). An unassigned spare is then simply a purchase no job uses yet.
-5. Customer and Vehicle as real records, or text on each card as in v1.
-6. Background and scheduled jobs: backups, clean-ups, push.
-7. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
+5. Background and scheduled jobs: backups, clean-ups, push.
+6. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
    a second guard later?
-8. Per-workshop settings: one settings model, or settings per app.
-9. Photo storage: one bucket with a prefix per workshop, or a bucket per
+7. Per-workshop settings: one settings model, or settings per app.
+8. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.
