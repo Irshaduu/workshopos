@@ -15,4 +15,5 @@ parts and stock, supplier ledgers, cash, staff pay and owner reports.
 
 ## License
 
-Proprietary. All rights reserved. See [LICENSE](LICENSE).
+Proprietary. All rights reserved. The source code is published for viewing
+only. See [LICENSE](LICENSE).

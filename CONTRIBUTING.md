@@ -5,8 +5,7 @@ What is planned: `docs/PLAN.md` · Structure: `docs/ARCHITECTURE.md` · Why: `do
 
 Tools named below (CI, `ruff`, `pre-commit`, `pytest`) arrive in Phase 1.
 **Until then, commits go straight to `main`** — branches and pull requests
-start once CI exists. (Branch protection on a private repository needs a paid
-GitHub plan, so "pull requests only" is a habit, not an enforced rule.)
+start once CI and branch protection exist.
 
 ---
 

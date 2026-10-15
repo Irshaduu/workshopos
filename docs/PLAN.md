@@ -112,8 +112,7 @@ Marks: `[x]` done · `[~]` in progress · `[ ]` to do
 - [ ] Translatable text from day one (Malayalam later)
 
 **Repository**
-- [ ] Changes only through pull requests — a habit, not an enforced rule:
-      branch protection on a private repository needs a paid GitHub plan
+- [ ] `main` protected; changes only through pull requests
 - [ ] Pull request template carrying the definition of done
 
 **Quality**
