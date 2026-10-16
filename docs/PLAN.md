@@ -4,7 +4,7 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Why: `docs/adr/`.
 
-**Now:** Phase 2, understand v1.
+**Now:** Phase 3, design system (UI lab).
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -62,6 +62,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | Deploy settings lived only in the hosting dashboard | Everything about deploying lives in the repo |
 | Stock moved through signals, an invisible flow | Explicit service calls; no business logic in signals |
 | A service worker re-sent form POSTs, which some browsers dropped | A service worker never re-sends a POST |
+| One thing had two names: a fleet account was `BulkPayer` in the code | One name per thing, from `docs/GLOSSARY.md` |
 
 ---
 
@@ -71,7 +72,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 |---|---|---|
 | 0 | Plan and v1 freeze | `[x]` |
 | 1 | Foundation | `[x]` |
-| 2 | Understand v1 | `[~]` |
+| 2 | Understand v1 | `[x]` |
 | 3 | Design system (UI lab) | `[ ]` |
 | 4 | Core architecture | `[ ]` |
 | 5 | Slice 1, timed | `[ ]` |
@@ -152,19 +153,30 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 ### Phase 2: Understand v1
 
 - [x] The map: every Django layer, and how one request flows through v1
-- [ ] How it runs on a server: from the request, through the host, gunicorn and Django, to PostgreSQL
-- [ ] Leave behind: dormant columns, dead templates, unused models
-      (e.g. `JobCardLabourItem.amount`, `JobCard.is_deleted`,
-      `ConsumptionRecord`, the unrendered bulk-payment templates)
-- [ ] Fix, don't port:
-  - `parse_money` refuses zero itself, so callers need no check of their own
+- [x] How it runs on a server: from the request, through the host, gunicorn and Django, to PostgreSQL
+- [x] Leave behind (each checked in v1's code; more may show up in each
+      section's loop):
+  - dormant columns: `JobCard.is_deleted`, `JobCardLabourItem.amount`,
+    `CarBrand.logo_image`
+  - unused model: `ConsumptionRecord`
+  - dead templates: the old fleet payment pages (`bulk_payments.html` and
+    its partial), `workshop/home.html`, `inventory/home.html`
+  - dead code: the soft-delete signals in `inventory/signals.py`
+- [x] Fix, don't port (each checked in v1's code, with the phase that fixes it):
+  - `parse_money` already refuses zero, yet callers repeat the check: in v2
+    the parser is the only check (Phase 4, money core)
   - Floor's hidden price inputs: replace with a separate form per role
-  - seven copied list searches: replace with one component
-  - inline JS: move to static modules (allows a strict CSP)
-  - date, back-date and edit-window rules repeated across nine money tables:
-    move to one shared core
-  - `is_superuser` meaning "owner": replace with a membership per workshop (ADR-0007)
-  - bill-number floor in an env var and a single lock row: replace with a series per branch
+    (Phase 5, job card)
+  - list searches copied page by page: replace with one component (Phase 3)
+  - inline JS: move to static modules, which allows a strict CSP (Phase 3)
+  - period filters (this week, last week, a range) copied page by page, and
+    date rules shared only late: one shared date core from the start
+    (Phase 4)
+  - `is_superuser` meaning "owner": replace with a membership per workshop
+    (ADR-0007, Phase 4)
+  - bill number: a floor in an env var, and the next number found by
+    locking and scanning the year's job cards: replace with a series per
+    branch (Phase 4)
 - Rules are catalogued **section by section, as each is built** (the loop,
   step 1), not all up front.
 

@@ -3,8 +3,8 @@
 Management system for premium automotive workshops: job cards, billing,
 parts and stock, supplier ledgers, cash, staff pay and owner reports.
 
-> **Status: Phase 2, understand v1.** The Django project is set up; no
-> business features yet. See [the plan](docs/PLAN.md).
+> **Status: Phase 3, design system (UI lab).** The Django project is set
+> up; no business features yet. See [the plan](docs/PLAN.md).
 
 ## Run it locally
 
@@ -36,6 +36,7 @@ You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 17
 - [Plan](docs/PLAN.md): what is built, in what order, and where we are
 - [Modules](docs/MODULES.md): what the system does, and when each part is built
 - [Architecture](docs/ARCHITECTURE.md): how the code is organised
+- [Glossary](docs/GLOSSARY.md): the one name for each thing
 - [Decisions](docs/adr/README.md): why
 - [Contributing](CONTRIBUTING.md): how work is done
 

@@ -6,8 +6,9 @@ reports.
 
 ## Status
 
-**Phase 2: understand v1.** The foundation is done: the Django project
-exists (`manage.py`, `config/`) with code checks, tests and CI; no apps yet. Run every command through `uv run` (see `README.md`). Every new
+**Phase 3: design system (UI lab).** The foundation is done: the Django
+project exists (`manage.py`, `config/`) with code checks, tests and CI; no
+apps yet. Run every command through `uv run` (see `README.md`). Every new
 dependency needs an ADR first.
 
 ## The documents: each fact has one home
@@ -17,6 +18,7 @@ dependency needs an ADR first.
 | `docs/PLAN.md` | what we build, in what order, and **where we are now** |
 | `docs/MODULES.md` | what the system does, module by module, and when each is built |
 | `docs/ARCHITECTURE.md` | how the code is organised |
+| `docs/GLOSSARY.md` | the one name for each thing, on screen and in code |
 | `docs/adr/` | why each big decision was made |
 | `CONTRIBUTING.md` | how work is done here |
 | `../CLAUDE.md` | private context (client, developer, working style); outside git, loaded automatically when present |

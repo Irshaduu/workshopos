@@ -6,7 +6,7 @@
 
 - The first client is in Kerala. A Malayalam version may be wanted later;
   it is not asked for now.
-- v1 wrote every text straight into its 142 templates and its Python code,
+- v1 wrote every text straight into its 140 templates and its Python code,
   in English. None of it is marked for translation, so adding a language to
   v1 would mean editing every screen.
 - Marking text while writing it costs little. Marking it later means finding

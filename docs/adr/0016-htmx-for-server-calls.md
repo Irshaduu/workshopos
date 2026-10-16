@@ -7,7 +7,7 @@
 - Django renders every page on the server. Many screens still need one part
   of a page to change without a full reload: suggestions as you type, adding
   a part to a job card, the payment row, the live board.
-- v1 did this with plain JavaScript. Measured on `titan-final`: 52 of its 142
+- v1 did this with plain JavaScript. Measured on `titan-final`: 52 of its 140
   templates hold inline script, 31 use `onclick`-style attributes, and the
   templates call `fetch()` 19 times. Its 10 script files hold 3,747 lines.
   Some rules lived only in the browser: the suggested price is worked out in
