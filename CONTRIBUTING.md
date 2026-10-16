@@ -35,7 +35,7 @@ through a pull request, and only when CI is green.
 ## Building a section: the loop
 
 1. **Rules:** list the section's rules from v1 into `docs/rules/<section>.md`,
-   each with an ID.
+   each with an ID, and its words into `docs/GLOSSARY.md`.
 2. **UI lab:** prototype a fresh design; compare with v1 on phone, tablet
    and laptop; choose.
 3. **Plan:** a short written plan: models, screens, tests. Approved before code.
@@ -58,6 +58,9 @@ through a pull request, and only when CI is green.
 ## Code rules
 
 - **One implementation per rule.** Search before writing anything new.
+- **One name per thing** (`docs/GLOSSARY.md`). The word on screen is the
+  name in models, functions, files, URLs and docs. A new word goes in the
+  glossary first.
 - **Extract on the second use**, never before. No abstraction for one caller.
 - **Code goes where `docs/ARCHITECTURE.md` says.** Views thin; rules in
   `services.py` (changes) and `selectors.py` (reads).
