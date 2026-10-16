@@ -20,6 +20,7 @@ costs.
 | [0013](0013-code-checks-and-tests.md) | Code checks and tests: ruff, pre-commit, pytest-django | Accepted |
 | [0014](0014-ci-on-github-actions.md) | CI on GitHub Actions | Accepted |
 | [0015](0015-translatable-text-from-day-one.md) | Translatable text from day one; Malayalam later | Accepted |
+| [0016](0016-htmx-for-server-calls.md) | htmx 4 for server calls; small JavaScript modules for the rest | Accepted |
 
 ## Rules
 
