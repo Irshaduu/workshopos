@@ -4,7 +4,7 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Why: `docs/adr/`.
 
-**Now:** Phase 1, foundation. Phase 2 can run alongside it.
+**Now:** Phase 2, understand v1.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -70,8 +70,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | # | Phase | Status |
 |---|---|---|
 | 0 | Plan and v1 freeze | `[x]` |
-| 1 | Foundation | `[ ]` |
-| 2 | Understand v1 (alongside Phase 1) | `[ ]` |
+| 1 | Foundation | `[x]` |
+| 2 | Understand v1 | `[~]` |
 | 3 | Design system (UI lab) | `[ ]` |
 | 4 | Core architecture | `[ ]` |
 | 5 | Slice 1, timed | `[ ]` |
@@ -104,7 +104,6 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 ### Phase 1: Foundation
 
 **Decide (one ADR each)**
-- [ ] Final product name (the repository can be renamed to match)
 - [x] Django 6.1 now, then 6.2 LTS (ADR-0009)
 - [x] Python 3.14, managed with uv (ADR-0010)
 - [x] Code checks and tests: ruff, pre-commit, pytest-django (ADR-0013)
@@ -129,7 +128,6 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 **Tests**
 - [x] `pytest-django` and a coverage report
-- [ ] Factories (factory-boy), with the first model
 
 **CI**
 - [x] On every push to `main` and every pull request: lint, tests,
@@ -143,17 +141,17 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 **Moved out of Phase 1**
 - Import rules between apps (`import-linter`): Phase 4, with the first apps
+- Factories (factory-boy): Phase 4, with the first model
 - Browser tests: Phase 5, with the first real flow
 - JavaScript unit tests: with the first JS module
 - Staging, deploys, error tracking, backups: Phase 7
+- Final product name: Phase 7, with the domain and hosting
 - `CHANGELOG.md` and release tags: Phase 8
 - Project board, milestones, issue templates: dropped; this plan is the board
 
 ### Phase 2: Understand v1
 
-Can run alongside Phase 1.
-
-- [ ] The map: every Django layer, and how one request flows through v1
+- [x] The map: every Django layer, and how one request flows through v1
 - [ ] How it runs on a server: from the request, through the host, gunicorn and Django, to PostgreSQL
 - [ ] Leave behind: dormant columns, dead templates, unused models
       (e.g. `JobCardLabourItem.amount`, `JobCard.is_deleted`,
@@ -189,6 +187,7 @@ Can run alongside Phase 1.
       ADR), from the first app
 - [ ] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
       (ADR-0015)
+- [ ] Factories for test data (factory-boy, ADR-0013), with the first model
 - [ ] Tenancy: `Workshop` and `Branch` (ADR-0006); a workshop link on every
       business record, a branch link on operational ones; scoped queries
 - [ ] Leak test: one workshop can never read another's data
@@ -216,7 +215,12 @@ Can run alongside Phase 1.
 
 ### Phase 5: Slice 1, timed
 
-- [ ] Login, vehicle, job card, invoice and settle, end to end, with tests
+- [ ] Login, vehicle, job card, invoice and settle, end to end, with tests.
+      Billing rules for it:
+  - the bill is a preview until it is settled
+  - the bargaining discount (a bill of 47,500 settled at 45,500, for
+    example) is recorded at settle, before tax
+  - the final bill number is given at settle
 - [ ] Browser tests (Playwright) for this flow
 - [ ] Time recorded; every Go-live module sized small / medium / large
 - [ ] From that, a realistic delivery date for the client
@@ -229,6 +233,10 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] The rest of the job card and the floor: live board, live report,
       completed list
 - [ ] The rest of billing: printed bill, pending and paid bills, discount audit
+  - internal jobs (own car, demo car, free redo) take no customer payment;
+    any money from a customer is a sale and gets a proper bill
+  - one sales register: every settled sale is in the reports and in the
+    accountant's export
 - [ ] Spare shops, unassigned spares and payments
 - [ ] Supplies shops, inventory and stock costing
 - [ ] Cashbook
@@ -239,6 +247,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 ### Phase 7: Ready to run live
 
 - [ ] Decide hosting for the client: its own account, or the shared server
+- [ ] Decide (ADR): the final product name and its domain; the repository
+      can be renamed to match
 - [ ] Staging (fake data) and production
 - [ ] `config/settings/production.py`: hosts and security settings from the
       environment (`wsgi.py` and `asgi.py` already point to it)
@@ -266,6 +276,11 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       the order the client needs
 - [ ] GST details from the client and their accountant: GSTIN, HSN/SAC codes,
       rates, tax-invoice format, CGST + SGST or IGST, rounding, credit notes
+  - the workshop's GST type, with its start date, sets the final document:
+    none gives a plain bill, regular a tax invoice, composition a bill of
+    supply (the accountant confirms). Never a choice per customer; old
+    bills never change when the type changes.
+  - input tax credit tracked from purchase bills
 - [ ] WhatsApp: a click-to-chat link, or the official API (per-message cost,
       approved templates, which number sends)
 - [ ] Malayalam, when the client wants it: translations, a language choice

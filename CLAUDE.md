@@ -6,8 +6,8 @@ reports.
 
 ## Status
 
-**Phase 1: foundation.** The Django project exists (`manage.py`, `config/`);
-no apps yet. Run every command through `uv run` (see `README.md`). Every new
+**Phase 2: understand v1.** The foundation is done: the Django project
+exists (`manage.py`, `config/`) with code checks, tests and CI; no apps yet. Run every command through `uv run` (see `README.md`). Every new
 dependency needs an ADR first.
 
 ## The documents: each fact has one home
@@ -35,7 +35,7 @@ The repo documents are loaded below, so every session starts with them:
 | Say | Means |
 |---|---|
 | **v1** | the old system, once called "WorkshopOS Titan". Frozen. Folder `../v1/`. |
-| **v2** | this repository, the system being built now. "WorkshopOS" is its working product name; the final name is decided in Phase 1. |
+| **v2** | this repository, the system being built now. "WorkshopOS" is its working product name; the final name is decided in Phase 7. |
 
 - **Never say "Titan" on its own.** Always "v1".
 - Inside v1's own code and docs, "WorkshopOS" and "Titan" both mean v1.
