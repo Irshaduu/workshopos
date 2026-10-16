@@ -109,7 +109,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] Python 3.14, managed with uv (ADR-0010)
 - [x] Code checks and tests: ruff, pre-commit, pytest-django (ADR-0013)
 - [x] CI: GitHub Actions, uv audit, gitleaks; the health check (ADR-0014)
-- [ ] Interactivity: `htmx`, or plain JS modules
+- [x] Interactivity: htmx 4 for server calls, small JS modules for the
+      rest (ADR-0016)
 - [x] Local database: PostgreSQL 17 on the machine, no Docker (ADR-0012)
 - [x] Translatable text from day one; Malayalam later (ADR-0015)
 

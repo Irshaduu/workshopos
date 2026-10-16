@@ -68,6 +68,10 @@ through a pull request, and only when CI is green.
   `{% translate %}` in templates, `gettext_lazy` in Python.
 - **No business logic in signals.**
 - **No CSS or JS inside templates.**
+- **The server decides; JavaScript only shows** (ADR-0016). htmx 4 for
+  server calls: mark inherited attributes with `:inherited`, use the htmx 4
+  event names, and no `hx-on`, `js:` values or trigger filters. JS modules
+  hold no business rules and work out no money.
 - **Delete code; never comment it out.** Git remembers.
 - **No dead files, no experiments on `main`.**
 - **Every new dependency needs an ADR.**

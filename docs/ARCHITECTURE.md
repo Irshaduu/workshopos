@@ -37,7 +37,7 @@ workshopos/
 ├── apps/              all Django apps (below)
 ├── config/            settings (base, local, test, production), urls, wsgi, health check
 ├── templates/         base layout and shared components
-├── static/            design system CSS and shared JS
+├── static/            design system CSS, shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
 ├── tests/             project-wide tests (settings); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
@@ -187,14 +187,13 @@ jobs/
 
 ## Open decisions: each becomes an ADR
 
-1. Interactivity: `htmx`, or plain JS modules.
-2. **Shop parts and the supplier ledger.** Proposal: `suppliers` owns a
+1. **Shop parts and the supplier ledger.** Proposal: `suppliers` owns a
    purchase record; a job's shop-part line points to it (`jobs` imports
    `suppliers`). An unassigned spare is then simply a purchase no job uses yet.
-3. Background and scheduled jobs: backups, clean-ups, push.
-4. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
+2. Background and scheduled jobs: backups, clean-ups, push.
+3. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
    a second guard later?
-5. Per-workshop settings: one settings model, or settings per app.
-6. Photo storage: one bucket with a prefix per workshop, or a bucket per
+4. Per-workshop settings: one settings model, or settings per app.
+5. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.
-7. AI provider and model for the assistant (ADR-0008).
+6. AI provider and model for the assistant (ADR-0008).
