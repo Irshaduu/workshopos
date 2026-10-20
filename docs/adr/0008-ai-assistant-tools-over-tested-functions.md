@@ -20,6 +20,8 @@
   workshop. For a customer, scoped to one vehicle.
 - **No tool changes data.** When the assistant prepares something (for
   example a draft bill from a photo), a person checks it and saves it.
+- **Input helpers** (voice input, bill from a photo) only fill a form the
+  person can already use, so Floor may use them too. They read no data.
 - **The customer assistant** sees one vehicle only. "Service due" comes from
   the workshop's own service rules. It never diagnoses a fault, and it always
   offers to contact the workshop or book a visit.
