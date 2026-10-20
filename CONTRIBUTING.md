@@ -48,7 +48,8 @@ through a pull request, and only when CI is green.
 ## UI lab
 
 - Lives in `design/lab/<section>/`. **Never imported by the app.**
-- Uses the real design tokens and the same fake data.
+- Uses the real design tokens and the same fake data, and follows
+  `docs/DESIGN.md`.
 - The design system is the first prototype, before any section.
 - After each decision the prototype is **deleted**. One screenshot and one line
   of reasoning stay in `docs/design/`.
@@ -93,6 +94,8 @@ through a pull request, and only when CI is green.
 ## Docs
 
 - **One fact, one home.** Link; never repeat.
+- **A plan task is one line, in the phase that does it.** Its detail lives
+  in its home doc.
 - **No hand-written counts.** Generate them or leave them out.
 - **Docs say what is true now.** History lives in git and in ADRs.
 - **An ADR for every decision that is hard to undo.** The format is in

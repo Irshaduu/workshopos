@@ -18,6 +18,7 @@ dependency needs an ADR first.
 | `docs/PLAN.md` | what we build, in what order, and **where we are now** |
 | `docs/MODULES.md` | what the system does, module by module, and when each is built |
 | `docs/ARCHITECTURE.md` | how the code is organised |
+| `docs/DESIGN.md` | how screens look and behave; read it before any UI work |
 | `docs/GLOSSARY.md` | the one name for each thing, on screen and in code |
 | `docs/adr/` | why each big decision was made |
 | `CONTRIBUTING.md` | how work is done here |

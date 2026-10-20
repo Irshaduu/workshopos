@@ -36,6 +36,7 @@ You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 17
 - [Plan](docs/PLAN.md): what is built, in what order, and where we are
 - [Modules](docs/MODULES.md): what the system does, and when each part is built
 - [Architecture](docs/ARCHITECTURE.md): how the code is organised
+- [Design](docs/DESIGN.md): how screens look and behave
 - [Glossary](docs/GLOSSARY.md): the one name for each thing
 - [Decisions](docs/adr/README.md): why
 - [Contributing](CONTRIBUTING.md): how work is done
