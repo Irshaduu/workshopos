@@ -27,6 +27,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Confirmations and sounds | A clear question before anything important; a sound for each result | `core` | Go-live |
 | Backups and money checks | Database copies; every typed amount checked before saving | `core` | Go-live |
 | System guide and map | A tour of every section | to decide | After |
+| Dark mode | A dark look for use at night, chosen per person; only if the client asks | `core` | After |
 | **Workshop and branches** (new in v2) | The business and its locations (ADR-0006) | `workshops` | Go-live |
 | **Workshop profile** (new in v2) | Logo, name, address, GSTIN, UPI QR, used by every printed document | `workshops` | Go-live |
 | **Workshop settings** (new in v2) | Discount limit, edit window, back-date limit, markup; bill-number series per branch | `workshops` | Go-live |

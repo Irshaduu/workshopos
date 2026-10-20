@@ -73,7 +73,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | 0 | Plan and v1 freeze | `[x]` |
 | 1 | Foundation | `[x]` |
 | 2 | Understand v1 | `[x]` |
-| 3 | Design system (UI lab) | `[ ]` |
+| 3 | Design system (UI lab) | `[~]` |
 | 4 | Core architecture | `[ ]` |
 | 5 | Slice 1, timed | `[ ]` |
 | 6 | Go-live modules | `[ ]` |
@@ -160,12 +160,17 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 ### Phase 3: Design system (UI lab)
 
 - [x] CSS base: plain CSS with our own tokens (ADR-0017)
-- [ ] Tokens: colour, type, spacing, radius, shadow
-- [ ] About ten components. v1's approved patterns are the first candidates:
+- [x] Tokens: colour, type, spacing, radius, shadow (`docs/design/`)
+- [~] About ten components. v1's approved patterns are the first candidates:
       the payment row (`.rpay-*`), the confirmation card (`.wcf-*`), the back
       control (`.pg-back`), chips, status badges; one list search for every
       list page
+- [ ] Icon set kept in the repo (ADR)
 - [ ] Screen states, each designed once (`docs/DESIGN.md`)
+- [ ] Three signature screens in the lab: live board, job card, owner
+      dashboard
+- [ ] Each signature screen's size and speed measured on the floor tablet;
+      a limit set from it
 - [ ] JavaScript unit tests, set up with the first JS module
 - [ ] Checked at phone, tablet and laptop widths
 - [ ] Tried on the real devices by the real users (`docs/DESIGN.md`)
