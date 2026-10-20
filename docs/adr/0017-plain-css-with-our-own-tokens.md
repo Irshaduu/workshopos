@@ -14,7 +14,8 @@
 - v1 called Bootstrap's JavaScript in 16 templates, for modals, dropdowns,
   side panels and collapsing sections. HTML now has its own elements for
   these: `<dialog>` and `<details>`.
-- v1 loaded one font (Inter) from Google Fonts.
+- v1 kept its font (Barlow) in the repo. Only its two system map pages
+  loaded a font from Google Fonts.
 - The plan asks for a strict Content-Security-Policy, with no CSS or JS
   inside templates. Every new dependency needs an ADR. The toolchain is
   Python and uv (ADR-0010); nothing needs Node.js today.
