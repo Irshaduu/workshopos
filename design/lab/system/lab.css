@@ -1,0 +1,171 @@
+/* Layout of the lab page only. Never used by the app. */
+
+@layer page {
+  .lab {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-4) var(--space-12);
+  }
+
+  .lab-intro {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .lab-section {
+    margin-top: var(--space-8);
+  }
+
+  .lab-section > h2 {
+    margin-bottom: var(--space-3);
+  }
+
+  .lab-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .lab-stack {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .lab-label {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .lab-fields {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  /* Colour swatches */
+  .swatches {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .swatch {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--text-sm);
+  }
+
+  .swatch__chip {
+    height: 56px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .swatch__name {
+    padding: var(--space-2) var(--space-3);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: var(--text-xs);
+    overflow-wrap: anywhere;
+  }
+
+  .s-page { background: var(--color-page); }
+  .s-surface { background: var(--color-surface); }
+  .s-sunken { background: var(--color-surface-sunken); }
+  .s-border { background: var(--color-border); }
+  .s-control { background: var(--color-border-control); }
+  .s-text { background: var(--color-text); }
+  .s-muted { background: var(--color-text-muted); }
+  .s-primary { background: var(--color-primary); }
+  .s-primary-soft { background: var(--color-primary-soft); }
+  .s-success { background: var(--color-success); }
+  .s-success-soft { background: var(--color-success-soft); }
+  .s-warning { background: var(--color-warning); }
+  .s-warning-soft { background: var(--color-warning-soft); }
+  .s-danger { background: var(--color-danger); }
+  .s-danger-soft { background: var(--color-danger-soft); }
+  .s-neutral-soft { background: var(--color-neutral-soft); }
+
+  /* Type samples */
+  .t-xs { font-size: var(--text-xs); }
+  .t-sm { font-size: var(--text-sm); }
+  .t-base { font-size: var(--text-base); }
+  .t-lg { font-size: var(--text-lg); }
+  .t-xl { font-size: var(--text-xl); }
+  .t-2xl { font-size: var(--text-2xl); }
+  .t-3xl { font-size: var(--text-3xl); }
+
+  /* Space and radius samples */
+  .bar {
+    height: var(--space-4);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+  }
+
+  .bar-1 { width: var(--space-1); }
+  .bar-2 { width: var(--space-2); }
+  .bar-3 { width: var(--space-3); }
+  .bar-4 { width: var(--space-4); }
+  .bar-6 { width: var(--space-6); }
+  .bar-8 { width: var(--space-8); }
+  .bar-12 { width: var(--space-12); }
+
+  .corner {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--color-border-control);
+    background: var(--color-surface);
+  }
+
+  .corner-sm { border-radius: var(--radius-sm); }
+  .corner-md { border-radius: var(--radius-md); }
+  .corner-lg { border-radius: var(--radius-lg); }
+  .corner-pill { width: 120px; border-radius: var(--radius-pill); }
+
+  /* The "in use" sample */
+  .job-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .job-row__car {
+    font-weight: var(--weight-semibold);
+  }
+
+  .job-row__plate {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .lab-dates {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .lab-dates dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+  }
+
+  .lab-dates dd {
+    margin: 0;
+    font-weight: var(--weight-semibold);
+  }
+
+  /* The most important number is the biggest (docs/DESIGN.md). */
+  .job-row__amount {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-snug);
+  }
+}

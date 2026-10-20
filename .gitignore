@@ -29,6 +29,8 @@ node_modules/
 
 # Data that must never be committed
 backups/
+# v1 screenshots for the UI lab: local only, they show phone-like numbers
+design/lab/**/v1/
 *.dump
 *.sql
 
@@ -41,4 +43,5 @@ Thumbs.db
 
 # Claude Code: local only
 .claude/settings.local.json
+.claude/launch.json
 .claude/worktrees/
