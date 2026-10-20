@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design system lab</title>
+  <link rel="stylesheet" href="../../../static/css/tokens.css">
+  <link rel="stylesheet" href="../../../static/css/base.css">
+  <link rel="stylesheet" href="../../../static/css/components.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+<main class="lab">
+
+  <a class="back" href="#">Back</a>
+  <h1>Design system lab</h1>
+  <p class="lab-intro">Every token and component in every state: the reference to check before writing a screen. Never used by the app. All data is fake.</p>
+
+  <section class="lab-section" aria-labelledby="h-in-use">
+    <h2 id="h-in-use">In use</h2>
+    <div class="card card--warning lab-stack">
+      <div class="job-row">
+        <div>
+          <div class="job-row__car">BMW 520d</div>
+          <div class="job-row__plate">KL 00 AA 0001</div>
+        </div>
+        <span class="badge badge--warning">Ordered</span>
+        <div class="job-row__amount num">&#8377; 47,500</div>
+      </div>
+      <dl class="lab-dates">
+        <div><dt>Admitted</dt><dd class="num">19/10/2026</dd></div>
+        <div><dt>Completed</dt><dd>Not yet</dd></div>
+        <div><dt>Settled</dt><dd>Not yet</dd></div>
+      </dl>
+      <div class="lab-fields">
+        <div class="field">
+          <label class="field__label" for="u-paid">Amount paid</label>
+          <input class="field__input num" id="u-paid" inputmode="decimal" value="45,500">
+        </div>
+        <div class="field">
+          <label class="field__label" for="u-method">Paid by</label>
+          <select class="field__input" id="u-method">
+            <option>Cash</option>
+            <option>UPI</option>
+            <option>Card</option>
+          </select>
+        </div>
+      </div>
+      <div class="lab-row">
+        <button class="btn btn--primary" type="button">Settle bill</button>
+        <button class="btn" type="button">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-buttons">
+    <h2 id="h-buttons">Buttons</h2>
+    <div class="card lab-stack">
+      <div>
+        <p class="lab-label">Kinds</p>
+        <div class="lab-row">
+          <button class="btn btn--primary" type="button">Save</button>
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn btn--danger" type="button">Delete</button>
+        </div>
+      </div>
+      <div>
+        <p class="lab-label">Saving (spinner, second tap does nothing)</p>
+        <div class="lab-row">
+          <button class="btn btn--primary" type="button" aria-busy="true">Saving</button>
+          <button class="btn" type="button" aria-busy="true">Loading</button>
+        </div>
+      </div>
+      <div>
+        <p class="lab-label">Disabled</p>
+        <div class="lab-row">
+          <button class="btn btn--primary" type="button" disabled>Save</button>
+          <button class="btn" type="button" disabled>Cancel</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-fields">
+    <h2 id="h-fields">Fields</h2>
+    <div class="card lab-fields">
+      <div class="field">
+        <label class="field__label" for="f-plate">Number plate</label>
+        <input class="field__input" id="f-plate" value="KL 00 AA 0001">
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-km">Kilometres</label>
+        <input class="field__input num" id="f-km" inputmode="numeric" aria-describedby="f-km-hint" value="48,200">
+        <p class="field__hint" id="f-km-hint">As shown on the dashboard today.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-amount">Amount</label>
+        <input class="field__input num" id="f-amount" inputmode="decimal" aria-invalid="true" aria-describedby="f-amount-error" value="0">
+        <p class="field__error" id="f-amount-error">Enter an amount above zero.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-empty">Customer name</label>
+        <input class="field__input" id="f-empty" placeholder="Type a name">
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-badges">
+    <h2 id="h-badges">Status badges</h2>
+    <div class="card lab-row">
+      <span class="badge badge--danger">Pending</span>
+      <span class="badge badge--warning">Ordered</span>
+      <span class="badge badge--info">Working</span>
+      <span class="badge badge--success">Fixed</span>
+      <span class="badge">Draft</span>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-cards">
+    <h2 id="h-cards">Cards</h2>
+    <div class="lab-fields">
+      <div class="card">Plain card</div>
+      <div class="card card--info">Info edge</div>
+      <div class="card card--success">Success edge</div>
+      <div class="card card--warning">Warning edge</div>
+      <div class="card card--danger">Danger edge</div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-chips">
+    <h2 id="h-chips">Chips</h2>
+    <div class="card">
+      <p class="lab-label">Filter by mechanic</p>
+      <div class="chip-group">
+        <button class="chip" type="button" aria-pressed="true">All</button>
+        <button class="chip" type="button" aria-pressed="false">Mechanic 1</button>
+        <button class="chip" type="button" aria-pressed="false">Mechanic 2</button>
+        <button class="chip" type="button" aria-pressed="false">Mechanic 3</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-colours">
+    <h2 id="h-colours">Colours</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch__chip s-page"></div><div class="swatch__name">--color-page</div></div>
+      <div class="swatch"><div class="swatch__chip s-surface"></div><div class="swatch__name">--color-surface</div></div>
+      <div class="swatch"><div class="swatch__chip s-sunken"></div><div class="swatch__name">--color-surface-sunken</div></div>
+      <div class="swatch"><div class="swatch__chip s-border"></div><div class="swatch__name">--color-border</div></div>
+      <div class="swatch"><div class="swatch__chip s-control"></div><div class="swatch__name">--color-border-control</div></div>
+      <div class="swatch"><div class="swatch__chip s-text"></div><div class="swatch__name">--color-text</div></div>
+      <div class="swatch"><div class="swatch__chip s-muted"></div><div class="swatch__name">--color-text-muted</div></div>
+      <div class="swatch"><div class="swatch__chip s-primary"></div><div class="swatch__name">--color-primary</div></div>
+      <div class="swatch"><div class="swatch__chip s-primary-soft"></div><div class="swatch__name">--color-primary-soft</div></div>
+      <div class="swatch"><div class="swatch__chip s-success"></div><div class="swatch__name">--color-success</div></div>
+      <div class="swatch"><div class="swatch__chip s-success-soft"></div><div class="swatch__name">--color-success-soft</div></div>
+      <div class="swatch"><div class="swatch__chip s-warning"></div><div class="swatch__name">--color-warning</div></div>
+      <div class="swatch"><div class="swatch__chip s-warning-soft"></div><div class="swatch__name">--color-warning-soft</div></div>
+      <div class="swatch"><div class="swatch__chip s-danger"></div><div class="swatch__name">--color-danger</div></div>
+      <div class="swatch"><div class="swatch__chip s-danger-soft"></div><div class="swatch__name">--color-danger-soft</div></div>
+      <div class="swatch"><div class="swatch__chip s-neutral-soft"></div><div class="swatch__name">--color-neutral-soft</div></div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-type">
+    <h2 id="h-type">Type</h2>
+    <div class="card lab-stack">
+      <p class="t-3xl">3xl: Job card</p>
+      <p class="t-2xl">2xl: Job card</p>
+      <p class="t-xl">xl: Job card</p>
+      <p class="t-lg">lg: Job card</p>
+      <p class="t-base">base: Job card, and every input</p>
+      <p class="t-sm">sm: Job card</p>
+      <p class="t-xs">xs: Job card</p>
+      <p class="num t-lg">Money lines up: &#8377; 1,47,500.00</p>
+      <p class="t-lg" lang="ml">&#3374;&#3378;&#3375;&#3390;&#3379;&#3330;: the system font shows Malayalam</p>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-space">
+    <h2 id="h-space">Space and corners</h2>
+    <div class="card lab-stack">
+      <div class="lab-row">
+        <div class="bar bar-1"></div>
+        <div class="bar bar-2"></div>
+        <div class="bar bar-3"></div>
+        <div class="bar bar-4"></div>
+        <div class="bar bar-6"></div>
+        <div class="bar bar-8"></div>
+        <div class="bar bar-12"></div>
+      </div>
+      <div class="lab-row">
+        <div class="corner corner-sm"></div>
+        <div class="corner corner-md"></div>
+        <div class="corner corner-lg"></div>
+        <div class="corner corner-pill"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>
