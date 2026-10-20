@@ -165,7 +165,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
       the payment row (`.rpay-*`), the confirmation card (`.wcf-*`), the back
       control (`.pg-back`), chips, status badges; one list search for every
       list page
-- [ ] Icon set kept in the repo (ADR)
+- [x] Icon set: Lucide, only the icons we use, kept in the repo (ADR-0018)
 - [ ] Screen states, each designed once (`docs/DESIGN.md`)
 - [ ] Three signature screens in the lab: live board, job card, owner
       dashboard

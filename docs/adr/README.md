@@ -22,6 +22,7 @@ costs.
 | [0015](0015-translatable-text-from-day-one.md) | Translatable text from day one; Malayalam later | Accepted |
 | [0016](0016-htmx-for-server-calls.md) | htmx 4 for server calls; small JavaScript modules for the rest | Accepted |
 | [0017](0017-plain-css-with-our-own-tokens.md) | Plain CSS with our own tokens; no CSS framework, no build step | Accepted |
+| [0018](0018-lucide-icons-kept-in-the-repo.md) | Icons: Lucide, only the icons we use, kept in the repo | Accepted |
 
 ## Rules
 

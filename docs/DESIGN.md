@@ -10,6 +10,8 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
 - Components: `static/css/components.css`: card (with a status edge),
   button, field, status badge, chip, back control. More are added as
   Phase 3 decides them.
+- Icons: Lucide, only the ones we use, in `static/icons/icons.svg`
+  (ADR-0018). An icon never carries meaning alone.
 - See them all, in every state: `design/lab/system/`.
 
 ---
