@@ -21,6 +21,7 @@ costs.
 | [0014](0014-ci-on-github-actions.md) | CI on GitHub Actions | Accepted |
 | [0015](0015-translatable-text-from-day-one.md) | Translatable text from day one; Malayalam later | Accepted |
 | [0016](0016-htmx-for-server-calls.md) | htmx 4 for server calls; small JavaScript modules for the rest | Accepted |
+| [0017](0017-plain-css-with-our-own-tokens.md) | Plain CSS with our own tokens; no CSS framework, no build step | Accepted |
 
 ## Rules
 

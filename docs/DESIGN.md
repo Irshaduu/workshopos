@@ -4,15 +4,24 @@ How screens look and behave. Read it before any UI work.
 What is planned: `docs/PLAN.md`. Where the files live: `docs/ARCHITECTURE.md`.
 How the UI lab works: `CONTRIBUTING.md`. Words on screen: `docs/GLOSSARY.md`.
 
-Tokens and components are added here as Phase 3 decides them.
+CSS base: plain CSS with our own tokens, no framework (ADR-0017). Tokens and
+components are added here as Phase 3 decides them.
 
 ---
 
 ## Devices and their users
 
-- Floor team: a tablet on the workshop floor
-- Owners: their phones
-- Office: a laptop
+All are recent models.
+
+- Owners: mostly iPhones, some Android phones; iPads at home
+- Floor team: Android tablets
+- Office: a Windows laptop
+
+What this means:
+- Two browser engines matter: Safari's (every browser on an iPhone or iPad
+  uses it) and Chrome's (Edge uses it too).
+- On an iPhone or iPad, push alerts work only after the app is added to the
+  Home Screen.
 
 Every screen works at phone, tablet and laptop widths. A design is chosen
 only after the real users have tried it on these devices.
