@@ -37,7 +37,7 @@ workshopos/
 ├── apps/              all Django apps (below)
 ├── config/            settings (base, local, test, production), urls, wsgi, health check
 ├── templates/         base layout and shared components
-├── static/            design system CSS (ADR-0017), shared JS modules, vendor/htmx (ADR-0016)
+├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
 ├── tests/             project-wide tests (settings); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
