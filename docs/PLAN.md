@@ -159,7 +159,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 ### Phase 3: Design system (UI lab)
 
-- [ ] CSS base decided (ADR)
+- [x] CSS base: plain CSS with our own tokens (ADR-0017)
 - [ ] Tokens: colour, type, spacing, radius, shadow
 - [ ] About ten components. v1's approved patterns are the first candidates:
       the payment row (`.rpay-*`), the confirmation card (`.wcf-*`), the back
@@ -220,7 +220,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
     example) is recorded at settle, before tax
   - the final bill number is given at settle
 - [ ] The job card has a separate form for each role; no hidden inputs
-- [ ] Browser tests (Playwright) for this flow
+- [ ] Browser tests (Playwright) for this flow, in both Chrome's and
+      Safari's engines
 - [ ] Time recorded; every Go-live module sized small / medium / large
 - [ ] From that, a realistic delivery date for the client
 
