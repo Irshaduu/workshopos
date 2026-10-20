@@ -36,7 +36,7 @@ through a pull request, and only when CI is green.
 
 1. **Rules:** list the section's rules from v1 into `docs/rules/<section>.md`,
    each with an ID, and its words into `docs/GLOSSARY.md`.
-2. **UI lab:** prototype a fresh design; compare with v1 on phone, tablet
+2. **UI lab:** prototype the designs below; compare them on phone, tablet
    and laptop; choose.
 3. **Plan:** a short written plan: models, screens, tests. Approved before code.
 4. **Build:** small commits on a branch, tests in the same commit.
@@ -51,8 +51,19 @@ through a pull request, and only when CI is green.
 - Uses the real design tokens and the same fake data, and follows
   `docs/DESIGN.md`.
 - The design system is the first prototype, before any section.
+- **A big choice** (the overall look, a main screen) gets three designs:
+  1. the proposed design, with the reason it is recommended
+  2. v1 as it is, from screenshots with fake data, for reference
+  3. an independent design with its own clear idea
+
+  Then one is chosen, or parts of each are combined into a final design.
+  Anything taken from v1 is fixed to the rules first.
+- **A small choice** (one colour, one space) gets one version, changed if
+  needed.
 - After each decision the prototype is **deleted**. One screenshot and one line
   of reasoning stay in `docs/design/`.
+- One page stays: `design/lab/system/`, every token and component in every
+  state, the reference to check before writing a screen (ADR-0017).
 
 ---
 

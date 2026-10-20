@@ -4,10 +4,34 @@ How screens look and behave. Read it before any UI work.
 What is planned: `docs/PLAN.md`. Where the files live: `docs/ARCHITECTURE.md`.
 How the UI lab works: `CONTRIBUTING.md`. Words on screen: `docs/GLOSSARY.md`.
 
-CSS base: plain CSS with our own tokens, no framework (ADR-0017). Tokens and
-components are added here as Phase 3 decides them.
+CSS base: plain CSS with our own tokens, no framework (ADR-0017).
+
+- Tokens: `static/css/tokens.css`, the only home of every colour and size.
+- Components: `static/css/components.css`: card (with a status edge),
+  button, field, status badge, chip, back control. More are added as
+  Phase 3 decides them.
+- See them all, in every state: `design/lab/system/`.
 
 ---
+
+## Design principles
+
+The aim: people are glad to open the system, understand each page at first
+sight, and a new workshop is impressed in the demo. Premium comes from
+polish, not decoration.
+
+- **Calm and fast.** Every effect must help the task; if it only
+  decorates, it goes.
+- **One main thing per screen.** The most important number is the
+  biggest thing on it.
+- **Colour means status, never decoration.** Green is done or paid; an
+  amount still owed is never green.
+- **Motion only with a purpose:** CSS only, moving and fading only, and
+  none when the device asks for less motion.
+- **Delight at key moments:** a friendly empty state, a clear success with
+  its sound, loading shaped like the content.
+- **Measured, not guessed.** Each signature screen's size and speed is
+  measured on the floor tablet, and a limit is set from that.
 
 ## Devices and their users
 
@@ -22,6 +46,10 @@ What this means:
   uses it) and Chrome's (Edge uses it too).
 - On an iPhone or iPad, push alerts work only after the app is added to the
   Home Screen.
+
+A light theme only: the workshop is well lit, and dark text on a light
+screen reads best there. A dark mode can come later as a second set of
+token values, so components never hold a raw colour.
 
 Every screen works at phone, tablet and laptop widths. A design is chosen
 only after the real users have tried it on these devices.
