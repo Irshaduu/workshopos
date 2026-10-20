@@ -100,5 +100,9 @@
     --tap-min: 44px;
     --focus-width: 3px;
     --edge-width: 4px;
+
+    /* Icons (ADR-0018): sized from the text beside them */
+    --icon-size: 1.25em;
+    --icon-stroke: 1.75;
   }
 }

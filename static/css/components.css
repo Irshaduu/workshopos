@@ -38,6 +38,20 @@
     border-left-color: var(--color-danger);
   }
 
+  /* Icon: Lucide, from static/icons/icons.svg (ADR-0018). It takes the
+     text's colour and size. A word or a label always carries the meaning. */
+  .icon {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--icon-stroke);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: middle;
+  }
+
   /* Button */
   .btn {
     display: inline-flex;
