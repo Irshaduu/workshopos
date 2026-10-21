@@ -11,7 +11,10 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
   button, field, status badge, chip, back control. More are added as
   Phase 3 decides them.
 - Icons: Lucide, only the ones we use, in `static/icons/icons.svg`
-  (ADR-0018). An icon never carries meaning alone.
+  (ADR-0018). An icon never carries meaning alone. Icons go on section
+  titles, on buttons, and on the few things that appear on many screens
+  (the mechanic, photos, dates), always with the same icon. Never on
+  every form label.
 - See them all, in every state: `design/lab/system/`.
 
 ---
