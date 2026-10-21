@@ -54,8 +54,9 @@ through a pull request, and only when CI is green.
 - **A big choice** (the overall look, a main screen) gets two designs:
   1. v1: v1's screen rebuilt in the lab with the same contents, layout and
      colours, fixed only where it breaks a rule
-  2. v1 refined: a premium design made from the first, with the same
-     contents (`docs/DESIGN.md`, Design principles)
+  2. v1 refined: v1 made better in our own way, for the same job. Its
+     layout, order and contents may change (`docs/DESIGN.md`, Design
+     principles)
 
   Then one is chosen, or parts of both are combined. Screenshots of v1
   with fake data are the reference for the rebuild and stay out of git. A
