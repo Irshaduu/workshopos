@@ -1,0 +1,1195 @@
+/* Owner dashboard lab only: the chosen design, the reference for building
+   the screen. Never used by the app. */
+
+@layer page {
+  /* The same frame as the finalized screens (live board, job card): up to
+     1,200px, so a laptop is filled edge to edge with the same side margins
+     on every screen. */
+  .lab {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-4) var(--space-12);
+  }
+
+  .lab-intro {
+    margin: var(--space-2) 0 var(--space-6);
+    color: var(--color-text-muted);
+  }
+
+  .icon.is-primary { color: var(--color-primary); }
+  .icon.is-danger { color: var(--color-danger); }
+
+  /* ======================================================================
+     The chosen design: v1 rebuilt. v1's layout, contents and colours, with our
+     tokens. Fixed to our rules: 44px pills and buttons, no inline style or
+     script (the share bars and the chart are SVG attributes, Custom opens
+     with a link), no icon on every ledger row, and an amount owed to us is
+     never green. Changed on request: the whole screen width on a laptop,
+     with the boxes in a grid (see .od1-grid).
+     ====================================================================== */
+
+  /* Header: title, then the periods, then Deep Analysis. The periods take
+     their own row until the screen is wide enough for one line. */
+  .od1-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .od1-head .od1-pills {
+    flex: 1 1 100%;
+    order: 3;
+    min-width: 0;
+  }
+
+  @media (min-width: 1200px) {
+    .od1-head {
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .od1-head .od1-pills {
+      flex: 1 1 auto;
+      order: 0;
+    }
+  }
+
+  .od1-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 1.1rem;
+    font-weight: var(--weight-bold);
+  }
+
+  .od1-title .icon { color: var(--color-primary); }
+
+  .od1-dates {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+  }
+
+  .od1-deep-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-pill);
+    color: var(--color-primary-text);
+    font-size: 0.8rem;
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+  }
+
+  .od1-deep-btn:hover {
+    background: var(--color-primary-soft);
+  }
+
+  /* One scrolling row of periods, as v1. */
+  .od1-pills {
+    display: flex;
+    gap: 7px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .od1-pill {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap-min);
+    padding: 0 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .od1-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary-text);
+  }
+
+  .od1-pill[aria-current="page"] {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-text-on-strong);
+  }
+
+  /* Custom dates open from the Custom pill. In the app the pill is a link
+     to the same page with the form open; here :target does it. */
+  .od1-custom {
+    display: none;
+  }
+
+  .od1-custom:target {
+    display: block;
+  }
+
+  .od1-custom__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: var(--space-2);
+  }
+
+  .od1-custom__go {
+    grid-column: 1 / -1;
+    border-radius: var(--radius-pill);
+  }
+
+  @media (min-width: 768px) {
+    .od1-custom__grid { grid-template-columns: 1fr 1fr 1fr; }
+    .od1-custom__go { grid-column: auto; }
+  }
+
+  .od1-card {
+    margin-bottom: var(--space-4);
+    padding: 16px 18px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .od1-card-title,
+  .od1-cash-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0 0 12px;
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+
+  .od1-card-title > .icon { color: var(--color-primary); }
+
+  /* The subtitle says what the card is, so it is a note with its own
+     glyph, never quieter title text (v1). */
+  .od1-sub {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    font-weight: var(--weight-semibold);
+    line-height: 1.35;
+  }
+
+  .od1-sub .icon { width: 1em; height: 1em; }
+
+  @media (max-width: 480px) {
+    .od1-card-title,
+    .od1-cash-title { flex-wrap: wrap; }
+    .od1-sub { flex: 0 0 100%; margin-left: 0; }
+  }
+
+  /* Cash: a dashed, square box, so it never reads as one of the profit
+     cards and is never added to them (v1). */
+  .od1-cash {
+    margin-bottom: 18px;
+    padding: 16px 10px 14px;
+    border: 2px dashed #cbd5e1;
+  }
+
+  .od1-cash-title {
+    margin-bottom: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: #0f766e;
+  }
+
+  /* Money in and money out (design 2's card, his pick): a green and a red
+     panel, so the two sides never blur. Totals first; the lines open with
+     "See each line", and stay open on a laptop, where there is room and
+     the owners read cash often (v1). */
+  .od1-cash__sides {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  @media (min-width: 640px) {
+    .od1-cash__sides { grid-template-columns: 1fr 1fr; }
+  }
+
+  .od1-cash__side {
+    min-width: 0;
+    padding: 12px 14px;
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--radius-md);
+    background: var(--color-success-soft);
+  }
+
+  .od1-cash__side.is-out {
+    border-left-color: var(--color-danger);
+    background: var(--color-danger-soft);
+  }
+
+  .od1-cash__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-success-text);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .od1-cash__sum {
+    margin-top: 2px;
+    color: var(--color-success-text);
+    font-size: 1.35rem;
+    font-weight: 800;
+  }
+
+  .od1-cash__side.is-out .od1-cash__label,
+  .od1-cash__side.is-out .od1-cash__sum {
+    color: var(--color-danger-text);
+  }
+
+  .od1-cash__lines {
+    display: none;
+    margin: 8px 0 0;
+    padding: 6px 0 0;
+    border-top: 1px solid var(--color-border);
+    list-style: none;
+  }
+
+  .od1-cash:has(.od1-cash__more[open]) .od1-cash__lines {
+    display: block;
+  }
+
+  .od1-cash__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    font-size: 0.8rem;
+  }
+
+  .od1-cash__line small {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+  }
+
+  .od1-cash__val {
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+  }
+
+  .od1-cash__more { margin-top: 4px; }
+
+  @media (min-width: 1200px) {
+    .od1-cash__lines { display: block; }
+    .od1-cash__more { display: none; }
+  }
+
+  /* A fold: one 44px line with a turning arrow. */
+  .od1-more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap-min);
+    color: var(--color-primary-text);
+    font-size: 0.86rem;
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .od1-more summary::-webkit-details-marker { display: none; }
+  .od1-more[open] summary .icon { transform: rotate(180deg); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .od1-more summary .icon { transition: transform 0.15s ease; }
+  }
+
+  .od1-cash-move {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px solid var(--color-border);
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .od1-cash-move.is-up .od1-cash-move__val { color: var(--color-success-text); }
+  .od1-cash-move.is-down .od1-cash-move__val { color: var(--color-danger-text); }
+
+  .od1-cash-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 9px;
+    color: var(--color-warning-text);
+    font-size: 0.74rem;
+  }
+
+  .od1-cash-note .icon { width: 1.1em; height: 1.1em; }
+
+  /* Hero: the profit, big, on v1's dark panel. */
+  .od1-hero {
+    position: relative;
+    margin-bottom: var(--space-4);
+    padding: 22px 24px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #253449 100%);
+    color: #fff;
+  }
+
+  .od1-hero::after {
+    content: "";
+    position: absolute;
+    top: -60%;
+    right: -10%;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(34 197 94 / 0.16), transparent 70%);
+    pointer-events: none;
+  }
+
+  .od1-hero__label {
+    font-size: 0.7rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .od1-hero__value {
+    margin: 4px 0 2px;
+    color: #4ade80;
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .od1-hero__exact {
+    font-size: 0.82rem;
+    opacity: 0.75;
+  }
+
+  .od1-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .od1-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    background: rgb(255 255 255 / 0.11);
+    font-size: 0.74rem;
+    font-weight: var(--weight-bold);
+  }
+
+  .od1-chip.is-up {
+    background: rgb(74 222 128 / 0.18);
+    color: #86efac;
+  }
+
+  /* Not final: the current month's wages. It travels with the figure and
+     cannot be hidden; it leaves when the month is settled. */
+  .od1-chip.is-warn {
+    background: rgb(252 211 77 / 0.18);
+    color: #fde68a;
+  }
+
+  .od1-chip .icon { width: 1.1em; height: 1.1em; }
+
+  /* The equation, said in full. */
+  .od1-eq {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: var(--space-4);
+    padding: 16px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .od1-eq__cell {
+    min-width: 0;
+    text-align: center;
+  }
+
+  .od1-eq__label {
+    margin-bottom: 3px;
+    color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .od1-eq__value {
+    font-size: 1.12rem;
+    font-weight: 800;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .od1-eq__op {
+    color: var(--color-text-muted);
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  .is-turnover { color: var(--color-primary-text); }
+  .is-expense { color: var(--color-danger-text); }
+  .is-profit { color: var(--color-success-text); }
+
+  /* Before you trust these figures: the shared card, title and row
+     spacing, so it lines up with every other box. Each check is a ledger
+     row like the rest of the page: the name (with its tag) and a short
+     hint on the left, the money effect and one link on the right. Tapping
+     the name opens Where, Why and How.
+     Fix: a definite error; it goes away only when fixed.
+     Check: a guess from an entry's name; it goes away when fixed or marked
+     as checked, so a true entry never warns for ever.
+     Hide folds the card to its title and the count. In the app the fold is
+     remembered for that person and opens again when a new check comes up;
+     the card shows only while it has checks. */
+  .od1-checks__head {
+    min-height: var(--tap-min);
+    margin: -11px 0 1px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .od1-checks__head::-webkit-details-marker { display: none; }
+  .od1-checks__head > .icon { color: var(--color-warning); }
+
+  .od1-checks__count {
+    margin-left: auto;
+    color: var(--color-text-muted);
+    font-size: 0.74rem;
+    font-weight: var(--weight-semibold);
+  }
+
+  .od1-checks__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-primary-text);
+    font-size: 0.8rem;
+    font-weight: var(--weight-bold);
+  }
+
+  .od1-checks:not([open]) .od1-checks__hide,
+  .od1-checks[open] .od1-checks__show {
+    display: none;
+  }
+
+  .od1-checks[open] .od1-checks__toggle .icon,
+  .od1-checks__name[aria-expanded="true"] .icon {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .od1-checks__toggle .icon,
+    .od1-checks__name .icon { transition: transform 0.15s ease; }
+  }
+
+  .od1-checks__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* One ledger row: name and hint on the left, money and link on the
+     right. On a phone the money and the link share the third line. */
+  .od1-checks__row {
+    display: grid;
+    grid-template-areas:
+      "name   name"
+      "where  where"
+      "effect go"
+      "panel  panel";
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2px 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--color-border);
+    font-size: 0.86rem;
+  }
+
+  .od1-checks__row:last-child { border-bottom: 0; }
+
+  @media (min-width: 576px) {
+    .od1-checks__row {
+      grid-template-areas:
+        "name  effect"
+        "where go"
+        "panel panel";
+    }
+  }
+
+  .od1-tag {
+    padding: 1px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  .od1-tag.is-fix {
+    background: var(--color-danger-soft);
+    color: var(--color-danger-text);
+  }
+
+  .od1-tag.is-check {
+    background: var(--color-warning-soft);
+    color: var(--color-warning-text);
+  }
+
+  /* The name, the link and the button look small, but an invisible band
+     keeps each one 44px to tap. */
+  .od1-checks__name,
+  .od1-checks__go,
+  .od1-checks__mark {
+    position: relative;
+  }
+
+  .od1-checks__name::after,
+  .od1-checks__go::after,
+  .od1-checks__mark::after {
+    content: "";
+    position: absolute;
+    inset: -10px 0;
+  }
+
+  .od1-checks__name {
+    display: inline-flex;
+    grid-area: name;
+    align-items: center;
+    justify-self: start;
+    gap: 8px;
+    min-height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .od1-checks__name .icon {
+    width: 1em;
+    height: 1em;
+    color: var(--color-text-muted);
+  }
+
+  .od1-checks__where {
+    grid-area: where;
+    color: var(--color-text-muted);
+    font-size: 0.74rem;
+  }
+
+  .od1-checks__effect {
+    grid-area: effect;
+    font-size: 0.8rem;
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  .od1-checks__go {
+    display: inline-flex;
+    grid-area: go;
+    align-items: center;
+    justify-self: end;
+    gap: 2px;
+    min-height: 24px;
+    color: var(--color-primary-text);
+    font-size: 0.8rem;
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 576px) {
+    .od1-checks__effect { justify-self: end; }
+  }
+
+  .od1-checks__go:hover { text-decoration: underline; }
+
+  .od1-checks__panel {
+    grid-area: panel;
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--color-surface-sunken);
+  }
+
+  .od1-checks__panel[hidden] { display: none; }
+
+  .od1-checks__facts {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .od1-checks__facts div {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: 8px;
+  }
+
+  .od1-checks__facts dt {
+    color: var(--color-text-muted);
+    font-weight: var(--weight-bold);
+  }
+
+  .od1-checks__facts dd { margin: 0; }
+
+  .od1-checks__mark {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    margin-top: 10px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border-control);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  .od1-checks__mark::after { inset: -8px 0; }
+
+  /* 26px plus 9px each side: 44px, and the band ends at the row's top, so
+     it never reaches the title row above. */
+  .od1-checks__name { min-height: 26px; }
+  .od1-checks__name::after { inset: -9px 0; }
+  .od1-checks__mark:hover { background: var(--color-surface-sunken); }
+
+  /* Every box in one grid, in v1's order.
+     Phone: one column, as v1.
+     Tablet: one column, with turnover and expenses side by side (v1).
+     Laptop (1200px and up): two columns, 7 and 5 of 12:
+       cash                    | the profit (with its Not final chip),
+                               | the equation, before you trust these figures
+       what earned it, then    | turnover, then expenses (the two halves
+       profit each month       | of the equation, straight under it),
+                               | then position right now
+       Deep Analysis across.
+     Turnover with expenses, and what earned it with the chart, are each one
+     stack in the markup (they are neighbours in v1's order anyway), so each
+     column simply piles its boxes. The columns end level: the dark profit
+     panel and the chart grow to fill. */
+  .od1-grid,
+  .od1-stack {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  /* The gaps space the boxes, so their own v1 margins go. Every box may
+     shrink below its content, so a narrow phone never scrolls sideways. */
+  .od1 .od1-grid > *,
+  .od1 .od1-stack > *,
+  .od1 .od1-profit > * {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .od1-profit {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .od1-area-te {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .od1-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+    .od1-area-cash { grid-area: 1 / 1 / 2 / 8; }
+    .od1-area-profit { grid-area: 1 / 8 / 2 / 13; }
+    .od1-area-et { grid-area: 2 / 1 / 4 / 8; }
+    .od1-area-te { grid-area: 2 / 8 / 3 / 13; }
+    .od1-area-position { grid-area: 3 / 8 / 4 / 13; }
+    .od1-area-cta { grid-area: 4 / 1 / 5 / 13; }
+
+    /* The dark profit panel takes the spare height beside the cash box. */
+    .od1-profit .od1-hero {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* The left stack is as tall as the right; the chart takes what is
+       left over. */
+    .od1-area-et {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .od1-area-trend {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .od1-area-trend .od1-chart {
+      flex: 1;
+      grid-template-rows: minmax(300px, 1fr) auto;
+    }
+  }
+
+  /* Ledger rows. */
+  .od1-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--color-border);
+    font-size: 0.86rem;
+  }
+
+  .od1-row--top { align-items: flex-start; }
+  .od1-row__lbl { min-width: 0; }
+  .od1-row__lbl--grow { flex: 1; }
+  .od1-row__name { font-weight: var(--weight-semibold); }
+
+  .od1-row__hint {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 0.74rem;
+  }
+
+  .od1-row__amt {
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  .od1-row__amt.is-minus { color: var(--color-danger-text); }
+  .od1-row__amt.is-plus { color: var(--color-success-text); }
+
+  .od1-row--total,
+  .od1-row--subtotal {
+    border-bottom: 0;
+    font-size: 0.92rem;
+  }
+
+  .od1-row--total {
+    margin-top: 6px;
+    padding-top: 11px;
+    border-top: 2px solid var(--color-border);
+  }
+
+  .od1-row--subtotal {
+    margin: 4px 0 7px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .od1-row--total .od1-row__name,
+  .od1-row--total .od1-row__amt,
+  .od1-row--subtotal .od1-row__name,
+  .od1-row--subtotal .od1-row__amt {
+    font-weight: 800;
+  }
+
+  .od1-share {
+    margin-left: 7px;
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    font-weight: var(--weight-bold);
+  }
+
+  .od1-bar {
+    display: block;
+    width: 100%;
+    height: 5px;
+    margin-top: 6px;
+    border-radius: var(--radius-pill);
+  }
+
+  .od1-bar__bg { fill: var(--color-neutral-soft); }
+  .od1-bar__fg { fill: var(--color-danger); }
+
+  .od1-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    font-size: 0.76rem;
+  }
+
+  .od1-card > .od1-note:only-child { margin-top: 0; }
+  .od1-note > .icon { margin-top: 1px; color: var(--color-primary); }
+
+  /* Profit each month (design 2's chart, his pick): one bar per month, red
+     below zero, drawn as SVG. The axis words sit beside the drawing in
+     HTML, so they never stretch. The numbers are in a fold, as a table. */
+  .od1-trend__sum {
+    margin: -4px 0 var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  .od1-chart{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 230px auto;
+    column-gap: var(--space-2);
+  }
+
+  @media (min-width: 576px) {
+    .od1-chart { grid-template-rows: 260px auto; }
+  }
+
+  .od1-chart__y{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: -7px 0;
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    line-height: 14px;
+    text-align: right;
+  }
+
+  .od1-chart__plot{
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .od1-chart__x{
+    display: flex;
+    grid-column: 2;
+    padding-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+  }
+
+  .od1-chart__x > span{
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .od1-chart__grid{
+    stroke: var(--color-border);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .od1-chart__grid.is-zero{
+    stroke: var(--color-border-control);
+  }
+
+  /* The drawing fills its box and never asks for a height of its own (an
+     SVG's 1000 x 600 shape would make the box taller than the row). */
+  .od1-chart__box {
+    position: relative;
+    min-height: 0;
+  }
+
+  .od1 .od1-chart__plot,
+  .od1-chart__marks {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The line chart, in TradingView's way: the scale on the right, the
+     latest month as a pill on it with a dashed line across, a soft fill
+     under the line, green above zero and red below. Hover or tap a month
+     for a crosshair, a dot and its figure. No zoom or scroll: a year is 12
+     points, and the period pills choose the range. CSS only; each month
+     can take focus, so a tap shows it too. The exact figures stay in
+     "Show the numbers". */
+  .od1-chart.is-line {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+  }
+
+  .od1-chart.is-line .od1-chart__box { grid-area: 1 / 1; z-index: 1; }
+  .od1-chart.is-line .od1-chart__y { grid-area: 1 / 2; text-align: left; }
+  .od1-chart.is-line .od1-chart__x { grid-column: 1; }
+
+  .od1-chart__marks { overflow: visible; }
+
+  .od1-stop.is-up { stop-color: var(--color-success); stop-opacity: 0.22; }
+  .od1-stop.is-down { stop-color: var(--color-danger); stop-opacity: 0.22; }
+  .od1-stop.is-fade { stop-opacity: 0; }
+
+  .od1-chart__line {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .od1-chart__line.is-up { stroke: var(--color-success); }
+  .od1-chart__line.is-down { stroke: var(--color-danger); }
+
+  .od1-last__line {
+    stroke: var(--color-success);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+  }
+
+  .od1-last__dot { fill: var(--color-success); }
+
+  .od1-last__pill rect { fill: var(--color-success); }
+
+  .od1-last__pill text {
+    fill: var(--color-text-on-strong);
+    font-size: 11px;
+    font-weight: var(--weight-bold);
+  }
+
+  .od1-last__line.is-loss { stroke: var(--color-danger); }
+  .od1-last__dot.is-loss,
+  .od1-last__pill.is-loss rect { fill: var(--color-danger); }
+
+  .od1-pt { outline: none; }
+
+  .od1-pt__hit {
+    fill: transparent;
+    cursor: crosshair;
+  }
+
+  .od1-pt__cross,
+  .od1-pt__dot,
+  .od1-pt__tip {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .od1-pt:hover .od1-pt__cross,
+  .od1-pt:hover .od1-pt__dot,
+  .od1-pt:hover .od1-pt__tip,
+  .od1-pt:focus .od1-pt__cross,
+  .od1-pt:focus .od1-pt__dot,
+  .od1-pt:focus .od1-pt__tip {
+    opacity: 1;
+  }
+
+  .od1-pt__cross {
+    stroke: var(--color-border-control);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+
+  .od1-pt__dot {
+    fill: var(--color-surface);
+    stroke: var(--color-success);
+    stroke-width: 2.5;
+  }
+
+  .od1-pt.is-loss .od1-pt__dot { stroke: var(--color-danger); }
+
+  /* A white halo behind the words, so they read over the line. */
+  .od1-pt__tip text {
+    paint-order: stroke;
+    stroke: var(--color-surface);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+
+  .od1-pt__mon {
+    fill: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: var(--weight-semibold);
+  }
+
+  .od1-pt__val {
+    fill: var(--color-text);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .od1-pt.is-loss .od1-pt__val { fill: var(--color-danger-text); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .od1-pt__cross,
+    .od1-pt__dot,
+    .od1-pt__tip { transition: opacity 0.12s ease; }
+  }
+
+  .od1-table-wrap { overflow-x: auto; }
+
+  .od1-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .od1-table caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .od1-table th,
+  .od1-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .od1-table th:first-child { text-align: left; }
+
+  .od1-table thead th {
+    color: var(--color-text-muted);
+    font-weight: var(--weight-semibold);
+  }
+
+  .od1-table .is-loss { color: var(--color-danger-text); }
+
+  /* Position right now: what we hold or are owed on the left, what we owe
+     on the right (v1). */
+  .od1-pos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 10px;
+  }
+
+  .od1-pos-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .od1-pos-item {
+    padding: 11px 13px;
+    border: 1px solid var(--color-border);
+    border-left-width: 3px;
+    border-radius: 12px;
+  }
+
+  /* Owed to us is still owed, so never green (docs/DESIGN.md). Amber means
+     waiting. */
+  .od1-pos-item.is-in { border-left-color: var(--color-warning); }
+  .od1-pos-item.is-hold { border-left-color: var(--color-primary); }
+  .od1-pos-item.is-out { border-left-color: var(--color-danger); }
+  .od1-pos-item.is-out .od1-pos-item__v { color: var(--color-danger-text); }
+
+  .od1-pos-item__k {
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .od1-pos-item__v {
+    margin-top: 2px;
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  .od1-pos-item__n {
+    margin-top: 2px;
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+  }
+
+  .od1-cta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--space-4);
+    padding: 16px 18px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-strong));
+    color: var(--color-text-on-strong);
+    text-decoration: none;
+  }
+
+  .od1-cta__ico {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .od1-cta__text {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .od1-cta__t {
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .od1-cta__s {
+    font-size: 0.76rem;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 575px) {
+    .od1-hero { padding: 18px; }
+    .od1-hero__value { font-size: 2.1rem; }
+    .od1-eq {
+      grid-template-columns: 1fr;
+      gap: 2px;
+      padding: 14px;
+    }
+    .od1-eq__op { text-align: center; }
+    .od1-pos { grid-template-columns: 1fr; }
+  }
+}

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Owner dashboard lab</title>
+  <link rel="stylesheet" href="../../../static/css/tokens.css">
+  <link rel="stylesheet" href="../../../static/css/base.css">
+  <link rel="stylesheet" href="../../../static/css/components.css">
+  <link rel="stylesheet" href="owner-dashboard.css">
+  <script src="owner-dashboard.js" defer></script>
+</head>
+<body>
+<main class="lab">
+
+  <a class="back" href="../system/">Design system</a>
+  <p class="lab-intro">Owner dashboard: the chosen design, the reference for building the screen. v1's Profit page (Analysis &amp; Reports, owners only), with the cash card, the profit for each month and the checks from the refined design. Tap a month in the chart, or a check's name. A prototype, never used by the app. All data is fake.</p>
+
+  <!-- V1 START -->
+  <section class="od1" aria-label="Owner dashboard">
+    <div class="od1-head">
+      <div class="od1-head__id">
+        <h1 class="od1-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#trending-up"></use></svg>Profit</h1>
+        <p class="od1-dates">01 Jan 2026 to 31 Dec 2026</p>
+      </div>
+      <nav class="od1-pills" aria-label="Period"><a class="od1-pill" href="#">This Month</a><a class="od1-pill" href="#">Last Month</a><a class="od1-pill" href="#" aria-current="page">This Year</a><a class="od1-pill" href="#">Last Year</a><a class="od1-pill" href="#">All Time</a><a class="od1-pill" href="#od1-custom"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>Custom</a></nav>
+      <a class="od1-deep-btn" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#compass"></use></svg>Deep Analysis</a>
+    </div>
+    <form class="od1-card od1-custom" id="od1-custom" action="#">
+      <div class="od1-custom__grid">
+        <div class="field"><label class="field__label" for="od1-from">From</label><input class="field__input" id="od1-from" type="date" value="2026-01-01" required></div>
+        <div class="field"><label class="field__label" for="od1-to">To</label><input class="field__input" id="od1-to" type="date" value="2026-12-31" required></div>
+        <button class="btn btn--primary od1-custom__go" type="submit">Apply</button>
+      </div>
+    </form>
+
+    <div class="od1-grid">
+      <div class="od1-cash od1-area-cash">
+        <h2 class="od1-cash-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#wallet"></use></svg>Cash Tracking: 2026<span class="od1-sub"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Money moved, not profit</span></h2>
+        <div class="od1-cash__sides">
+          <section class="od1-cash__side is-in" aria-labelledby="od1-cash-in">
+            <h3 class="od1-cash__label" id="od1-cash-in"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-down"></use></svg>Money in</h3>
+            <p class="od1-cash__sum num">₹39,90,800</p>
+            <ul class="od1-cash__lines"><li class="od1-cash__line"><span class="od1-cash__nm">Customer bills settled<small>walk-in, by the day it was settled</small></span><span class="od1-cash__val num">₹36,40,200</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Fleet account payments<small>by the day the money moved</small></span><span class="od1-cash__val num">₹3,12,000</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Scrap and other income<small>from the cashbook</small></span><span class="od1-cash__val num">₹38,600</span></li></ul>
+          </section>
+          <section class="od1-cash__side is-out" aria-labelledby="od1-cash-out">
+            <h3 class="od1-cash__label" id="od1-cash-out"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-up"></use></svg>Money out</h3>
+            <p class="od1-cash__sum num">₹39,58,000</p>
+            <ul class="od1-cash__lines"><li class="od1-cash__line"><span class="od1-cash__nm">Spare shops<small>paid against their ledgers</small></span><span class="od1-cash__val num">₹13,10,000</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Supplies shops<small>paid against their ledgers</small></span><span class="od1-cash__val num">₹7,02,500</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Parts transport<small>bringing parts in, by the day they arrived</small></span><span class="od1-cash__val num">₹21,600</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Wages and advances<small>counted in the month they are for</small></span><span class="od1-cash__val num">₹9,60,000</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Rent deposits<small>handed over, by the day it moved</small></span><span class="od1-cash__val num">₹3,15,000</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Power, water, consumables<small>from the cashbook</small></span><span class="od1-cash__val num">₹2,48,900</span></li><li class="od1-cash__line"><span class="od1-cash__nm">Owner withdrawals<small>profit taken out, not a cost</small></span><span class="od1-cash__val num">₹4,00,000</span></li></ul>
+          </section>
+        </div>
+        <details class="od1-more od1-cash__more"><summary><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg>See each line</summary></details>
+        <div class="od1-cash-move is-up"><span>More came in than went out</span><span class="od1-cash-move__val num">+₹32,800</span></div>
+        <p class="od1-cash-note"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg><span>Not final: October 2026 is not settled, so only advances are in the wage line. Nothing is estimated.</span></p>
+      </div>
+
+      <div class="od1-profit od1-area-profit">
+        <div class="od1-hero">
+          <div class="od1-hero__label">Profit: 2026</div>
+          <div class="od1-hero__value num">₹5.27L</div>
+          <div class="od1-hero__exact num">₹5,26,700</div>
+          <div class="od1-hero__meta">
+            <span class="od1-chip is-warn"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Not final: October wages not in yet</span>
+            <span class="od1-chip">12.5% margin</span>
+            <span class="od1-chip is-up"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#trending-up"></use></svg>+18% vs same period last year</span>
+            <span class="od1-chip">248 job cards</span>
+          </div>
+        </div>
+        <div class="od1-eq">
+          <div class="od1-eq__cell"><div class="od1-eq__label">Total Turnover</div><div class="od1-eq__value num is-turnover">₹42,12,700</div></div>
+          <div class="od1-eq__op" aria-hidden="true">−</div>
+          <div class="od1-eq__cell"><div class="od1-eq__label">Total Expenses</div><div class="od1-eq__value num is-expense">₹36,86,000</div></div>
+          <div class="od1-eq__op" aria-hidden="true">=</div>
+          <div class="od1-eq__cell"><div class="od1-eq__label">Profit</div><div class="od1-eq__value num is-profit">₹5,26,700</div></div>
+        </div>
+
+        <details class="od1-card od1-checks" open>
+          <summary class="od1-card-title od1-checks__head"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg>Before you trust these figures<span class="od1-checks__count">1 to fix, 2 to check</span><span class="od1-checks__toggle"><span class="od1-checks__hide">Hide</span><span class="od1-checks__show">Show</span><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
+          <ul class="od1-checks__list">
+          <li class="od1-checks__row">
+            <button class="od1-checks__name" type="button" aria-expanded="false" aria-controls="od1-chk-1"><span class="od1-tag is-fix">Fix</span>Spare part has no price<svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></button>
+            <span class="od1-checks__effect">Profit too high</span>
+            <span class="od1-checks__where">Audi Q7, KL 00 AA 0005</span>
+            <a class="od1-checks__go" href="#">Open job card<svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a>
+            <div class="od1-checks__panel" id="od1-chk-1" hidden>
+              <dl class="od1-checks__facts"><div><dt>Where</dt><dd>Spare part Front lower control arm LH.</dd></div><div><dt>Why</dt><dd>A part with no price counts as ₹0.</dd></div><div><dt>How</dt><dd>Type what the shop charged in Cost. This goes away once the price is in.</dd></div></dl>
+              
+            </div>
+          </li>
+          <li class="od1-checks__row">
+            <button class="od1-checks__name" type="button" aria-expanded="false" aria-controls="od1-chk-2"><span class="od1-tag is-check">Check</span>Wages may be counted twice<svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></button>
+            <span class="od1-checks__effect">Profit may be ₹24,000 low</span>
+            <span class="od1-checks__where">2 cashbook entries, Staff Salaries</span>
+            <a class="od1-checks__go" href="#">Open entries<svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a>
+            <div class="od1-checks__panel" id="od1-chk-2" hidden>
+              <dl class="od1-checks__facts"><div><dt>Where</dt><dd>14 Aug and 12 Sep, ₹24,000 in all.</dd></div><div><dt>Why</dt><dd>Wages already come from Salary &amp; Advance.</dd></div><div><dt>How</dt><dd>Same money: delete the entries. Something else, such as a bonus: mark it as checked, and it will not warn again.</dd></div></dl>
+              <button class="od1-checks__mark" type="button">Mark as checked</button>
+            </div>
+          </li>
+          <li class="od1-checks__row">
+            <button class="od1-checks__name" type="button" aria-expanded="false" aria-controls="od1-chk-3"><span class="od1-tag is-check">Check</span>Shop may be paid twice<svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></button>
+            <span class="od1-checks__effect">Money out may be ₹20,500 high</span>
+            <span class="od1-checks__where">2 cashbook entries</span>
+            <a class="od1-checks__go" href="#">Open entries<svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a>
+            <div class="od1-checks__panel" id="od1-chk-3" hidden>
+              <dl class="od1-checks__facts"><div><dt>Where</dt><dd>9 Sep ₹8,500 and 3 Oct ₹12,000.</dd></div><div><dt>Why</dt><dd>The shop may also have been paid in its own ledger.</dd></div><div><dt>How</dt><dd>Paid there too: delete the cashbook entry. If not: mark it as checked.</dd></div></dl>
+              <button class="od1-checks__mark" type="button">Mark as checked</button>
+            </div>
+          </li>
+          </ul>
+        </details>
+      </div>
+
+      <div class="od1-stack od1-area-te">
+      <div class="od1-card od1-area-turnover">
+        <h2 class="od1-card-title"><svg class="icon is-primary" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-down"></use></svg>Turnover<span class="od1-sub"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Billed for work done, paid or not</span></h2>
+        <div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Car Bills</span><span class="od1-row__hint">248 job cards</span></span><span class="od1-row__amt num ">₹42,86,500</span></div>
+        <div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Less: Discounts</span><span class="od1-row__hint">Billed but never earned</span></span><span class="od1-row__amt num is-minus">− ₹1,12,400</span></div>
+        <div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Cashbook Income</span><span class="od1-row__hint">Scrap sales, misc</span></span><span class="od1-row__amt num ">₹38,600</span></div>
+        <div class="od1-row od1-row--total"><span class="od1-row__name">Total Turnover</span><span class="od1-row__amt num is-turnover">₹42,12,700</span></div>
+      </div>
+
+      <div class="od1-card od1-area-expenses">
+        <h2 class="od1-card-title"><svg class="icon is-danger" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-up"></use></svg>Expenses<span class="od1-sub"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>What the work cost, not cash out</span></h2>
+        <div class="od1-row od1-row--top"><span class="od1-row__lbl od1-row__lbl--grow"><span class="od1-row__name">Spare Shops<span class="od1-share num">39%</span></span><span class="od1-row__hint">Parts bought per job, not payments</span><svg class="od1-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect class="od1-bar__bg" width="100" height="4"></rect><rect class="od1-bar__fg" width="38.5" height="4"></rect></svg></span><span class="od1-row__amt num is-minus">₹14,20,300</span></div><div class="od1-row od1-row--top"><span class="od1-row__lbl od1-row__lbl--grow"><span class="od1-row__name">Salary & Advance<span class="od1-share num">26%</span></span><span class="od1-row__hint">October 2026 not settled, so its wages are not counted</span><svg class="od1-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect class="od1-bar__bg" width="100" height="4"></rect><rect class="od1-bar__fg" width="26.0" height="4"></rect></svg></span><span class="od1-row__amt num is-minus">₹9,60,000</span></div><div class="od1-row od1-row--top"><span class="od1-row__lbl od1-row__lbl--grow"><span class="od1-row__name">Inventory Used<span class="od1-share num">19%</span></span><span class="od1-row__hint">Parts taken off the warehouse shelf</span><svg class="od1-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect class="od1-bar__bg" width="100" height="4"></rect><rect class="od1-bar__fg" width="18.6" height="4"></rect></svg></span><span class="od1-row__amt num is-minus">₹6,85,200</span></div><div class="od1-row od1-row--top"><span class="od1-row__lbl od1-row__lbl--grow"><span class="od1-row__name">Rent<span class="od1-share num">9%</span></span><span class="od1-row__hint">10 whole months, by the rent month</span><svg class="od1-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect class="od1-bar__bg" width="100" height="4"></rect><rect class="od1-bar__fg" width="9.5" height="4"></rect></svg></span><span class="od1-row__amt num is-minus">₹3,50,000</span></div><div class="od1-row od1-row--top"><span class="od1-row__lbl od1-row__lbl--grow"><span class="od1-row__name">Cashbook Expense<span class="od1-share num">7%</span></span><span class="od1-row__hint">Power, water, consumables</span><svg class="od1-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect class="od1-bar__bg" width="100" height="4"></rect><rect class="od1-bar__fg" width="6.8" height="4"></rect></svg></span><span class="od1-row__amt num is-minus">₹2,48,900</span></div><div class="od1-row od1-row--top"><span class="od1-row__lbl od1-row__lbl--grow"><span class="od1-row__name">Parts transport<span class="od1-share num">1%</span></span><span class="od1-row__hint">Bringing parts in, never owed to a shop</span><svg class="od1-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect class="od1-bar__bg" width="100" height="4"></rect><rect class="od1-bar__fg" width="0.6" height="4"></rect></svg></span><span class="od1-row__amt num is-minus">₹21,600</span></div>
+        <div class="od1-row od1-row--total"><span class="od1-row__name">Total Expenses</span><span class="od1-row__amt num is-minus">₹36,86,000</span></div>
+      </div>
+      </div>
+
+      <div class="od1-stack od1-area-et">
+      <div class="od1-card od1-area-earned">
+        <h2 class="od1-card-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#trending-up"></use></svg>What Earned The Profit<span class="od1-sub"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>The same ₹5,26,700, broken down</span></h2>
+        <div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Labour</span><span class="od1-row__hint">The Job Performed charge on every card</span></span><span class="od1-row__amt num is-plus">₹11,40,500</span></div><div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Spare Parts margin</span><span class="od1-row__hint">₹20,96,000 charged − ₹14,20,300 spent at shops − ₹21,600 transport</span></span><span class="od1-row__amt num is-plus">₹6,54,100</span></div><div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Inventory margin</span><span class="od1-row__hint">₹10,50,000 charged − ₹6,85,200 of stock used</span></span><span class="od1-row__amt num is-plus">₹3,64,800</span></div><div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Cashbook Income</span><span class="od1-row__hint">Scrap, black oil, misc</span></span><span class="od1-row__amt num is-plus">₹38,600</span></div><div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Less: discounts given</span><span class="od1-row__hint">Billed but never earned</span></span><span class="od1-row__amt num is-minus">− ₹1,12,400</span></div>
+        <div class="od1-row od1-row--subtotal"><span class="od1-row__name">Gross Earnings</span><span class="od1-row__amt num">₹20,85,600</span></div>
+        <div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Salary &amp; Advance</span><span class="od1-row__hint">The wage bill</span></span><span class="od1-row__amt num is-minus">− ₹9,60,000</span></div><div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Rent</span><span class="od1-row__hint">What the premises cost</span></span><span class="od1-row__amt num is-minus">− ₹3,50,000</span></div><div class="od1-row"><span class="od1-row__lbl"><span class="od1-row__name">Cashbook Expense</span><span class="od1-row__hint">Power, water, consumables</span></span><span class="od1-row__amt num is-minus">− ₹2,48,900</span></div>
+        <div class="od1-row od1-row--total"><span class="od1-row__name">Profit</span><span class="od1-row__amt num is-plus">₹5,26,700</span></div>
+        <p class="od1-note"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg><span>This is what the work <strong>earned</strong>, not cash in hand. Money still owed to the workshop, money it still owes, and stock sitting on the shelf are in <strong>Position Right Now</strong>.</span></p>
+      </div>
+
+      <div class="od1-card od1-area-trend">
+        <h2 class="od1-card-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chart-column"></use></svg>Profit Each Month<span class="od1-sub"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Tap a month for its figure</span></h2>
+        <p class="od1-trend__sum">Best month Oct (₹1,03,200). A loss in Feb (−₹18,000).</p>
+        <div class="od1-chart is-line">
+          <div class="od1-chart__box"><svg class="od1-chart__plot" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="od1-fill-up" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="450.0"><stop class="od1-stop is-up" offset="0"></stop><stop class="od1-stop is-up is-fade" offset="1"></stop></linearGradient><linearGradient id="od1-fill-down" gradientUnits="userSpaceOnUse" x1="0" y1="600" x2="0" y2="450.0"><stop class="od1-stop is-down" offset="0"></stop><stop class="od1-stop is-down is-fade" offset="1"></stop></linearGradient><clipPath id="od1-above"><rect x="0" y="0" width="1000" height="450.0"></rect></clipPath><clipPath id="od1-below"><rect x="0" y="450.0" width="1000" height="150.0"></rect></clipPath></defs><line class="od1-chart__grid" x1="0" x2="1000" y1="0.0" y2="0.0"></line><line class="od1-chart__grid" x1="0" x2="1000" y1="150.0" y2="150.0"></line><line class="od1-chart__grid" x1="0" x2="1000" y1="300.0" y2="300.0"></line><line class="od1-chart__grid is-zero" x1="0" x2="1000" y1="450.0" y2="450.0"></line><line class="od1-chart__grid" x1="0" x2="1000" y1="600.0" y2="600.0"></line><path class="od1-chart__area" d="M50.0,450.0 L50.0,384.0 L150.0,504.0 L250.0,308.4 L350.0,295.2 L450.0,310.2 L550.0,252.9 L650.0,230.4 L750.0,290.4 L850.0,204.0 L950.0,140.4 L950.0,450.0 Z" fill="url(#od1-fill-up)" clip-path="url(#od1-above)"></path><path class="od1-chart__area" d="M50.0,450.0 L50.0,384.0 L150.0,504.0 L250.0,308.4 L350.0,295.2 L450.0,310.2 L550.0,252.9 L650.0,230.4 L750.0,290.4 L850.0,204.0 L950.0,140.4 L950.0,450.0 Z" fill="url(#od1-fill-down)" clip-path="url(#od1-below)"></path><polyline class="od1-chart__line is-up" points="50.0,384.0 150.0,504.0 250.0,308.4 350.0,295.2 450.0,310.2 550.0,252.9 650.0,230.4 750.0,290.4 850.0,204.0 950.0,140.4" clip-path="url(#od1-above)"></polyline><polyline class="od1-chart__line is-down" points="50.0,384.0 150.0,504.0 250.0,308.4 350.0,295.2 450.0,310.2 550.0,252.9 650.0,230.4 750.0,290.4 850.0,204.0 950.0,140.4" clip-path="url(#od1-below)"></polyline></svg><svg class="od1-chart__marks"><line class="od1-last__line" x1="0" x2="100%" y1="23.40%" y2="23.40%"></line><circle class="od1-last__dot" cx="95.00%" cy="23.40%" r="4"></circle><g class="od1-pt" tabindex="0" role="img" aria-label="Jan 2026: ₹22,000"><rect class="od1-pt__hit" x="0.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="5.00%" x2="5.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="5.00%" cy="64.00%" r="4.5"></circle><svg class="od1-pt__tip" x="5.00%" y="64.00%" overflow="visible"><text class="od1-pt__mon" x="-6" y="-26" text-anchor="start">Jan 2026</text><text class="od1-pt__val" x="-6" y="-12" text-anchor="start">₹22,000</text></svg></g><g class="od1-pt is-loss" tabindex="0" role="img" aria-label="Feb 2026: −₹18,000"><rect class="od1-pt__hit" x="10.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="15.00%" x2="15.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="15.00%" cy="84.00%" r="4.5"></circle><svg class="od1-pt__tip" x="15.00%" y="84.00%" overflow="visible"><text class="od1-pt__mon" x="10" y="-6" text-anchor="start">Feb 2026</text><text class="od1-pt__val" x="10" y="10" text-anchor="start">−₹18,000</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Mar 2026: ₹47,200"><rect class="od1-pt__hit" x="20.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="25.00%" x2="25.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="25.00%" cy="51.40%" r="4.5"></circle><svg class="od1-pt__tip" x="25.00%" y="51.40%" overflow="visible"><text class="od1-pt__mon" x="0" y="-26" text-anchor="middle">Mar 2026</text><text class="od1-pt__val" x="0" y="-12" text-anchor="middle">₹47,200</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Apr 2026: ₹51,600"><rect class="od1-pt__hit" x="30.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="35.00%" x2="35.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="35.00%" cy="49.20%" r="4.5"></circle><svg class="od1-pt__tip" x="35.00%" y="49.20%" overflow="visible"><text class="od1-pt__mon" x="0" y="-26" text-anchor="middle">Apr 2026</text><text class="od1-pt__val" x="0" y="-12" text-anchor="middle">₹51,600</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="May 2026: ₹46,600"><rect class="od1-pt__hit" x="40.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="45.00%" x2="45.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="45.00%" cy="51.70%" r="4.5"></circle><svg class="od1-pt__tip" x="45.00%" y="51.70%" overflow="visible"><text class="od1-pt__mon" x="0" y="19" text-anchor="middle">May 2026</text><text class="od1-pt__val" x="0" y="34" text-anchor="middle">₹46,600</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Jun 2026: ₹65,700"><rect class="od1-pt__hit" x="50.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="55.00%" x2="55.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="55.00%" cy="42.15%" r="4.5"></circle><svg class="od1-pt__tip" x="55.00%" y="42.15%" overflow="visible"><text class="od1-pt__mon" x="0" y="-26" text-anchor="middle">Jun 2026</text><text class="od1-pt__val" x="0" y="-12" text-anchor="middle">₹65,700</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Jul 2026: ₹73,200"><rect class="od1-pt__hit" x="60.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="65.00%" x2="65.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="65.00%" cy="38.40%" r="4.5"></circle><svg class="od1-pt__tip" x="65.00%" y="38.40%" overflow="visible"><text class="od1-pt__mon" x="0" y="-26" text-anchor="middle">Jul 2026</text><text class="od1-pt__val" x="0" y="-12" text-anchor="middle">₹73,200</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Aug 2026: ₹53,200"><rect class="od1-pt__hit" x="70.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="75.00%" x2="75.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="75.00%" cy="48.40%" r="4.5"></circle><svg class="od1-pt__tip" x="75.00%" y="48.40%" overflow="visible"><text class="od1-pt__mon" x="0" y="19" text-anchor="middle">Aug 2026</text><text class="od1-pt__val" x="0" y="34" text-anchor="middle">₹53,200</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Sep 2026: ₹82,000"><rect class="od1-pt__hit" x="80.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="85.00%" x2="85.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="85.00%" cy="34.00%" r="4.5"></circle><svg class="od1-pt__tip" x="85.00%" y="34.00%" overflow="visible"><text class="od1-pt__mon" x="0" y="-26" text-anchor="middle">Sep 2026</text><text class="od1-pt__val" x="0" y="-12" text-anchor="middle">₹82,000</text></svg></g><g class="od1-pt" tabindex="0" role="img" aria-label="Oct 2026: ₹1,03,200"><rect class="od1-pt__hit" x="90.00%" y="0" width="10.00%" height="100%"></rect><line class="od1-pt__cross" x1="95.00%" x2="95.00%" y1="0" y2="100%"></line><circle class="od1-pt__dot" cx="95.00%" cy="23.40%" r="4.5"></circle><svg class="od1-pt__tip" x="95.00%" y="23.40%" overflow="visible"><text class="od1-pt__mon" x="6" y="-26" text-anchor="end">Oct 2026</text><text class="od1-pt__val" x="6" y="-12" text-anchor="end">₹1,03,200</text></svg></g><svg class="od1-last__pill" x="100%" y="23.40%" overflow="visible" aria-hidden="true"><rect x="6" y="-11" width="58" height="22" rx="4"></rect><text x="35" y="4" text-anchor="middle">₹1.03L</text></svg></svg></div>
+          <div class="od1-chart__y" aria-hidden="true"><span>₹1.5L</span><span>₹1L</span><span>₹50,000</span><span>₹0</span><span>−₹50,000</span></div>
+          <div class="od1-chart__x" aria-hidden="true"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span></div>
+        </div>
+        <details class="od1-more">
+          <summary><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg>Show the numbers</summary>
+          <div class="od1-table-wrap"><table class="od1-table"><caption>Each month in 2026</caption><thead><tr><th scope="col">Month</th><th scope="col">Turnover</th><th scope="col">Expenses</th><th scope="col">Profit</th></tr></thead><tbody><tr><th scope="row">Jan 2026</th><td class="num">₹3,62,000</td><td class="num">₹3,40,000</td><td class="num">₹22,000</td></tr><tr><th scope="row">Feb 2026</th><td class="num">₹3,48,500</td><td class="num">₹3,66,500</td><td class="num is-loss">−₹18,000</td></tr><tr><th scope="row">Mar 2026</th><td class="num">₹4,05,200</td><td class="num">₹3,58,000</td><td class="num">₹47,200</td></tr><tr><th scope="row">Apr 2026</th><td class="num">₹4,22,800</td><td class="num">₹3,71,200</td><td class="num">₹51,600</td></tr><tr><th scope="row">May 2026</th><td class="num">₹3,96,400</td><td class="num">₹3,49,800</td><td class="num">₹46,600</td></tr><tr><th scope="row">Jun 2026</th><td class="num">₹4,58,300</td><td class="num">₹3,92,600</td><td class="num">₹65,700</td></tr><tr><th scope="row">Jul 2026</th><td class="num">₹4,71,900</td><td class="num">₹3,98,700</td><td class="num">₹73,200</td></tr><tr><th scope="row">Aug 2026</th><td class="num">₹4,35,600</td><td class="num">₹3,82,400</td><td class="num">₹53,200</td></tr><tr><th scope="row">Sep 2026</th><td class="num">₹4,84,300</td><td class="num">₹4,02,300</td><td class="num">₹82,000</td></tr><tr><th scope="row">Oct 2026</th><td class="num">₹4,27,700</td><td class="num">₹3,24,500</td><td class="num">₹1,03,200</td></tr></tbody></table></div>
+        </details>
+      </div>
+      </div>
+
+      <div class="od1-card od1-area-position">
+        <h2 class="od1-card-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#landmark"></use></svg>Position Right Now<span class="od1-sub"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>As of today, not affected by the filter</span></h2>
+        <div class="od1-pos">
+          <div class="od1-pos-col">
+            <div class="od1-pos-item is-in"><div class="od1-pos-item__k">Customers owe us</div><div class="od1-pos-item__v num">₹2,46,800</div></div>
+            <div class="od1-pos-item is-in"><div class="od1-pos-item__k">Of that, fleet accounts</div><div class="od1-pos-item__v num">₹1,08,000</div></div>
+            <div class="od1-pos-item is-hold"><div class="od1-pos-item__k">Stock on the shelf</div><div class="od1-pos-item__v num">₹4,72,300</div><div class="od1-pos-item__n">at what it cost</div></div>
+          </div>
+          <div class="od1-pos-col">
+            <div class="od1-pos-item is-out"><div class="od1-pos-item__k">We owe spare shops</div><div class="od1-pos-item__v num">₹1,10,300</div><div class="od1-pos-item__n">₹18,500 of it is 3 parts not yet fitted to a car</div></div>
+            <div class="od1-pos-item is-out"><div class="od1-pos-item__k">We owe supplies shops</div><div class="od1-pos-item__v num">₹86,400</div></div>
+            <div class="od1-pos-item is-out"><div class="od1-pos-item__k">Rent still to deposit</div><div class="od1-pos-item__v num">₹35,000</div><div class="od1-pos-item__n">charged to the end of this month</div></div>
+          </div>
+        </div>
+      </div>
+
+      <a class="od1-cta od1-area-cta" href="#"><span class="od1-cta__ico"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#compass"></use></svg></span><span class="od1-cta__text"><span class="od1-cta__t">Deep Analysis</span><span class="od1-cta__s">Mechanics, Spare Parts, Inventory, Vehicles, Fleet, Shops, Cashbook, Operations</span></span><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a>
+    </div>
+  </section>
+  <!-- V1 END -->
+
+</main>
+</body>
+</html>
