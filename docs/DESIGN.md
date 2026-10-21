@@ -59,6 +59,10 @@ token values, so components never hold a raw colour.
 Every screen works at phone, tablet and laptop widths. A design is chosen
 only after the real users have tried it on these devices.
 
+Every screen uses one frame: content up to 1,200px wide with a 16px side
+gutter, 16px between boxes, and 12px corners on every box. A wide screen
+fills a laptop; it never gets its own width or spacing.
+
 ## Screen states
 
 Each state is designed once, as a shared component, and every screen uses
