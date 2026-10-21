@@ -1,0 +1,744 @@
+/* Job card lab only: v1, the chosen design. Never used by the app. */
+
+@layer page {
+  .lab {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-4) var(--space-12);
+  }
+
+  .lab-intro {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .lab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+
+  .lab-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .lab-switch legend {
+    float: left;
+    width: 100%;
+    margin-bottom: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .lab-switch__option {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border-control);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .lab-switch__option:has(:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-text);
+  }
+
+  .lab-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Who is looking: Office and owners see the customer and the money; the
+     floor does not. In the app these parts are never sent to the floor at
+     all (one form per role); here they are only hidden. */
+  :root:not(:has(#as-floor:checked)) .floor-only,
+  :root:has(#as-floor:checked) .office-only {
+    display: none !important; /* stands in for "never sent", so nothing may show it */
+  }
+
+  /* v1's paint list and values, exactly (CAR_COLOR_HEX in v1). */
+  .paint-black { --paint: #000000; }
+  .paint-white { --paint: #f8fafc; }
+  .paint-silver { --paint: #94a3b8; }
+  .paint-grey { --paint: #64748b; }
+  .paint-red { --paint: #dc2626; }
+  .paint-light-blue { --paint: #38bdf8; }
+  .paint-blue { --paint: #2563eb; }
+  .paint-dark-blue { --paint: #1d4ed8; }
+  .paint-yellow { --paint: #eab308; }
+  .paint-light-green { --paint: #4ade80; }
+  .paint-green { --paint: #16a34a; }
+  .paint-dark-green { --paint: #15803d; }
+  .paint-brown { --paint: #78350f; }
+  .paint-dark-brown { --paint: #451a03; }
+
+  /* ================= Design 1: v1 ================= */
+  /* v1's job card (jobcard_form.html) with fake data. Fixed only where a
+     rule breaks: every box and button at least 44px, status colours that
+     pass AA, a name for every box, and no inline style. */
+
+  .jc1-head {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    padding: var(--space-1) var(--space-4) var(--space-1) 1.1rem;
+    overflow: hidden;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    background: var(--color-primary-soft);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* The car's colour as a rail down the header (v1). */
+  .jc1-head::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    background: var(--paint);
+  }
+
+  .jc1-head__id {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .jc1-head__edit,
+  .jc1-head__plate {
+    color: var(--color-primary-text);
+    font-weight: var(--weight-bold);
+  }
+
+  .jc1-dot {
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgb(0 0 0 / 0.1);
+    border-radius: 50%;
+    background: var(--paint);
+  }
+
+  .jc1-head__actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .jc1-btn-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-primary-text);
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+
+  /* On a phone the header takes two short rows: the car and plate on the
+     first, the two buttons with their names on the second. The buttons
+     look 34px tall; an invisible band above and below keeps each one at
+     least 44px to a finger (our tap rule). Only a very long car name is cut short;
+     the plate never is. */
+  @media (max-width: 575px) {
+    .jc1-head {
+      row-gap: var(--space-2);
+      padding-top: var(--space-2);
+      padding-bottom: var(--space-2);
+    }
+
+    .jc1-head__id {
+      flex: 1 1 100%;
+    }
+
+    .jc1-head__car {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .jc1-head__plate {
+      flex: none;
+    }
+
+    .jc1-btn-sm {
+      position: relative;
+      min-height: 34px;
+    }
+
+    .jc1-btn-sm::after {
+      content: "";
+      position: absolute;
+      inset: -6px 0;
+    }
+  }
+
+  .jc1-card {
+    margin-bottom: var(--space-6);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .jc1-sec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 1.15rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  .jc1-sec-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .jc1-sec-icon {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-neutral-soft);
+    color: var(--color-text-muted);
+  }
+
+  .jc1-sec-name {
+    font-size: 1.08rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: -0.015em;
+  }
+
+  .jc1-fold > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .jc1-fold > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .jc1-fold[open] > summary .jc1-chevron {
+    transform: rotate(180deg);
+  }
+
+  .jc1-body {
+    padding: var(--space-4) 1.15rem;
+  }
+
+  .jc1-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 576px) {
+    .jc1-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .jc1-grid--2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .jc1-span-2 {
+      grid-column: span 2;
+    }
+
+    .jc1-span-all {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* On a laptop the customer's name, number and the internal note share one
+     row. v1 gave the note a full row ("a sentence, not a value"); a third of
+     a laptop row is still about 360px, and the box can be dragged taller. */
+  @media (min-width: 992px) {
+    .jc1-grid--cust {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .jc1-grid--cust > .jc1-note-cell {
+      grid-column: auto;
+    }
+  }
+
+  /* A label's icon, only where the same thing has the same icon on every
+     screen (the mechanic, as on the live board card). */
+  .jc1-label .icon {
+    display: inline-block;
+    margin-right: var(--space-1);
+    color: var(--color-text-muted);
+    vertical-align: -0.25em;
+  }
+
+  .jc1-label {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* A label with something on its right, on one line. */
+  .jc1-label-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .jc1-label-row .jc1-label {
+    margin-bottom: 0;
+  }
+
+  /* The VIN's meter: one small bar per character, soft grey, turning green
+     with a short fade as each is typed, and a quiet count ("11/17") at the
+     end that turns green at 17 and red past it. Spaces and dashes do not
+     count (v1 reads them as separators). The small gaps follow a VIN's own
+     three parts (3, 6 and 8). */
+  .jc1-vin-meter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .jc1-vin-dots {
+    display: flex;
+    gap: 2px;
+  }
+
+  .jc1-vin-dots i {
+    width: 7px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-border);
+    transition: background-color 0.15s ease;
+  }
+
+  .jc1-vin-dots i:nth-child(4),
+  .jc1-vin-dots i:nth-child(10) {
+    margin-left: 5px;
+  }
+
+  .jc1-vin-dots i.is-on {
+    background: var(--color-success);
+  }
+
+  .jc1-vin-meter.is-over .jc1-vin-dots i {
+    background: var(--color-danger);
+  }
+
+  .jc1-vin-count {
+    min-width: 2.6em;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .jc1-vin-meter.is-done .jc1-vin-count {
+    color: var(--color-success-text);
+  }
+
+  .jc1-vin-meter.is-over .jc1-vin-count {
+    color: var(--color-danger-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jc1-vin-dots i {
+      transition: none;
+    }
+  }
+
+  .jc1-input {
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-neutral-soft);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-base);
+  }
+
+  textarea.jc1-input {
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-3);
+    resize: vertical;
+  }
+
+  /* Words in an empty box are hints, so they are lighter than typing,
+     but still readable. */
+  .jc1-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+
+  /* The open row (v1's Old Bills): one empty row waiting at the end of each
+     list, and typing into it opens the next (job-card.js), so there are no
+     Add buttons. Its status stays grey, whatever is picked, until something
+     is typed, so it never looks like a real part waiting. */
+  .is-open .jc1-status:is(.is-pending, .is-working, .is-fixed) {
+    border-color: var(--color-border);
+    background: var(--color-neutral-soft);
+    color: var(--color-text-muted);
+  }
+
+  /* An empty box wears a red hairline until it is filled (v1). */
+  .jc1-input.is-empty {
+    border-color: rgb(217 45 32 / 0.4);
+    background: var(--color-surface);
+  }
+
+  .jc1-colour-row {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .jc1-colour-row > :last-child {
+    flex: 1;
+  }
+
+  .jc1-swatch {
+    display: block;
+    width: 45px;
+    height: var(--tap-min);
+    border: 1px solid rgb(0 0 0 / 0.1);
+    border-radius: var(--radius-sm);
+    background: var(--paint);
+    cursor: pointer;
+  }
+
+  .jc1-photos {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .jc1-camera {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  .jc1-list > .jc1-row {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .jc1-list > .jc1-row:last-child {
+    border-bottom: 0;
+  }
+
+  .jc1-row > .jc1-input {
+    flex: 1;
+  }
+
+  /* Status boxes in v1's colours, darkened so the words pass AA. */
+  .jc1-status {
+    flex: none;
+    width: 130px;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  .jc1-status.is-pending {
+    background: var(--color-danger-strong);
+    color: var(--color-text-on-strong);
+  }
+
+  .jc1-status.is-working {
+    background: #ffc107;
+    color: #000000;
+  }
+
+  .jc1-status.is-fixed {
+    background: var(--color-success);
+    color: var(--color-text-on-strong);
+  }
+
+  .jc1-labour {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding: var(--space-3) 1.15rem;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  .jc1-labour label {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .jc1-labour .jc1-input {
+    width: 180px;
+    font-weight: var(--weight-bold);
+    text-align: right;
+  }
+
+  /* v1's parts tables: they scroll sideways inside their box. */
+  .jc1-scroll {
+    overflow-x: auto;
+  }
+
+  .jc1-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .jc1-table th {
+    padding: var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .jc1-table td {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  .jc1-table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .jc1-hint {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .jc1-w-part { min-width: 260px; }
+  .jc1-w-qty { width: 80px; min-width: 80px; }
+  .jc1-w-shop { min-width: 160px; }
+  .jc1-w-status { min-width: 130px; }
+  .jc1-w-dates { min-width: 138px; }
+  .jc1-w-price { min-width: 145px; }
+  .jc1-w-cost { min-width: 110px; }
+
+  /* The two cells that carry the markup badge are wider than the other
+     price cells by exactly the badge and its gap, so the box itself stays
+     the same size as its neighbours (v1). */
+  .jc1-w-price-mk { width: 197px; min-width: 197px; }
+  .jc1-w-total { width: 202px; min-width: 202px; }
+
+  .jc1-cost {
+    padding: var(--space-3);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: right;
+  }
+
+  .jc1-part {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .jc1-part .jc1-input {
+    flex: 1;
+  }
+
+  .jc1-kebab {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  .jc1-date-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .jc1-money {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .jc1-money .jc1-input {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+  }
+
+  /* The markup badge after a price (v1): green when the margin is fine. */
+  /* No markup yet: the badge keeps its place, so the box never changes size (v1). */
+  .jc1-mk.is-empty {
+    visibility: hidden;
+  }
+
+  .jc1-mk {
+    flex: none;
+    min-width: 46px;
+    text-align: center;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-success);
+    color: var(--color-text-on-strong);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+  }
+
+  /* Save: amber, the colour of your changes in v1, with dark words. */
+  .jc1-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-height: 3.5rem;
+    margin-bottom: var(--space-8);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: #f59e0b;
+    color: #1e293b;
+    font: inherit;
+    font-size: 1.25rem;
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+  }
+
+  /* ---------- Editing the right part (v1, plus one tag) ---------- */
+  /* v1's guard, put back: the row number stays pinned on the left while
+     the table scrolls, so row 2 is still row 2 with its name off screen;
+     and the row being edited lights up across its whole width. The cells
+     are painted, not the row, because opaque cells hide a row's colour. */
+  .jc1-table .jc1-idx {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    width: 34px;
+    min-width: 34px;
+    max-width: 34px;
+    padding: var(--space-3) 1px var(--space-2);
+    background: var(--color-surface);
+    box-shadow: 1px 0 0 var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    font-weight: var(--weight-bold);
+    text-align: center;
+  }
+
+  .jc1-table tbody tr:focus-within td {
+    background: var(--color-primary-soft);
+  }
+
+  .jc1-table tbody tr:focus-within .jc1-idx {
+    background: #dbeafe;
+    color: var(--color-primary-text);
+  }
+
+  /* New: while a row is being edited, its full name sits in a small tag
+     above it, pinned on the left, so a price can be checked against its
+     part even with the name scrolled away. Full length, never cut short:
+     v1 refused a cut-short name column because "Front Lower Control Arm
+     LH" and "RH" would look the same. Gone as soon as the row is left. */
+  .jc1-rowtag {
+    display: none;
+    position: absolute;
+    bottom: calc(100% - 8px);
+    left: 4px;
+    z-index: 3;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-text-on-strong);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .jc1-table tbody tr:focus-within .jc1-rowtag {
+    display: block;
+  }
+}

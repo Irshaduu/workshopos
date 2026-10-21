@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job card lab</title>
+  <link rel="stylesheet" href="../../../static/css/tokens.css">
+  <link rel="stylesheet" href="../../../static/css/base.css">
+  <link rel="stylesheet" href="../../../static/css/components.css">
+  <link rel="stylesheet" href="job-card.css">
+  <script src="job-card.js" defer></script>
+</head>
+<body>
+<main class="lab">
+
+  <a class="back" href="../system/">Design system</a>
+  <p class="lab-intro">Job card: v1, the chosen design. Type in the last, empty row of a list and the next one opens; tap a box in a parts row to see its name tag. A prototype, never used by the app. All data is fake.</p>
+
+  <div class="lab-bar">
+    <fieldset class="lab-switch">
+      <legend>View as</legend>
+      <label class="lab-switch__option"><input type="radio" name="role" id="as-office" checked> Office or owner</label>
+      <label class="lab-switch__option"><input type="radio" name="role" id="as-floor"> Floor</label>
+    </fieldset>
+  </div>
+
+  <!-- V1 START -->
+  <section class="jc1" aria-label="Job card, v1">
+    <h1 class="lab-sr">Job card</h1>
+    <div class="jc1-head paint-black">
+      <span class="jc1-head__id"><span class="jc1-head__edit">Editing:</span><span class="jc1-dot"></span><strong class="jc1-head__car">BMW 520d</strong><span class="jc1-head__plate">KL00AA0001</span></span>
+      <span class="jc1-head__actions office-only"><a class="jc1-btn-sm" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg><span class="jc1-btn-sm__label">Profile</span></a><a class="jc1-btn-sm" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#receipt"></use></svg><span class="jc1-btn-sm__label">Invoice</span></a></span>
+    </div>
+
+    <div class="jc1-card">
+      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg></span><h2 class="jc1-sec-name">Vehicle Details</h2></div></div>
+      <div class="jc1-body"><div class="jc1-grid">
+        <div class=""><label class="jc1-label" for="jc1-reg">Registration Number</label><input class="jc1-input" id="jc1-reg" value="KL00AA0001"></div>
+        <div class=""><label class="jc1-label" for="jc1-brand">Car Brand</label><input class="jc1-input" id="jc1-brand" value="BMW"></div>
+        <div class=""><label class="jc1-label" for="jc1-model">Car Model</label><input class="jc1-input" id="jc1-model" value="520d"></div>
+        <div class=""><label class="jc1-label" for="jc1-chassis">Chassis Code</label><input class="jc1-input is-empty" id="jc1-chassis" value=""></div>
+        <div class="jc1-span-2"><div class="jc1-label-row"><label class="jc1-label" for="jc1-vin">VIN</label><span class="jc1-vin-meter" aria-hidden="true"><span class="jc1-vin-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="jc1-vin-count">0/17</span></span></div><input class="jc1-input is-empty" id="jc1-vin" value="" autocapitalize="characters" spellcheck="false" aria-describedby="jc1-vin-help"><span class="lab-sr" id="jc1-vin-help">A VIN has 17 characters.</span></div>
+        <div class="jc1-colour-row">
+          <div><span class="jc1-label">Color</span><button class="jc1-swatch paint-black" type="button" aria-label="Car colour: Black"></button></div>
+          <div class=""><label class="jc1-label" for="jc1-km">Mileage (Km)</label><input class="jc1-input" id="jc1-km" value="132022" inputmode="numeric"></div>
+        </div>
+        <div><label class="jc1-label" for="jc1-mech"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#user-cog"></use></svg>Mechanic (Staff)</label><select class="jc1-input" id="jc1-mech"><option value="">---------</option><option selected>Ajay</option><option>Biju</option><option>Faisal</option></select></div>
+        <div class=""><label class="jc1-label" for="jc1-admitted">Admitted Date</label><input class="jc1-input" id="jc1-admitted" value="2026-10-19" type="date"></div>
+      </div></div>
+    </div>
+
+    <details class="jc1-card jc1-fold office-only" open>
+      <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#users"></use></svg></span><h2 class="jc1-sec-name">Customer, Notes &amp; Photos</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
+      <div class="jc1-body"><div class="jc1-grid jc1-grid--2 jc1-grid--cust">
+        <div class=""><label class="jc1-label" for="jc1-cust">Customer Name</label><input class="jc1-input" id="jc1-cust" value="Arun K."></div>
+        <div class=""><label class="jc1-label" for="jc1-contact">Contact Number</label><input class="jc1-input" id="jc1-contact" value="00000 00000" inputmode="tel"></div>
+        <div class="jc1-span-all jc1-note-cell"><label class="jc1-label" for="jc1-note">Internal note</label><textarea class="jc1-input" id="jc1-note" rows="1">Brake noise only when cold.</textarea></div>
+        <div class="jc1-span-all"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>
+      </div></div>
+    </details>
+    <details class="jc1-card jc1-fold floor-only" open>
+      <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></span><h2 class="jc1-sec-name">Workshop Note &amp; Photos</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
+      <div class="jc1-body"><div class="jc1-grid jc1-grid--2">
+        <div class="jc1-span-all"><label class="jc1-label" for="jc1-note-f">Anything worth recording about this car</label><textarea class="jc1-input" id="jc1-note-f" rows="1">Brake noise only when cold.</textarea></div>
+        <div class="jc1-span-all"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>
+      </div></div>
+    </details>
+
+    <div class="jc1-card">
+      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-alert"></use></svg></span><h2 class="jc1-sec-name">Customer Concerns</h2></div></div>
+      <div class="jc1-list" data-autorows="jc1-tpl-concern" data-new="New concern">
+        <div class="jc1-row"><input class="jc1-input" aria-label="Concern 1" value="Brake noise at low speed"><select class="jc1-status is-fixed" id="jc1-cs1" aria-label="Status of concern 1"><option>Pending</option><option>Working</option><option selected>Fixed</option></select></div>
+        <div class="jc1-row"><input class="jc1-input" aria-label="Concern 2" value="AC not cooling"><select class="jc1-status is-fixed" id="jc1-cs2" aria-label="Status of concern 2"><option>Pending</option><option>Working</option><option selected>Fixed</option></select></div>
+        <div class="jc1-row"><input class="jc1-input" aria-label="Concern 3" value="Oil leak at the sump"><select class="jc1-status is-fixed" id="jc1-cs3" aria-label="Status of concern 3"><option>Pending</option><option>Working</option><option selected>Fixed</option></select></div>
+        <div class="jc1-row"><input class="jc1-input" aria-label="Concern 4" value="Steering vibration"><select class="jc1-status is-working" id="jc1-cs4" aria-label="Status of concern 4"><option>Pending</option><option selected>Working</option><option>Fixed</option></select></div>
+        <div class="jc1-row"><input class="jc1-input" aria-label="Concern 5" value="Service due"><select class="jc1-status is-pending" id="jc1-cs5" aria-label="Status of concern 5"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div>
+        <div class="jc1-row is-open"><input class="jc1-input" aria-label="New concern"><select class="jc1-status is-pending" aria-label="Status of the new concern"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div>
+      </div>
+      <template id="jc1-tpl-concern"><div class="jc1-row is-open"><input class="jc1-input" aria-label="New concern"><select class="jc1-status is-pending" aria-label="Status of the new concern"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div></template>
+    </div>
+
+    <div class="jc1-card">
+      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#wrench"></use></svg></span><h2 class="jc1-sec-name">Job Performed</h2></div></div>
+      <div class="jc1-list" data-autorows="jc1-tpl-job" data-new="New job">
+        <div class="jc1-row"><input class="jc1-input" aria-label="Job 1" value="Brake disc skim"></div>
+        <div class="jc1-row"><input class="jc1-input" aria-label="Job 2" value="AC gas refill"></div>
+        <div class="jc1-row is-open"><input class="jc1-input" aria-label="New job"></div>
+      </div>
+      <template id="jc1-tpl-job"><div class="jc1-row is-open"><input class="jc1-input" aria-label="New job"></div></template>
+      <div class="jc1-labour office-only"><label for="jc1-labour">Total Labour (₹)</label><input class="jc1-input" id="jc1-labour" inputmode="decimal" value="2950.00"></div>
+    </div>
+
+    <div class="jc1-card">
+      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></span><h2 class="jc1-sec-name">Inventory Items</h2></div></div>
+      <div class="jc1-scroll"><table class="jc1-table">
+        <thead><tr><th class="jc1-idx" aria-label="Row number">#</th><th class="jc1-w-part">Item</th><th class="jc1-w-qty">Qty</th><th class="jc1-w-cost office-only">Cost / Unit (₹)</th><th class="jc1-w-price office-only">Unit Price (₹)</th><th class="jc1-w-total office-only">Total Price (₹)</th></tr></thead>
+        <tbody data-autorows="jc1-tpl-item" data-new="New item">
+          <tr><td class="jc1-idx">1<span class="jc1-rowtag" aria-hidden="true">1. Engine oil 5W-30</span></td><td><input class="jc1-input" aria-label="Item 1" value="Engine oil 5W-30"><div class="jc1-hint">18 in stock</div></td><td><input class="jc1-input" aria-label="Quantity of Engine oil 5W-30" inputmode="decimal" value="6"></td><td class="office-only"><div class="jc1-cost">420</div></td><td class="office-only"><input class="jc1-input" aria-label="Unit price of Engine oil 5W-30" inputmode="decimal" value="600"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Total price of Engine oil 5W-30" inputmode="decimal" value="3600.00"><span class="jc1-mk">43%</span></div></td></tr>
+          <tr class="is-open"><td class="jc1-idx">2<span class="jc1-rowtag" aria-hidden="true">2. New item</span></td><td><input class="jc1-input" aria-label="New item" placeholder="Search by product or type (e.g. Engine Oil)"><div class="jc1-hint"></div></td><td><input class="jc1-input" aria-label="Quantity of the new item" inputmode="decimal"></td><td class="office-only"><div class="jc1-cost"></div></td><td class="office-only"><input class="jc1-input" aria-label="Unit price of the new item" inputmode="decimal"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Total price of the new item" inputmode="decimal"><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr>
+        </tbody>
+      </table></div>
+      <template id="jc1-tpl-item"><tr class="is-open"><td class="jc1-idx"><span class="jc1-rowtag" aria-hidden="true">. New item</span></td><td><input class="jc1-input" aria-label="New item" placeholder="Search by product or type (e.g. Engine Oil)"><div class="jc1-hint"></div></td><td><input class="jc1-input" aria-label="Quantity of the new item" inputmode="decimal"></td><td class="office-only"><div class="jc1-cost"></div></td><td class="office-only"><input class="jc1-input" aria-label="Unit price of the new item" inputmode="decimal"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Total price of the new item" inputmode="decimal"><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr></template>
+    </div>
+
+    <div class="jc1-card">
+      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#cog"></use></svg></span><h2 class="jc1-sec-name">Spare Parts</h2></div></div>
+      <div class="jc1-scroll"><table class="jc1-table">
+        <thead><tr><th class="jc1-idx" aria-label="Row number">#</th><th class="jc1-w-part">Part Name</th><th class="jc1-w-qty">Qty</th><th aria-label="Photos"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></th><th class="jc1-w-shop office-only">Shop</th><th class="jc1-w-status">Status</th><th class="jc1-w-dates">Dates</th><th class="jc1-w-price office-only">Shop Price (₹)</th><th class="jc1-w-price office-only">Transport (₹)</th><th class="jc1-w-price-mk office-only">Customer Price (₹)</th></tr></thead>
+        <tbody data-autorows="jc1-tpl-spare" data-new="New spare part">
+          <tr><td class="jc1-idx">1<span class="jc1-rowtag" aria-hidden="true">1. Brake pads</span></td><td><div class="jc1-part"><input class="jc1-input" aria-label="Spare part 1" value="Brake pads"><button class="jc1-kebab" type="button" aria-label="More for Brake pads"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#ellipsis-vertical"></use></svg></button></div></td><td><input class="jc1-input" aria-label="Quantity of Brake pads" inputmode="decimal" value="1"></td><td><button class="jc1-camera" type="button" aria-label="Photos of Brake pads"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button></td><td class="office-only"><select class="jc1-input" aria-label="Shop for Brake pads"><option value="">-- Shop --</option><option selected>Main Road Spares</option><option>City Parts Centre</option></select></td><td><select class="jc1-status is-fixed" id="jc1-ss1" aria-label="Status of Brake pads"><option>Pending</option><option>Ordered</option><option selected>Received</option></select></td><td><button class="jc1-date-chip" type="button" aria-label="Ordered and received dates of Brake pads"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>19/10 – 20/10</button></td><td class="office-only"><input class="jc1-input" aria-label="Shop price of Brake pads" inputmode="decimal" value="4200.00"></td><td class="office-only"><input class="jc1-input" aria-label="Transport for Brake pads" inputmode="decimal" value="150.00"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Customer price of Brake pads" inputmode="decimal" value="5600.00"><span class="jc1-mk">29%</span></div></td></tr>
+          <tr><td class="jc1-idx">2<span class="jc1-rowtag" aria-hidden="true">2. Steering rack boot</span></td><td><div class="jc1-part"><input class="jc1-input" aria-label="Spare part 2" value="Steering rack boot"><button class="jc1-kebab" type="button" aria-label="More for Steering rack boot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#ellipsis-vertical"></use></svg></button></div></td><td><input class="jc1-input" aria-label="Quantity of Steering rack boot" inputmode="decimal" value="2"></td><td><button class="jc1-camera" type="button" aria-label="Photos of Steering rack boot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button></td><td class="office-only"><select class="jc1-input" aria-label="Shop for Steering rack boot"><option value="">-- Shop --</option><option>Main Road Spares</option><option selected>City Parts Centre</option></select></td><td><select class="jc1-status is-working" id="jc1-ss2" aria-label="Status of Steering rack boot"><option>Pending</option><option selected>Ordered</option><option>Received</option></select></td><td><button class="jc1-date-chip" type="button" aria-label="Ordered and received dates of Steering rack boot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>20/10</button></td><td class="office-only"><input class="jc1-input" aria-label="Shop price of Steering rack boot" inputmode="decimal" value="1800.00"></td><td class="office-only"><input class="jc1-input" aria-label="Transport for Steering rack boot" inputmode="decimal" value=""></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Customer price of Steering rack boot" inputmode="decimal" value="2500.00"><span class="jc1-mk">39%</span></div></td></tr>
+          <tr><td class="jc1-idx">3<span class="jc1-rowtag" aria-hidden="true">3. Wiper blades</span></td><td><div class="jc1-part"><input class="jc1-input" aria-label="Spare part 3" value="Wiper blades"><button class="jc1-kebab" type="button" aria-label="More for Wiper blades"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#ellipsis-vertical"></use></svg></button></div></td><td><input class="jc1-input" aria-label="Quantity of Wiper blades" inputmode="decimal" value="2"></td><td><button class="jc1-camera" type="button" aria-label="Photos of Wiper blades"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button></td><td class="office-only"><select class="jc1-input" aria-label="Shop for Wiper blades"><option value="">-- Shop --</option><option>Main Road Spares</option><option>City Parts Centre</option></select></td><td><select class="jc1-status is-pending" id="jc1-ss3" aria-label="Status of Wiper blades"><option selected>Pending</option><option>Ordered</option><option>Received</option></select></td><td><button class="jc1-date-chip" type="button" aria-label="Ordered and received dates of Wiper blades"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>Add dates</button></td><td class="office-only"><input class="jc1-input" aria-label="Shop price of Wiper blades" inputmode="decimal" value=""></td><td class="office-only"><input class="jc1-input" aria-label="Transport for Wiper blades" inputmode="decimal" value=""></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Customer price of Wiper blades" inputmode="decimal" value=""><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr>
+          <tr class="is-open"><td class="jc1-idx">4<span class="jc1-rowtag" aria-hidden="true">4. New spare part</span></td><td><div class="jc1-part"><input class="jc1-input" aria-label="New spare part"></div></td><td><input class="jc1-input" aria-label="Quantity of the new spare part" inputmode="decimal"></td><td></td><td class="office-only"><select class="jc1-input" aria-label="Shop for the new spare part"><option value="">-- Shop --</option><option>Main Road Spares</option><option>City Parts Centre</option></select></td><td><select class="jc1-status is-pending" aria-label="Status of the new spare part"><option selected>Pending</option><option>Ordered</option><option>Received</option></select></td><td><button class="jc1-date-chip" type="button" aria-label="Ordered and received dates of the new spare part"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>Add dates</button></td><td class="office-only"><input class="jc1-input" aria-label="Shop price of the new spare part" inputmode="decimal"></td><td class="office-only"><input class="jc1-input" aria-label="Transport for the new spare part" inputmode="decimal"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Customer price of the new spare part" inputmode="decimal"><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr>
+        </tbody>
+      </table></div>
+      <template id="jc1-tpl-spare"><tr class="is-open"><td class="jc1-idx"><span class="jc1-rowtag" aria-hidden="true">. New spare part</span></td><td><div class="jc1-part"><input class="jc1-input" aria-label="New spare part"></div></td><td><input class="jc1-input" aria-label="Quantity of the new spare part" inputmode="decimal"></td><td></td><td class="office-only"><select class="jc1-input" aria-label="Shop for the new spare part"><option value="">-- Shop --</option><option>Main Road Spares</option><option>City Parts Centre</option></select></td><td><select class="jc1-status is-pending" aria-label="Status of the new spare part"><option selected>Pending</option><option>Ordered</option><option>Received</option></select></td><td><button class="jc1-date-chip" type="button" aria-label="Ordered and received dates of the new spare part"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>Add dates</button></td><td class="office-only"><input class="jc1-input" aria-label="Shop price of the new spare part" inputmode="decimal"></td><td class="office-only"><input class="jc1-input" aria-label="Transport for the new spare part" inputmode="decimal"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Customer price of the new spare part" inputmode="decimal"><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr></template>
+    </div>
+
+    <button class="jc1-submit" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#check"></use></svg>Update Job Card</button>
+  </section>
+  <!-- V1 END -->
+
+</main>
+</body>
+</html>
