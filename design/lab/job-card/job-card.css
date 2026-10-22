@@ -74,22 +74,6 @@
     display: none !important; /* stands in for "never sent", so nothing may show it */
   }
 
-  /* v1's paint list and values, exactly (CAR_COLOR_HEX in v1). */
-  .paint-black { --paint: #000000; }
-  .paint-white { --paint: #f8fafc; }
-  .paint-silver { --paint: #94a3b8; }
-  .paint-grey { --paint: #64748b; }
-  .paint-red { --paint: #dc2626; }
-  .paint-light-blue { --paint: #38bdf8; }
-  .paint-blue { --paint: #2563eb; }
-  .paint-dark-blue { --paint: #1d4ed8; }
-  .paint-yellow { --paint: #eab308; }
-  .paint-light-green { --paint: #4ade80; }
-  .paint-green { --paint: #16a34a; }
-  .paint-dark-green { --paint: #15803d; }
-  .paint-brown { --paint: #78350f; }
-  .paint-dark-brown { --paint: #451a03; }
-
   /* ================= Design 1: v1 ================= */
   /* v1's job card (jobcard_form.html) with fake data. Fixed only where a
      rule breaks: every box and button at least 44px, status colours that
@@ -141,7 +125,7 @@
   .jc1-dot {
     width: 12px;
     height: 12px;
-    border: 1px solid rgb(0 0 0 / 0.1);
+    border: 1px solid var(--color-swatch-edge);
     border-radius: 50%;
     background: var(--paint);
   }
@@ -428,7 +412,7 @@
 
   /* An empty box wears a red hairline until it is filled (v1). */
   .jc1-input.is-empty {
-    border-color: rgb(217 45 32 / 0.4);
+    border-color: var(--color-danger-edge-soft);
     background: var(--color-surface);
   }
 
@@ -445,7 +429,7 @@
     display: block;
     width: 45px;
     height: var(--tap-min);
-    border: 1px solid rgb(0 0 0 / 0.1);
+    border: 1px solid var(--color-swatch-edge);
     border-radius: var(--radius-sm);
     background: var(--paint);
     cursor: pointer;
@@ -506,8 +490,8 @@
   }
 
   .jc1-status.is-working {
-    background: #ffc107;
-    color: #000000;
+    background: var(--color-status-working);
+    color: var(--color-on-status-working);
   }
 
   .jc1-status.is-fixed {
@@ -678,8 +662,8 @@
     margin-bottom: var(--space-8);
     border: 0;
     border-radius: var(--radius-md);
-    background: #f59e0b;
-    color: #1e293b;
+    background: var(--color-save);
+    color: var(--color-on-save);
     font: inherit;
     font-size: 1.25rem;
     font-weight: var(--weight-bold);
@@ -712,7 +696,7 @@
   }
 
   .jc1-table tbody tr:focus-within .jc1-idx {
-    background: #dbeafe;
+    background: var(--color-row-lit);
     color: var(--color-primary-text);
   }
 
