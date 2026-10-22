@@ -51,17 +51,19 @@ through a pull request, and only when CI is green.
 - Uses the real design tokens and the same fake data, and follows
   `docs/DESIGN.md`.
 - The design system is the first prototype, before any section.
-- **A big choice** (the overall look, a main screen) gets two designs:
-  1. v1: v1's screen rebuilt in the lab with the same contents, layout and
-     colours, fixed only where it breaks a rule
-  2. v1 refined: v1 made better in our own way, for the same job. Its
-     layout, order and contents may change (`docs/DESIGN.md`, Design
-     principles)
-
-  Then one is chosen, or parts of both are combined. Screenshots of v1
-  with fake data are the reference for the rebuild and stay out of git. A
-  screen v1 never had gets one proposed design, with the reason it is
-  recommended.
+- **A big choice** (the overall look, a main screen) starts from v1: v1's
+  screen rebuilt in the lab with the same contents, layout and colours,
+  fixed only where it breaks a rule. The fixes stay small; the structure
+  and the look stay v1's. Why: v1's screens were settled with the owners,
+  the staff already know them, and v1 was chosen every time it was
+  compared.
+- **A second design**, v1 refined (v1 made better in our own way, for the
+  same job), is made only when the developer asks for one, or when a rule
+  fix would change the layout. Then one is chosen, or parts of both are
+  combined.
+- Screenshots of v1 with fake data are the reference for the rebuild and
+  stay out of git. A screen v1 never had gets one proposed design, with the
+  reason it is recommended.
 - **A small choice** (one colour, one space) gets one version, changed if
   needed.
 - After each decision the other designs are **deleted**. The chosen one stays
