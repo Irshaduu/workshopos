@@ -11,15 +11,18 @@ through a pull request, and only when CI is green.
 
 ## The flow
 
-1. An **issue** describes the change.
-2. A **branch**: `feat/<short-name>`, `fix/...`, `docs/...`, `refactor/...`, `chore/...`.
-3. **Small commits**, each with its tests.
-4. A **pull request** into `main`. Its template carries the definition of
-   done. CI must pass.
-5. **Rebase and merge**: each commit lands on `main` with its own checked
+1. A **branch**: `feat/<short-name>`, `fix/...`, `docs/...`, `refactor/...`, `chore/...`.
+2. **Small commits**, each with its tests.
+3. A **pull request** into `main`. Its template says why and what changed,
+   and carries the definition of done. CI must pass.
+4. **Rebase and merge**: each commit lands on `main` with its own checked
    message, in a straight line, and the branch is deleted. Staging deploys.
    A **release tag** deploys to production, on every server.
-6. On the laptop: `git switch main`, then `git pull`.
+5. On the laptop: `git switch main`, then `git pull`.
+
+An **issue** is only for work that has to wait: a bug found, or a client
+request for later. The pull request that does it says `Fixes #N`, which
+closes the issue.
 
 ## Commit messages
 
