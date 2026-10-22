@@ -201,14 +201,14 @@
   .od1-cash {
     margin-bottom: 18px;
     padding: 16px 10px 14px;
-    border: 2px dashed #cbd5e1;
+    border: 2px dashed var(--color-border-strong);
   }
 
   .od1-cash-title {
     margin-bottom: 4px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--color-border);
-    color: #0f766e;
+    color: var(--color-cash-title);
   }
 
   /* Money in and money out (design 2's card, his pick): a green and a red
@@ -353,8 +353,8 @@
     padding: 22px 24px;
     overflow: hidden;
     border-radius: var(--radius-lg);
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #253449 100%);
-    color: #fff;
+    background: linear-gradient(135deg, var(--color-hero-start) 0%, var(--color-hero-middle) 55%, var(--color-hero-end) 100%);
+    color: var(--color-text-on-strong);
   }
 
   .od1-hero::after {
@@ -365,7 +365,7 @@
     width: 320px;
     height: 320px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgb(34 197 94 / 0.16), transparent 70%);
+    background: radial-gradient(circle, var(--color-hero-glow), transparent 70%);
     pointer-events: none;
   }
 
@@ -379,7 +379,7 @@
 
   .od1-hero__value {
     margin: 4px 0 2px;
-    color: #4ade80;
+    color: var(--color-hero-profit);
     font-size: 2.6rem;
     font-weight: 800;
     line-height: 1.05;
@@ -404,21 +404,21 @@
     gap: 4px;
     padding: 4px 11px;
     border-radius: var(--radius-pill);
-    background: rgb(255 255 255 / 0.11);
+    background: var(--color-on-strong-wash-sm);
     font-size: 0.74rem;
     font-weight: var(--weight-bold);
   }
 
   .od1-chip.is-up {
-    background: rgb(74 222 128 / 0.18);
-    color: #86efac;
+    background: var(--color-hero-up-soft);
+    color: var(--color-hero-up);
   }
 
   /* Not final: the current month's wages. It travels with the figure and
      cannot be hidden; it leaves when the month is settled. */
   .od1-chip.is-warn {
-    background: rgb(252 211 77 / 0.18);
-    color: #fde68a;
+    background: var(--color-hero-warn-soft);
+    color: var(--color-hero-warn);
   }
 
   .od1-chip .icon { width: 1.1em; height: 1.1em; }
@@ -1162,7 +1162,7 @@
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: rgb(255 255 255 / 0.16);
+    background: var(--color-on-strong-wash-md);
   }
 
   .od1-cta__text {

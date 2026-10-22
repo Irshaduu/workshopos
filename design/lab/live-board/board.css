@@ -13,25 +13,6 @@
     color: var(--color-text-muted);
   }
 
-  /* ---------- Car paint colours ---------- */
-
-  /* v1's paint list and values, exactly (CAR_COLOR_HEX in v1). */
-  .paint-black { --paint: #000000; }
-  .paint-white { --paint: #f8fafc; }
-  .paint-silver { --paint: #94a3b8; }
-  .paint-grey { --paint: #64748b; }
-  .paint-red { --paint: #dc2626; }
-  .paint-light-blue { --paint: #38bdf8; }
-  .paint-blue { --paint: #2563eb; }
-  .paint-dark-blue { --paint: #1d4ed8; }
-  .paint-yellow { --paint: #eab308; }
-  .paint-light-green { --paint: #4ade80; }
-  .paint-green { --paint: #16a34a; }
-  .paint-dark-green { --paint: #15803d; }
-  .paint-brown { --paint: #78350f; }
-  .paint-dark-brown { --paint: #451a03; }
-  .paint-unset { --paint: #475569; }
-
   /* ---------- The live board (chosen 2026-10-21) ---------- */
   /* v1's card and its contents (_pit_card.html). Fixed to our rules: 1, 2 or
      3 columns, AA contrast, the words "On hold" beside the red dot, state
@@ -180,14 +161,14 @@
   .board-chip[aria-pressed="true"] .board-chip__n {
     padding: 0 var(--space-1);
     border-radius: var(--radius-sm);
-    background: rgb(255 255 255 / 0.18);
+    background: var(--color-on-strong-wash-lg);
     color: var(--color-text-on-strong);
   }
 
   /* Cars nobody holds: the one chip with a colour, because it asks for a
      decision (v1). */
   .board-chip--alert:not([aria-pressed="true"]) {
-    border-color: #fecdca;
+    border-color: var(--color-danger-edge);
     color: var(--color-danger-text);
   }
 
@@ -218,7 +199,7 @@
     border-radius: var(--radius-lg);
     background-color: var(--color-surface);
     background-image: linear-gradient(var(--shade), var(--shade));
-    box-shadow: 0 1px 4px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.04);
+    box-shadow: var(--shadow-card);
     transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     --shade: color-mix(in srgb, var(--paint) 7.84%, transparent);
   }
@@ -240,23 +221,23 @@
   }
 
   .board-card.paint-white {
-    --shade: rgb(241 245 249 / 0.45);
+    --shade: var(--paint-white-wash);
   }
 
   .board-card.paint-white::before {
-    box-shadow: inset -1px 0 0 #e2e8f0, inset 1px 0 0 #e2e8f0;
+    box-shadow: inset -1px 0 0 var(--paint-white-edge), inset 1px 0 0 var(--paint-white-edge);
   }
 
   .board-card.paint-unset::before {
-    background: repeating-linear-gradient(-45deg, #e2e8f0 0 3px, #f8fafc 3px 8px);
+    background: repeating-linear-gradient(-45deg, var(--paint-white-edge) 0 3px, var(--paint-white) 3px 8px);
   }
 
   /* v1, on the owners' word: no lift. Hover only where a mouse is (it
      never fires, or it sticks, on the floor tablet); a small press on tap. */
   @media (hover: hover) {
     .board-card:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 2px 10px rgb(15 23 42 / 0.07);
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-card-hover);
     }
   }
 
@@ -327,7 +308,7 @@
 
   .board-dot.is-hold {
     background: var(--color-danger);
-    box-shadow: 0 0 0 3px rgb(217 45 32 / 0.14);
+    box-shadow: 0 0 0 3px var(--color-danger-halo);
     vertical-align: 0.1em;
   }
 
@@ -369,7 +350,7 @@
 
   @media (hover: hover) {
     .board-menu summary:hover {
-      background: rgb(16 24 40 / 0.05);
+      background: var(--color-wash);
       color: var(--color-text);
     }
   }
@@ -509,7 +490,7 @@
   }
 
   .board-ring__disc {
-    fill: rgb(29 78 216 / 0.07);
+    fill: var(--color-primary-faint);
   }
 
   .board-ring__bg {
@@ -526,7 +507,7 @@
   }
 
   .is-done .board-ring__disc {
-    fill: rgb(6 118 71 / 0.1);
+    fill: var(--color-success-faint);
   }
 
   .is-done .board-ring__fg {
@@ -566,7 +547,7 @@
     justify-content: center;
     gap: 6px;
     min-height: var(--tap-min);
-    border-top: 1px solid rgb(16 24 40 / 0.07);
+    border-top: 1px solid var(--color-line-faint);
     border-radius: 0 0 calc(var(--radius-lg) - 1px) 0;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
@@ -583,13 +564,13 @@
 
   @media (hover: hover) {
     .board-drawer summary:hover {
-      background: rgb(16 24 40 / 0.03);
+      background: var(--color-wash-faint);
       color: var(--color-text);
     }
   }
 
   .board-drawer summary:active {
-    background: rgb(16 24 40 / 0.06);
+    background: var(--color-wash-pressed);
   }
 
   .board-drawer summary .icon {
@@ -618,7 +599,7 @@
     display: grid;
     gap: var(--space-4);
     padding: var(--space-3) var(--space-4) var(--space-4);
-    border-top: 1px solid rgb(16 24 40 / 0.07);
+    border-top: 1px solid var(--color-line-faint);
     border-radius: 0 0 calc(var(--radius-lg) - 1px) 0;
     background: var(--color-surface);
   }
@@ -733,7 +714,7 @@
     height: 8px;
     border-radius: 50%;
     background: var(--color-danger);
-    box-shadow: 0 0 0 3px rgb(217 45 32 / 0.14);
+    box-shadow: 0 0 0 3px var(--color-danger-halo);
   }
 
   .board-empty {

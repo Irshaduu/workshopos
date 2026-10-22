@@ -290,4 +290,22 @@
     background: var(--color-surface-sunken);
     color: var(--color-text);
   }
+
+  /* Car paint: a class per paint sets --paint, which a screen uses for a
+     car's stripe, wash or swatch. The values are tokens. */
+  .paint-black { --paint: var(--paint-black); }
+  .paint-white { --paint: var(--paint-white); }
+  .paint-silver { --paint: var(--paint-silver); }
+  .paint-grey { --paint: var(--paint-grey); }
+  .paint-red { --paint: var(--paint-red); }
+  .paint-light-blue { --paint: var(--paint-light-blue); }
+  .paint-blue { --paint: var(--paint-blue); }
+  .paint-dark-blue { --paint: var(--paint-dark-blue); }
+  .paint-yellow { --paint: var(--paint-yellow); }
+  .paint-light-green { --paint: var(--paint-light-green); }
+  .paint-green { --paint: var(--paint-green); }
+  .paint-dark-green { --paint: var(--paint-dark-green); }
+  .paint-brown { --paint: var(--paint-brown); }
+  .paint-dark-brown { --paint: var(--paint-dark-brown); }
+  .paint-unset { --paint: var(--paint-unset); }
 }
