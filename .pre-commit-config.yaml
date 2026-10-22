@@ -28,6 +28,16 @@ repos:
         entry: '#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\('
         files: \.css$
         exclude: ^static/css/tokens\.css$
+      # A size in px or rem comes from a token too. Allowed: 1px and 2px
+      # lines, and media query widths (a token cannot be used there). The
+      # lab is left as chosen; its sizes become tokens when a screen is
+      # built. In a CSS comment, write "pixels".
+      - id: sizes-in-tokens
+        name: sizes only in static/css/tokens.css (the lab excepted)
+        language: pygrep
+        entry: '^(?!\s*@(media|container)\b).*?(?<![\w.])(?![12]px\b)\d*\.?\d+(px|rem)\b'
+        files: \.css$
+        exclude: ^(static/css/tokens\.css|design/lab/)
       - id: no-inline-css-or-js
         name: no inline style, script or event handler in HTML
         language: pygrep
