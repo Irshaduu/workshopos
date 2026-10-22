@@ -94,6 +94,11 @@ through a pull request, and only when CI is green.
   checks it.
 - **A colour is written only in `static/css/tokens.css`.** Every other file
   uses its token (ADR-0017). pre-commit checks it.
+- **A size in px or rem is written only in `static/css/tokens.css`**
+  (ADR-0017), except 1px and 2px lines and media query widths. Lab pages
+  stay as chosen; when a screen is built, each size takes the nearest
+  token, or a new token when the difference shows. pre-commit checks it
+  outside `design/lab/`.
 - **The server decides; JavaScript only shows** (ADR-0016). htmx 4 for
   server calls: mark inherited attributes with `:inherited`, use the htmx 4
   event names, and no `hx-on`, `js:` values or trigger filters. JS modules
