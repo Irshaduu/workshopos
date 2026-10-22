@@ -15,10 +15,25 @@ repos:
   - repo: local
     hooks:
       - id: plain-writing
-        name: plain writing in docs and code (no em dashes, arrows or symbols)
+        name: plain writing in docs, code and screens (no em dashes, arrows or symbols)
         language: pygrep
         entry: "—|→|←|·|×|⚠|…"
-        files: \.(md|py)$
+        files: \.(md|py|html|css|js|yml|yaml|toml)$
+        exclude: ^\.pre-commit-config\.yaml$
+      # v1 lessons: colours spread over many files, and CSS and JS inside
+      # templates. Both are stopped here (ADR-0017).
+      - id: colours-in-tokens
+        name: colours only in static/css/tokens.css
+        language: pygrep
+        entry: '#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\('
+        files: \.css$
+        exclude: ^static/css/tokens\.css$
+      - id: no-inline-css-or-js
+        name: no inline style, script or event handler in HTML
+        language: pygrep
+        args: [--ignore-case]
+        entry: '\sstyle\s*=|<style\b|<script\b(?![^>]*\bsrc=)|\son[a-z]+\s*=\s*["'']'
+        files: \.html$
       - id: plain-commit-message
         name: plain writing in the commit message
         language: pygrep
