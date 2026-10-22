@@ -89,7 +89,11 @@ through a pull request, and only when CI is green.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.
 - **No business logic in signals.**
-- **No CSS or JS inside templates.**
+- **No CSS or JS inside templates**: no `style` attribute, inline `<script>`
+  or `onclick` in any HTML; scripts come from static files. pre-commit
+  checks it.
+- **A colour is written only in `static/css/tokens.css`.** Every other file
+  uses its token (ADR-0017). pre-commit checks it.
 - **The server decides; JavaScript only shows** (ADR-0016). htmx 4 for
   server calls: mark inherited attributes with `:inherited`, use the htmx 4
   event names, and no `hx-on`, `js:` values or trigger filters. JS modules
@@ -118,8 +122,8 @@ through a pull request, and only when CI is green.
 - **Docs say what is true now.** History lives in git and in ADRs.
 - **An ADR for every decision that is hard to undo.** The format is in
   `docs/adr/README.md`.
-- **Plain, natural English** in docs and commit messages. Short sentences,
-  everyday words, no em dashes, arrows or decorative symbols.
+- **Plain, natural English** in docs, screens and commit messages. Short
+  sentences, everyday words, no em dashes, arrows or decorative symbols.
 - **Written so another developer could take over.**
 - **No client names, customer data or personal details anywhere in the repo.**
 
