@@ -92,6 +92,12 @@ closes the issue.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.
 - **No business logic in signals.**
+- **Let PostgreSQL 18 guard the data** (ADR-0019). Before writing a model or
+  a query, check what PostgreSQL 18 and Django can do in the database:
+  constraints (unique, check, exclusion), generated fields, database
+  defaults, `UUID7`. Use one when it makes the data safer or the code
+  simpler, not because it is new. Write it through Django in `models.py`,
+  never as a trigger or a stored procedure, so the flow stays visible.
 - **No CSS or JS inside templates**: no `style` attribute, inline `<script>`
   or `onclick` in any HTML; scripts come from static files. pre-commit
   checks it.
