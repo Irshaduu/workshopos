@@ -111,7 +111,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] CI: GitHub Actions, uv audit, gitleaks; the health check (ADR-0014)
 - [x] Interactivity: htmx 4 for server calls, small JS modules for the
       rest (ADR-0016)
-- [x] Local database: PostgreSQL 17 on the machine, no Docker (ADR-0012)
+- [x] Local database: PostgreSQL 18 on the machine, no Docker (ADR-0019)
 - [x] Translatable text from day one; Malayalam later (ADR-0015)
 
 **Repository**
@@ -261,7 +261,7 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       environment (`wsgi.py` and `asgi.py` already point to it)
 - [ ] Deploy configuration in the repo; migrations run before traffic moves
 - [ ] Decide (ADR): one Dockerfile as the deploy recipe, built in CI and used
-      by the host; no Docker needed on the laptop (ADR-0012)
+      by the host; no Docker needed on the laptop (ADR-0019)
 - [ ] `main` goes to staging automatically; a release tag goes to production, on every server
 - [ ] Error tracking (Sentry) and an uptime monitor
 - [ ] Logs never contain customer data

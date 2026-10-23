@@ -56,7 +56,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# PostgreSQL 17 everywhere (ADR-0012).
+# PostgreSQL 18 everywhere (ADR-0019).
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",

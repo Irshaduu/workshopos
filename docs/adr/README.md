@@ -16,13 +16,14 @@ costs.
 | [0009](0009-django-6-1-then-6-2-lts.md) | Django 6.1 now, then 6.2 LTS | Accepted |
 | [0010](0010-python-3-14-and-uv.md) | Python 3.14, managed with uv | Accepted |
 | [0011](0011-module-switches-per-workshop.md) | Module switches per workshop | Accepted |
-| [0012](0012-local-postgresql-without-docker.md) | Local PostgreSQL 17, without Docker | Accepted |
+| [0012](0012-local-postgresql-without-docker.md) | Local PostgreSQL 17, without Docker | Superseded by 0019 |
 | [0013](0013-code-checks-and-tests.md) | Code checks and tests: ruff, pre-commit, pytest-django | Accepted |
 | [0014](0014-ci-on-github-actions.md) | CI on GitHub Actions | Accepted |
 | [0015](0015-translatable-text-from-day-one.md) | Translatable text from day one; Malayalam later | Accepted |
 | [0016](0016-htmx-for-server-calls.md) | htmx 4 for server calls; small JavaScript modules for the rest | Accepted |
 | [0017](0017-plain-css-with-our-own-tokens.md) | Plain CSS with our own tokens; no CSS framework, no build step | Accepted |
 | [0018](0018-lucide-icons-kept-in-the-repo.md) | Icons: Lucide, only the icons we use, kept in the repo | Accepted |
+| [0019](0019-postgresql-18-on-every-machine.md) | PostgreSQL 18 on every machine; no Docker on the laptop | Accepted |
 
 ## Rules
 
