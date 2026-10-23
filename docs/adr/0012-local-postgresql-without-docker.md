@@ -1,6 +1,6 @@
 # 0012: Local PostgreSQL 17, without Docker
 
-**Status:** Accepted (2026-10-15)
+**Status:** Superseded by 0019 (2026-10-23)
 
 ## Context
 

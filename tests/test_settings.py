@@ -17,6 +17,6 @@ def test_dates_use_india_time():
 
 
 @pytest.mark.django_db
-def test_the_database_is_postgresql_17_or_newer():
+def test_the_database_is_postgresql_18_or_newer():
     assert connection.vendor == "postgresql"
-    assert connection.pg_version >= 170000
+    assert connection.pg_version >= 180000

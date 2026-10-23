@@ -8,9 +8,9 @@ parts and stock, supplier ledgers, cash, staff pay and owner reports.
 
 ## Run it locally
 
-You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 17
+You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 18
 ([ADR-0010](docs/adr/0010-python-3-14-and-uv.md),
-[ADR-0012](docs/adr/0012-local-postgresql-without-docker.md)).
+[ADR-0019](docs/adr/0019-postgresql-18-on-every-machine.md)).
 
 1. `uv sync` installs Python 3.14 and every dependency.
 2. Copy `.env.example` to `.env` and fill in the values.
