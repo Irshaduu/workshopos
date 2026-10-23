@@ -51,6 +51,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | Work began before a written agreement | Agreement before go-live |
 | Changes merged with no review step | Every change reviewed and explained before merge |
 | Tests run by hand, sometimes only part of them | CI runs every check on every pull request |
+| The full test suite took about 50 minutes on the laptop | Fast tests by design; the suite timed, with a limit |
 | No JavaScript ever ran under test | Browser tests for the key flows |
 | One rule copied into many screens | One implementation per rule |
 | CSS and JS written inside templates | Static files, a design system, a strict CSP |
@@ -227,6 +228,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] The job card has a separate form for each role; no hidden inputs
 - [ ] Browser tests (Playwright) for this flow, in both Chrome's and
       Safari's engines
+- [ ] The full test suite timed, and a time limit set from it; checked
+      again at the end of each phase
 - [ ] Time recorded; every Go-live module sized small / medium / large
 - [ ] From that, a realistic delivery date for the client
 
