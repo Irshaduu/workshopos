@@ -37,6 +37,12 @@ It replaces ADR-0012, and the PostgreSQL version that ADR-0014 names for CI.
 - The backup and restore tools (`pg_dump`, `pg_restore`) have the same
   major version as the server. An older `pg_dump` refuses a newer server.
 - A test checks that the database is 18 or newer (`tests/test_settings.py`).
+- **We use what PostgreSQL 18 offers, where it helps.** Before a model or a
+  query is written, we check what PostgreSQL 18 and Django can do in the
+  database, and use it when it makes the data safer or the code simpler.
+  It is written through Django in `models.py`. Business rules never go into
+  triggers or stored procedures: like signals, they hide the flow. The rule
+  is in `CONTRIBUTING.md`, so every session sees it.
 
 ## Consequences
 
