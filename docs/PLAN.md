@@ -167,7 +167,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
       control (`.pg-back`), chips, status badges; one list search for every
       list page
 - [x] Icon set: Lucide, only the icons we use, kept in the repo (ADR-0018)
-- [ ] Screen states, each designed once (`docs/DESIGN.md`)
+- [x] Screen states, each designed once (`docs/DESIGN.md`)
 - [x] Three signature screens in the lab: live board, job card, owner
       dashboard
 - [ ] Each signature screen's size and speed measured on the floor tablet;
