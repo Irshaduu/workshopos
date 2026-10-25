@@ -34,12 +34,14 @@
     --color-primary-text: #1d4ed8;
 
     --color-success: #067647;
+    --color-success-strong: #05603a;
     --color-success-soft: #ecfdf3;
     --color-success-text: #067647;
 
     --color-warning: #dc6803;
     --color-warning-soft: #fffaeb;
     --color-warning-text: #b54708;
+    --color-warning-strong: #93370d;
 
     --color-danger: #d92d20;
     --color-danger-strong: #b42318;
@@ -50,6 +52,9 @@
     --color-neutral-text: #344054;
 
     --color-focus: #1d4ed8;
+
+    /* Behind an open dialog */
+    --color-backdrop: rgb(16 24 40 / 0.45);
 
     /* Type. The system font of each device: no file to download, and every
        system has a font for Malayalam (ADR-0015). */
@@ -75,6 +80,8 @@
 
     --tracking-tight: -0.02em;
     --tracking-snug: -0.01em;
+    /* Small capital labels, as in v1 */
+    --tracking-wide: 0.05em;
 
     /* Space: steps of 4 pixels */
     --space-1: 0.25rem;
@@ -104,6 +111,16 @@
     /* Icons (ADR-0018): sized from the text beside them */
     --icon-size: 1.25em;
     --icon-stroke: 1.75;
+
+    /* Component sizes, from v1 */
+    --pay-amount-width: 9.5rem;
+    --pay-method-width: 10rem;
+    --pay-note-min-width: 10rem;
+    --dialog-max-width: 23.75rem;
+    --disc-size: 3.25rem;
+    --disc-size-sm: 2.75rem;
+    --short-input-width: 4.75rem;
+    --short-input-height: 3.25rem;
 
     /* Car paint: v1's paint list and values, exactly (CAR_COLOR_HEX in v1).
        A car's own colour, not a tone. */

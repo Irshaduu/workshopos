@@ -65,6 +65,13 @@
         </div>
       </div>
       <div>
+        <p class="lab-label">Tones for a confirmation and for money (red out, green in)</p>
+        <div class="lab-row">
+          <button class="btn btn--success" type="button">Hand over</button>
+          <button class="btn btn--warning" type="button">Save anyway</button>
+        </div>
+      </div>
+      <div>
         <p class="lab-label">With an icon (the word still says what it does)</p>
         <div class="lab-row">
           <button class="btn btn--primary" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#plus"></use></svg>New job card</button>
@@ -143,6 +150,195 @@
         <button class="chip" type="button" aria-pressed="false">Mechanic 1</button>
         <button class="chip" type="button" aria-pressed="false">Mechanic 2</button>
         <button class="chip" type="button" aria-pressed="false">Mechanic 3</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-pay">
+    <h2 id="h-pay">Payment row</h2>
+    <p class="lab-intro">One control for a spare shop, a supplies shop, a fleet account and owner withdrawals. The row scrolls sideways on a phone; it never wraps.</p>
+    <div class="lab-stack">
+      <p class="lab-label">Money out (a spare shop), dated today</p>
+      <section class="card card--info pay" aria-labelledby="pay1-title">
+        <div class="pay__head">
+          <h3 class="pay__title" id="pay1-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#indian-rupee"></use></svg>Record a payment</h3>
+          <span class="pay__name">Spare shop 1</span>
+        </div>
+        <form class="pay__scroll">
+          <div class="pay__row">
+            <label class="pay__date"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>Today</span><input type="date" aria-label="Payment date" value="2026-10-25"></label>
+            <div class="pay__amount-field">
+              <label class="pay__label" for="pay1-amount">Amount</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="pay1-amount" inputmode="decimal" autocomplete="off"></div>
+            </div>
+            <div class="pay__method-field">
+              <label class="pay__label" for="pay1-method">Method</label>
+              <select class="field__input" id="pay1-method">
+                <option>Cash</option>
+                <option>UPI</option>
+                <option>Card</option>
+                <option>Bank transfer</option>
+              </select>
+            </div>
+            <div class="pay__note-field">
+              <label class="pay__label" for="pay1-note">Note (optional)</label>
+              <input class="field__input" id="pay1-note" maxlength="255" autocomplete="off">
+            </div>
+            <button class="btn btn--danger" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-up"></use></svg>Pay</button>
+          </div>
+        </form>
+        <p class="pay__foot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Applied to the oldest unpaid items first.</p>
+      </section>
+
+      <p class="lab-label">Money in (a fleet account), back-dated, amount typed</p>
+      <section class="card card--info pay" aria-labelledby="pay2-title">
+        <div class="pay__head">
+          <h3 class="pay__title" id="pay2-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#indian-rupee"></use></svg>Record a payment</h3>
+          <span class="pay__name">Fleet account 1 with a very long name that is cut</span>
+        </div>
+        <form class="pay__scroll">
+          <div class="pay__row">
+            <label class="pay__date pay__date--back-dated"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>17 Oct</span><input type="date" aria-label="Payment date" value="2026-10-17"></label>
+            <div class="pay__amount-field">
+              <label class="pay__label" for="pay2-amount">Amount</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="pay2-amount" inputmode="decimal" autocomplete="off" value="1,47,500"></div>
+            </div>
+            <div class="pay__method-field">
+              <label class="pay__label" for="pay2-method">Method</label>
+              <select class="field__input" id="pay2-method">
+                <option>Cash</option>
+                <option>UPI</option>
+                <option>Card</option>
+                <option selected>Bank transfer</option>
+              </select>
+            </div>
+            <div class="pay__note-field">
+              <label class="pay__label" for="pay2-note">Note (optional)</label>
+              <input class="field__input" id="pay2-note" maxlength="255" autocomplete="off" value="October bills">
+            </div>
+            <button class="btn btn--success" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-down"></use></svg>Pay</button>
+          </div>
+        </form>
+        <p class="pay__foot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Applied to the oldest unpaid bills first.</p>
+      </section>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-confirm">
+    <h2 id="h-confirm">Confirmation card</h2>
+    <p class="lab-intro">Every question the app asks, never the browser's own box. The disc's colour says what kind of question it is.</p>
+    <div class="lab-row">
+      <button class="btn" type="button" data-lab-open="lab-dialog">Open as a dialog</button>
+      <button class="btn" type="button" data-lab-open="lab-dialog-short">Open the short box</button>
+    </div>
+    <div class="lab-confirms">
+      <div class="confirm confirm--danger">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg></div>
+        <h3 class="confirm__title">Delete this payment?</h3>
+        <p class="confirm__text">&#8377; 12,000 to Spare shop 1 on 17/10/2026. It is kept in the change history.</p>
+        <div class="field confirm__reason">
+          <label class="field__label" for="c1-reason">Reason (optional)</label>
+          <input class="field__input" id="c1-reason" maxlength="255" autocomplete="off">
+        </div>
+        <div class="confirm__actions">
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn btn--danger" type="button">Delete</button>
+        </div>
+      </div>
+      <div class="confirm confirm--warning">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg></div>
+        <h3 class="confirm__title">Save with an earlier date?</h3>
+        <p class="confirm__text">This payment is dated 17/10/2026, 8 days ago. The change history keeps the real save date.</p>
+        <div class="confirm__actions">
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn btn--warning" type="button">Save anyway</button>
+        </div>
+      </div>
+      <div class="confirm confirm--success">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-check"></use></svg></div>
+        <h3 class="confirm__title">Hand over the car?</h3>
+        <p class="confirm__text">BMW 520d, KL 00 AA 0001. The job card then opens read-only.</p>
+        <div class="confirm__actions">
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn btn--success" type="button">Hand over</button>
+        </div>
+      </div>
+      <div class="confirm">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></div>
+        <h3 class="confirm__title">Mark as checked?</h3>
+        <p class="confirm__text">The warning goes until the figure changes. Your name and the time are kept.</p>
+        <div class="confirm__actions">
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn btn--primary" type="button">Mark as checked</button>
+        </div>
+      </div>
+      <div class="confirm confirm--short">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></div>
+        <h3 class="confirm__title">Front brake pads</h3>
+        <p class="confirm__text">From Spare shop 1</p>
+        <div class="confirm__short">
+          <span>Expected in</span>
+          <input class="field__input num" inputmode="numeric" maxlength="3" enterkeyhint="done" aria-label="Expected in how many days" value="7">
+          <span>days</span>
+        </div>
+        <p class="confirm__due">Due Sun 1 Nov</p>
+        <div class="confirm__actions">
+          <button class="btn" type="button">Skip</button>
+          <button class="btn btn--primary" type="button">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <dialog class="confirm confirm--danger" id="lab-dialog" aria-labelledby="lab-dialog-title" aria-describedby="lab-dialog-text">
+      <form method="dialog">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg></div>
+        <h3 class="confirm__title" id="lab-dialog-title">Delete this payment?</h3>
+        <p class="confirm__text" id="lab-dialog-text">&#8377; 12,000 to Spare shop 1 on 17/10/2026. It is kept in the change history.</p>
+        <div class="confirm__actions">
+          <button class="btn" value="no" autofocus>Cancel</button>
+          <button class="btn btn--danger" value="yes">Delete</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="confirm confirm--short" id="lab-dialog-short" aria-labelledby="lab-short-title" aria-describedby="lab-short-text">
+      <form method="dialog">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></div>
+        <h3 class="confirm__title" id="lab-short-title">Front brake pads</h3>
+        <p class="confirm__text" id="lab-short-text">From Spare shop 1</p>
+        <div class="confirm__short">
+          <span>Expected in</span>
+          <input class="field__input num" inputmode="numeric" maxlength="3" enterkeyhint="done" aria-label="Expected in how many days" autofocus>
+          <span>days</span>
+        </div>
+        <p class="confirm__due"></p>
+        <div class="confirm__actions">
+          <button class="btn" value="no">Skip</button>
+          <button class="btn btn--primary" value="yes">Done</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-search">
+    <h2 id="h-search">List search</h2>
+    <p class="lab-intro">One search box for every list page, the same shape on all of them. The clear button shows once there is text.</p>
+    <div class="card lab-stack">
+      <div>
+        <p class="lab-label">Empty</p>
+        <form class="search" role="search">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#search"></use></svg>
+          <input class="search__input" type="search" name="q" aria-label="Search the list" placeholder="Search plate, car or customer" autocomplete="off">
+          <button class="search__clear" type="button" aria-label="Clear the search"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </form>
+      </div>
+      <div>
+        <p class="lab-label">With text</p>
+        <form class="search" role="search">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#search"></use></svg>
+          <input class="search__input" type="search" name="q" aria-label="Search the list" placeholder="Search plate, car or customer" autocomplete="off" value="KL 00">
+          <button class="search__clear" type="button" aria-label="Clear the search"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </form>
       </div>
     </div>
   </section>
@@ -238,5 +434,6 @@
   </section>
 
 </main>
+<script src="lab.js"></script>
 </body>
 </html>
