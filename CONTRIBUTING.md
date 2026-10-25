@@ -125,6 +125,8 @@ closes the issue.
 - **Factories, not hand-made fixtures.**
 - **A leak test per app** and a **permission matrix** (every page for every role).
 - **Browser tests** for the key flows.
+- **A JavaScript module's plain functions are tested with Node's own test
+  runner**, in `tests/js/` (ADR-0020). No npm and no test library.
 - **A failing test means the code regressed.** Fix the code, not the test.
 
 ## Docs

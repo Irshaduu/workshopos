@@ -92,7 +92,11 @@ The components, in `static/css/components.css`:
   save: the notice (`.notice`), with the field errors for a form.
 - Server error, not found, permission denied and offline: a page of its
   own (`.state-page`).
-- The success sound is not built yet: it comes with the first JS module.
+- The sound (`static/js/sound.js`, from v1): a short tone for a notice
+  that carries `data-sound-tag` (success, error or warning; info stays
+  silent), one per page, and a quieter tone when a confirmation card
+  opens. It is on unless a device turns it off; that switch comes with
+  the app's menu.
 
 ## Accessibility
 

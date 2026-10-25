@@ -23,6 +23,9 @@ You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 18
 
 - `uv run pre-commit install` once: the checks then run before every commit.
 - `uv run pytest` runs the tests.
+- `node --test "tests/js/*.test.js"` runs the JavaScript unit tests, with
+  Node's own test runner and nothing to install
+  ([ADR-0020](docs/adr/0020-javascript-unit-tests-with-node.md)).
 - `uv run ruff check .` and `uv run ruff format .` check and format by hand.
 - `uv audit --preview-features audit-command` checks every package in
   `uv.lock` for known security issues.
