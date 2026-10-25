@@ -58,6 +58,57 @@
     margin-top: var(--space-4);
   }
 
+  /* Screen state samples. A frame stands for a page, so a state that fills
+     the page is shown at a smaller size. */
+  .lab-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-page);
+  }
+
+  .lab-frame .progress {
+    position: absolute;
+  }
+
+  .lab-frame .state-page {
+    min-height: 0;
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .lab-progress-frame {
+    height: 48px;
+  }
+
+  .lab-gap-top {
+    margin-top: var(--space-3);
+  }
+
+  .lab-pages {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+  }
+
+  .lab-skeleton-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .lab-skeleton-row:last-child {
+    border-bottom: 0;
+  }
+
+  .lab-w-15 { width: 15%; }
+  .lab-w-20 { width: 20%; }
+  .lab-w-35 { width: 35%; }
+  .lab-w-40 { width: 40%; }
+  .lab-w-55 { width: 55%; }
+
   /* Icon samples */
   .lab-icons {
     display: grid;

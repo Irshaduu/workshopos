@@ -9,8 +9,8 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
 - Tokens: `static/css/tokens.css`, the only home of every colour and size.
 - Components: `static/css/components.css`: card (with a status edge),
   button, field, status badge, chip, back control, payment row,
-  confirmation card, list search. Each is v1's, fixed only where a rule
-  breaks.
+  confirmation card, list search, and the screen states below. Each is
+  v1's, fixed only where a rule breaks.
 - Icons: Lucide, only the ones we use, in `static/icons/icons.svg`
   (ADR-0018). An icon never carries meaning alone. Icons go on section
   titles, on buttons, and on the few things that appear on many screens
@@ -82,6 +82,17 @@ it. A screen is not done until it handles every state that can happen on it.
 | Permission denied | That this role cannot open the page. None of its data is shown. |
 | Session expired | The full sign-in page, never inside part of a page, saying what was not saved. |
 | Offline | That there is no internet. A save says "Not saved", and nothing is sent again later by itself. |
+
+The components, in `static/css/components.css`:
+- Loading: the progress bar at the top (`.progress`) and the busy button
+  (`aria-busy`); loading rows (`.skeleton`) for a part of a page that
+  loads after the page.
+- Empty and no search results: `.empty`.
+- Form errors, success, a failed save, session expired and offline on a
+  save: the notice (`.notice`), with the field errors for a form.
+- Server error, not found, permission denied and offline: a page of its
+  own (`.state-page`).
+- The success sound is not built yet: it comes with the first JS module.
 
 ## Accessibility
 

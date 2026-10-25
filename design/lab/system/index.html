@@ -343,6 +343,155 @@
     </div>
   </section>
 
+  <section class="lab-section" aria-labelledby="h-states">
+    <h2 id="h-states">Screen states</h2>
+    <p class="lab-intro">Each state is designed once and used by every screen (docs/DESIGN.md). Same order as the table there.</p>
+    <div class="lab-stack">
+
+      <div>
+        <p class="lab-label">Loading, and a slow network: the bar at the top of the page, and the save button locked until the answer comes</p>
+        <div class="lab-frame lab-progress-frame">
+          <div class="progress" id="lab-progress"></div>
+        </div>
+        <div class="lab-row lab-gap-top">
+          <button class="btn" type="button" data-lab-replay="lab-progress">Run the bar again</button>
+          <button class="btn btn--primary" type="button" aria-busy="true">Saving</button>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Loading rows, for a part of a page that loads after the page</p>
+        <div class="card" aria-busy="true" aria-label="Loading job cards">
+          <div class="lab-skeleton-row"><span class="skeleton lab-w-40"></span><span class="skeleton lab-w-20"></span></div>
+          <div class="lab-skeleton-row"><span class="skeleton lab-w-55"></span><span class="skeleton lab-w-15"></span></div>
+          <div class="lab-skeleton-row"><span class="skeleton lab-w-35"></span><span class="skeleton lab-w-20"></span></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Empty</p>
+        <div class="empty">
+          <svg class="icon empty__icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#inbox"></use></svg>
+          <h3 class="empty__title">No job cards yet</h3>
+          <p class="empty__text">Cars that come in show here.</p>
+          <button class="btn btn--primary" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#plus"></use></svg>New job card</button>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">No search results</p>
+        <div class="empty">
+          <svg class="icon empty__icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#search"></use></svg>
+          <h3 class="empty__title">Nothing matches "KL 99"</h3>
+          <p class="empty__text">Check the plate, or search by car or customer.</p>
+          <button class="btn" type="button">Clear the search</button>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Form errors: what was typed stays, and each error is next to its box</p>
+        <div class="card lab-stack">
+          <div class="notice notice--danger" role="alert">
+            <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-alert"></use></svg>
+            <p class="notice__text">Not saved. Fix the 2 boxes marked in red.</p>
+          </div>
+          <div class="lab-fields">
+            <div class="field">
+              <label class="field__label" for="s-plate">Number plate</label>
+              <input class="field__input" id="s-plate" aria-invalid="true" aria-describedby="s-plate-error">
+              <p class="field__error" id="s-plate-error">Enter the number plate.</p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s-km">Kilometres</label>
+              <input class="field__input num" id="s-km" inputmode="numeric" aria-invalid="true" aria-describedby="s-km-error" value="48,2OO">
+              <p class="field__error" id="s-km-error">Use numbers only. This has the letter O.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Success (its sound comes with the first JS module)</p>
+        <div class="notice notice--success" role="status">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-check"></use></svg>
+          <p class="notice__text">Payment of &#8377; 12,000 to Spare shop 1 saved.</p>
+          <button class="notice__close" type="button" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Server error, on a save</p>
+        <div class="notice notice--danger" role="alert">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg>
+          <p class="notice__text">Not saved. Something went wrong on our side.</p>
+          <button class="btn" type="button">Try again</button>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Session expired, on the sign-in page (the page itself is built with sign-in, in Slice 1)</p>
+        <div class="notice notice--warning" role="alert">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>
+          <p class="notice__text">You were signed out after a long break, so your last change was not saved. Sign in, then enter it again.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">Offline, on a save: nothing is sent again later by itself</p>
+        <div class="notice notice--danger" role="alert">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-alert"></use></svg>
+          <p class="notice__text">No internet. Not saved. Save again when the internet is back.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="lab-label">A page of its own: server error, not found, permission denied, offline</p>
+        <div class="lab-pages">
+          <div class="lab-frame">
+            <div class="state-page">
+              <div class="state-card">
+                <p class="state-card__code">500</p>
+                <h3 class="state-card__title">Something went wrong</h3>
+                <p class="state-card__text">Nothing was saved. Please try again in a minute.</p>
+                <a class="btn btn--primary" href="#">Go to the home page</a>
+              </div>
+            </div>
+          </div>
+          <div class="lab-frame">
+            <div class="state-page">
+              <div class="state-card">
+                <p class="state-card__code">404</p>
+                <h3 class="state-card__title">Page not found</h3>
+                <p class="state-card__text">This page or record does not exist. It may have been deleted, or the link is wrong.</p>
+                <a class="btn btn--primary" href="#">Go to the home page</a>
+              </div>
+            </div>
+          </div>
+          <div class="lab-frame">
+            <div class="state-page">
+              <div class="state-card">
+                <p class="state-card__code">403</p>
+                <h3 class="state-card__title">Not open to your role</h3>
+                <p class="state-card__text">This page is for other roles. Ask the owner if you need it.</p>
+                <a class="btn btn--primary" href="#">Go to the home page</a>
+              </div>
+            </div>
+          </div>
+          <div class="lab-frame">
+            <div class="state-page">
+              <div class="state-card">
+                <h3 class="state-card__title">No internet</h3>
+                <p class="state-card__text">This page needs the internet. Check the Wi-Fi, then try again.</p>
+                <a class="btn btn--primary" href="#">Try again</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <section class="lab-section" aria-labelledby="h-icons">
     <h2 id="h-icons">Icons</h2>
     <p class="lab-intro">Lucide, only the icons we use (ADR-0018). Each takes the colour and size of the text beside it.</p>

@@ -702,6 +702,200 @@
     display: none;
   }
 
+  /* Screen states (docs/DESIGN.md), each designed once. */
+
+  /* Progress bar (v1's): a thin line at the very top while a page or a
+     part of it loads. The installed app has no address bar to show that a
+     page is coming, so this does. It eases towards 90% and waits there,
+     because nothing knows how far the request has got; it never claims to
+     finish. With less motion it stands still at a third. */
+  .progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    height: var(--progress-height);
+    background: var(--color-primary);
+    transform-origin: left center;
+    animation: progress-creep 10s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+    pointer-events: none;
+  }
+
+  @keyframes progress-creep {
+    from {
+      transform: scaleX(0);
+    }
+
+    40% {
+      transform: scaleX(0.55);
+    }
+
+    to {
+      transform: scaleX(0.9);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress {
+      animation: none;
+      transform: scaleX(0.35);
+    }
+  }
+
+  /* Loading rows: grey bars in the shape of the rows to come, for a part
+     of a page that loads after the page itself. */
+  .skeleton {
+    display: block;
+    height: 1em;
+    border-radius: var(--radius-sm);
+    background: var(--color-border);
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-pulse {
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  /* Notice (v1's message banner): the answer to what just happened, at
+     the top of the page. Success is short; an error says that nothing was
+     saved and what to do next. The words carry the meaning; the colour and
+     the icon only help. */
+  .notice {
+    --notice-tint: var(--color-primary-soft);
+    --notice-edge: var(--color-primary-edge);
+    --notice-ink: var(--color-primary-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--tap-min);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+    border: 1px solid var(--notice-edge);
+    border-radius: var(--radius-lg);
+    background: var(--notice-tint);
+    box-shadow: var(--shadow-sm);
+    color: var(--notice-ink);
+    font-weight: var(--weight-medium);
+  }
+
+  .notice--success {
+    --notice-tint: var(--color-success-soft);
+    --notice-edge: var(--color-success-edge);
+    --notice-ink: var(--color-success-text);
+  }
+
+  .notice--warning {
+    --notice-tint: var(--color-warning-soft);
+    --notice-edge: var(--color-warning-edge);
+    --notice-ink: var(--color-warning-text);
+  }
+
+  .notice--danger {
+    --notice-tint: var(--color-danger-soft);
+    --notice-edge: var(--color-danger-edge);
+    --notice-ink: var(--color-danger-text);
+  }
+
+  .notice__text {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-1) 0;
+  }
+
+  .notice .btn {
+    flex: none;
+  }
+
+  .notice__close {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .notice__close:hover {
+    background: var(--color-wash);
+  }
+
+  /* Empty, and no search results (v1's Completed): a quiet box that says
+     there is nothing here yet, or nothing matched, and gives the next
+     step. */
+  .empty {
+    padding: var(--space-12) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    text-align: center;
+  }
+
+  .empty__icon {
+    margin: 0 auto var(--space-4);
+    color: var(--color-border-strong);
+    font-size: var(--empty-icon-size);
+  }
+
+  .empty__title {
+    color: var(--color-text-muted);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+  }
+
+  .empty__text {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .empty .btn {
+    margin-top: var(--space-4);
+  }
+
+  /* A page of its own (v1's error pages): not found, permission denied,
+     server error, no internet. It needs nothing from the app, so it still
+     shows when the app itself has failed. The code is grey: it is for
+     whoever reports the problem, and colour means status. */
+  .state-page {
+    display: grid;
+    min-height: 100dvh;
+    padding: var(--space-4);
+    place-items: center;
+  }
+
+  .state-card {
+    width: 100%;
+    max-width: var(--state-card-max-width);
+    padding: var(--space-12) var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+  }
+
+  .state-card__code {
+    color: var(--color-text-muted);
+    font-size: var(--text-display);
+    font-weight: var(--weight-bold);
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .state-card__title {
+    margin-top: var(--space-2);
+    font-size: var(--text-2xl);
+  }
+
+  .state-card__text {
+    margin: var(--space-4) 0 var(--space-8);
+    color: var(--color-text-muted);
+  }
+
   /* Car paint: a class per paint sets --paint, which a screen uses for a
      car's stripe, wash or swatch. The values are tokens. */
   .paint-black { --paint: var(--paint-black); }
