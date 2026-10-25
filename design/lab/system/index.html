@@ -411,11 +411,17 @@
       </div>
 
       <div>
-        <p class="lab-label">Success (its sound comes with the first JS module)</p>
+        <p class="lab-label">Success, with its sound. On a real page the notice carries data-sound-tag="success", and static/js/sound.js plays the tone when the page opens.</p>
         <div class="notice notice--success" role="status">
           <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-check"></use></svg>
           <p class="notice__text">Payment of &#8377; 12,000 to Spare shop 1 saved.</p>
           <button class="notice__close" type="button" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </div>
+        <div class="lab-row lab-gap-top">
+          <button class="btn" type="button" data-lab-sound="success">Play success</button>
+          <button class="btn" type="button" data-lab-sound="error">Play error</button>
+          <button class="btn" type="button" data-lab-sound="warning">Play warning</button>
+          <button class="btn" type="button" data-lab-sound="prompt">Play question</button>
         </div>
       </div>
 
@@ -583,6 +589,6 @@
   </section>
 
 </main>
-<script src="lab.js"></script>
+<script type="module" src="lab.js"></script>
 </body>
 </html>

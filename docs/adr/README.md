@@ -24,6 +24,7 @@ costs.
 | [0017](0017-plain-css-with-our-own-tokens.md) | Plain CSS with our own tokens; no CSS framework, no build step | Accepted |
 | [0018](0018-lucide-icons-kept-in-the-repo.md) | Icons: Lucide, only the icons we use, kept in the repo | Accepted |
 | [0019](0019-postgresql-18-on-every-machine.md) | PostgreSQL 18 on every machine; no Docker on the laptop | Accepted |
+| [0020](0020-javascript-unit-tests-with-node.md) | JavaScript unit tests with Node's own test runner | Accepted |
 
 ## Rules
 

@@ -172,7 +172,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
       dashboard
 - [ ] Each signature screen's size and speed measured on the floor tablet;
       a limit set from it
-- [ ] JavaScript unit tests, set up with the first JS module
+- [x] JavaScript unit tests, set up with the first JS module
 - [ ] Checked at phone, tablet and laptop widths
 - [ ] Tried on the real devices by the real users (`docs/DESIGN.md`)
 - [ ] Accessibility: WCAG 2.2 AA (`docs/DESIGN.md`)

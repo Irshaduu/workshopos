@@ -12,8 +12,9 @@ permissions:
   contents: read
 
 env:
-  # Keep this the same as the uv on the laptop.
+  # Keep these the same as the uv and the Node on the laptop.
   UV_VERSION: "0.13.1"
+  NODE_VERSION: "24.19.0"
 
 jobs:
   checks:
@@ -66,6 +67,11 @@ jobs:
         run: uv run python manage.py makemigrations --check --dry-run
       - name: Tests, with a coverage report
         run: uv run pytest --cov
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: JavaScript unit tests (ADR-0020)
+        run: node --test "tests/js/*.test.js"
 
   audit:
     name: Dependency audit
