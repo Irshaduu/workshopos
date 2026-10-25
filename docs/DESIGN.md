@@ -103,10 +103,19 @@ The components, in `static/css/components.css`:
 The target is WCAG 2.2, level AA.
 
 - Contrast: at least 4.5 to 1 for normal text, 3 to 1 for large text and
-  for controls.
+  for controls. A box's edge is 3 to 1 against what is around it.
 - Touch targets: at least 44 by 44 pixels. This is stricter than AA, which
-  asks for 24.
-- Labels: every field has a visible label. Two exceptions, both v1's:
-  the list search (its search icon and hint say what it is) and the
+  asks for 24. A control that looks smaller gets an invisible band that
+  makes it 44 to a finger.
+- Labels: every field has a visible label. In a table it is the column
+  heading, and in a list of rows the section title. Two exceptions, both
+  v1's: the list search (its search icon and hint say what it is) and the
   payment row's date (its calendar icon and the date itself). A screen
-  reader hears a label on both.
+  reader hears a label on every box.
+- Focus: a box that gets the keyboard focus is never hidden under a
+  pinned header or column; scroll padding keeps it clear.
+- Reflow: no sideways page scroll at 320 pixels wide. A wide table
+  scrolls inside its own box.
+- Checked: every lab page at 320, 375, 768 and 1280 pixels wide, by
+  measurement and with the keyboard. Not tried yet: a screen reader, and
+  the real devices.
