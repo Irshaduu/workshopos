@@ -9,8 +9,8 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
 - Tokens: `static/css/tokens.css`, the only home of every colour and size.
 - Components: `static/css/components.css`: card (with a status edge),
   button, field, status badge, chip, back control, payment row,
-  confirmation card, list search, and the screen states below. Each is
-  v1's, fixed only where a rule breaks.
+  confirmation card, list search, info button, and the screen states
+  below. Each is v1's, fixed only where a rule breaks.
 - Icons: Lucide, only the ones we use, in `static/icons/icons.svg`
   (ADR-0018). An icon never carries meaning alone. Icons go on section
   titles, on buttons, and on the few things that appear on many screens
@@ -97,6 +97,22 @@ The components, in `static/css/components.css`:
   silent), one per page, and a quieter tone when a confirmation card
   opens. It is on unless a device turns it off; that switch comes with
   the app's menu.
+
+## Help notes
+
+A help note is a short line that explains how the system works, for
+example "This payment clears the oldest unpaid amount first." Once a
+person knows the screen, it only gets in the way, so:
+
+- **Behind the info button:** a note the person does not need to fill the
+  form right or to make a decision. The button (an "i" in a circle) sits
+  beside the title it explains; a tap shows the note under the title, and
+  another tap hides it.
+- **Always on the screen:** every note on a report page (the owner
+  dashboard, Deep analysis), a warning before an action, a rule for what
+  to type, an error, and a fact (a count, or how a figure is worked out).
+- **How a note is written:** one or two short sentences in everyday words,
+  checked against v1's code so it stays true.
 
 ## Accessibility
 
