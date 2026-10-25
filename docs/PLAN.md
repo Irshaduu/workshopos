@@ -173,9 +173,9 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] Each signature screen's size and speed measured on the floor tablet;
       a limit set from it
 - [x] JavaScript unit tests, set up with the first JS module
-- [ ] Checked at phone, tablet and laptop widths
+- [x] Checked at phone, tablet and laptop widths
 - [ ] Tried on the real devices by the real users (`docs/DESIGN.md`)
-- [ ] Accessibility: WCAG 2.2 AA (`docs/DESIGN.md`)
+- [x] Accessibility: WCAG 2.2 AA (`docs/DESIGN.md`)
 
 ### Phase 4: Core architecture
 

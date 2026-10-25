@@ -79,6 +79,17 @@
      rule breaks: every box and button at least 44px, status colours that
      pass AA, a name for every box, and no inline style. */
 
+  /* A box that gets the keyboard focus is never left under the pinned
+     header or the pinned row number (WCAG 2.4.11): the browser scrolls it
+     clear by these amounts. */
+  :root {
+    scroll-padding-top: 6rem;
+  }
+
+  .jc1-scroll {
+    scroll-padding-left: 40px;
+  }
+
   .jc1-head {
     position: sticky;
     top: 0;
@@ -379,7 +390,7 @@
     width: 100%;
     min-height: var(--tap-min);
     padding: 0 var(--space-3);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border-control);
     border-radius: var(--radius-md);
     background: var(--color-neutral-soft);
     color: var(--color-text);
@@ -405,14 +416,15 @@
      Add buttons. Its status stays grey, whatever is picked, until something
      is typed, so it never looks like a real part waiting. */
   .is-open .jc1-status:is(.is-pending, .is-working, .is-fixed) {
-    border-color: var(--color-border);
+    border-color: var(--color-border-control);
     background: var(--color-neutral-soft);
     color: var(--color-text-muted);
   }
 
-  /* An empty box wears a red hairline until it is filled (v1). */
+  /* An empty box wears a red hairline until it is filled (v1), in the
+     full red so the box's edge stays visible (AA, 3 to 1). */
   .jc1-input.is-empty {
-    border-color: var(--color-danger-edge-soft);
+    border-color: var(--color-danger);
     background: var(--color-surface);
   }
 
@@ -489,7 +501,10 @@
     color: var(--color-text-on-strong);
   }
 
+  /* v1's amber is too light to show the box's edge on white, so the edge
+     is a darker amber. */
   .jc1-status.is-working {
+    border-color: var(--color-warning-text);
     background: var(--color-status-working);
     color: var(--color-on-status-working);
   }

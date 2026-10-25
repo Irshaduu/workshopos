@@ -185,7 +185,9 @@
     display: grid;
     gap: var(--space-4);
     align-items: start;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* A card is 320px wide or more, but never wider than the screen
+       (WCAG 1.4.10: no sideways scroll at 320px). */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   }
 
   /* Exactly as v1: a 10px stripe in the car's colour, and the card washed
