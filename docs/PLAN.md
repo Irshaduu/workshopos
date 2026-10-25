@@ -162,7 +162,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 - [x] CSS base: plain CSS with our own tokens (ADR-0017)
 - [x] Tokens: colour, type, spacing, radius, shadow (`docs/design/`)
-- [~] About ten components. v1's approved patterns are the first candidates:
+- [x] About ten components. v1's approved patterns are the first candidates:
       the payment row (`.rpay-*`), the confirmation card (`.wcf-*`), the back
       control (`.pg-back`), chips, status badges; one list search for every
       list page

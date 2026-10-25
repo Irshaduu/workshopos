@@ -97,6 +97,30 @@
     background: var(--color-danger-strong);
   }
 
+  .btn--success {
+    border-color: var(--color-success);
+    background: var(--color-success);
+    color: var(--color-text-on-strong);
+  }
+
+  .btn--success:hover {
+    border-color: var(--color-success-strong);
+    background: var(--color-success-strong);
+  }
+
+  /* The plain warning tone is too light for white text, so the button
+     uses the darker warning text colour. */
+  .btn--warning {
+    border-color: var(--color-warning-text);
+    background: var(--color-warning-text);
+    color: var(--color-text-on-strong);
+  }
+
+  .btn--warning:hover {
+    border-color: var(--color-warning-strong);
+    background: var(--color-warning-strong);
+  }
+
   .btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;
@@ -289,6 +313,393 @@
   .back:hover {
     background: var(--color-surface-sunken);
     color: var(--color-text);
+  }
+
+  /* Payment row (v1's .rpay-*): one control to record a payment to a
+     spare shop or a supplies shop, from a fleet account, or for an owner
+     withdrawal. It sits in a .card with the info edge. The row never wraps
+     and never squeezes: it scrolls sideways, in the order it is filled,
+     and ends in the Pay button. Red pays money out; green takes money in. */
+  /* min-width: 0 lets the card shrink inside a grid or a flex row, so
+     the row scrolls instead of making the page wider. */
+  .pay {
+    min-width: 0;
+  }
+
+  .pay:focus-within {
+    box-shadow: var(--shadow-md);
+  }
+
+  .pay__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .pay__title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+  }
+
+  .pay__title .icon {
+    color: var(--color-primary);
+  }
+
+  /* Who is about to be paid. Only the name: the balance is already the
+     biggest figure on the page. A long name is cut, never wrapped. */
+  .pay__name {
+    max-width: 100%;
+    overflow: hidden;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The padding gives a focus ring room inside the scroller; the negative
+     margin takes that room back. */
+  .pay__scroll {
+    overflow-x: auto;
+    margin: calc(var(--space-1) * -1);
+    padding: var(--space-1);
+    scrollbar-width: thin;
+  }
+
+  .pay__row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-3);
+  }
+
+  /* Fixed widths, so the row keeps one shape on the tablet and the laptop.
+     Only the note grows, which puts Pay at the right end of a wide card. */
+  .pay__row > * {
+    flex: none;
+  }
+
+  .pay__amount-field {
+    width: var(--pay-amount-width);
+  }
+
+  .pay__method-field {
+    width: var(--pay-method-width);
+  }
+
+  .pay__note-field {
+    flex: 1 0 var(--pay-note-min-width);
+  }
+
+  .pay__label {
+    display: block;
+    margin-bottom: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* The amount reads as money first: its own rupee sign, bigger and
+     bolder than the other boxes. */
+  .pay__money {
+    position: relative;
+  }
+
+  .pay__money::before {
+    content: "\20B9";
+    position: absolute;
+    inset: 0 auto 0 var(--space-3);
+    display: flex;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-weight: var(--weight-bold);
+    pointer-events: none;
+  }
+
+  .pay__amount {
+    padding-left: var(--space-8);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  /* The date: almost always today, so it costs little. A date that is
+     not today shows in amber, so a back-dated payment is never missed.
+     The real date box lies on top, see-through, so a tap opens the
+     device's own date picker. */
+  .pay__date {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pay__date:hover {
+    color: var(--color-primary-text);
+  }
+
+  .pay__date:has(:focus-visible) {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .pay__date--back-dated,
+  .pay__date--back-dated:hover {
+    color: var(--color-warning-text);
+  }
+
+  .pay__date input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .pay__row .btn {
+    white-space: nowrap;
+  }
+
+  .pay__foot {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* Confirmation card (v1's .wcf-*): one card for every question the app
+     asks, never the browser's own confirm box. The tone shows in the
+     round disc, so the question is known before it is read: red for a
+     delete, amber for a back-dated entry, green for a handover. The Yes
+     button takes the same tone. */
+  .confirm {
+    --confirm-tint: var(--color-primary-soft);
+    --confirm-ink: var(--color-primary-text);
+    width: 100%;
+    max-width: var(--dialog-max-width);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    color: var(--color-text);
+    text-align: center;
+  }
+
+  /* As a dialog it sits in the middle, with a gutter from the screen's
+     edges. The margin is set here because the reset removes the browser's
+     own. */
+  .confirm:modal {
+    width: calc(100% - var(--space-4) * 2);
+    margin: auto;
+  }
+
+  .confirm::backdrop {
+    background: var(--color-backdrop);
+  }
+
+  .confirm--danger {
+    --confirm-tint: var(--color-danger-soft);
+    --confirm-ink: var(--color-danger-text);
+  }
+
+  .confirm--warning {
+    --confirm-tint: var(--color-warning-soft);
+    --confirm-ink: var(--color-warning-text);
+  }
+
+  .confirm--success {
+    --confirm-tint: var(--color-success-soft);
+    --confirm-ink: var(--color-success-text);
+  }
+
+  .confirm__disc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--disc-size);
+    height: var(--disc-size);
+    margin: 0 auto var(--space-3);
+    border-radius: 50%;
+    background: var(--confirm-tint);
+    color: var(--confirm-ink);
+    font-size: var(--text-xl);
+  }
+
+  .confirm__title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  .confirm__text {
+    margin: var(--space-2) 0 var(--space-6);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* Asked only where a reason is kept, such as a delete. */
+  .confirm__reason {
+    margin: calc(var(--space-2) * -1) 0 var(--space-4);
+    text-align: left;
+  }
+
+  .confirm__actions {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .confirm__actions .btn {
+    flex: 1;
+  }
+
+  /* On a narrow phone the buttons stack and Yes goes on top, so a thumb
+     never lands on it by habit. */
+  @media (max-width: 420px) {
+    .confirm__actions {
+      flex-direction: column-reverse;
+    }
+  }
+
+  /* The short box: one number and its unit, such as "Expected in 15
+     days" when a part is ordered. It is the card seen most, so it is
+     smaller, the sentence is dark, and the two short buttons stay side by
+     side. The line under the box keeps its height, so the card never jumps
+     while someone types. */
+  .confirm--short {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+
+  .confirm--short .confirm__disc {
+    width: var(--disc-size-sm);
+    height: var(--disc-size-sm);
+    font-size: var(--text-lg);
+  }
+
+  .confirm--short .confirm__text {
+    margin-bottom: var(--space-4);
+  }
+
+  .confirm__short {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    font-weight: var(--weight-semibold);
+  }
+
+  .confirm__short .field__input {
+    width: var(--short-input-width);
+    min-height: var(--short-input-height);
+    text-align: center;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+  }
+
+  .confirm__due {
+    min-height: calc(var(--text-sm) * var(--leading-normal));
+    margin: var(--space-2) 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .confirm--short .confirm__actions {
+    flex-direction: row;
+  }
+
+  /* On a touch screen the keyboard covers the bottom half, so the card
+     with a box sits high. */
+  @media (pointer: coarse) {
+    .confirm--short:modal {
+      margin-top: 8vh;
+    }
+  }
+
+  /* List search (v1's Completed): one search box for every list page, the
+     same shape on all of them. The search icon and the hint say what it
+     is; a screen reader hears its label. The clear button shows only when
+     there is text. */
+  .search {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search > .icon {
+    position: absolute;
+    top: 50%;
+    left: var(--space-3);
+    color: var(--color-text-muted);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .search__input {
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: 0 var(--tap-min) 0
+      calc(var(--space-3) + var(--icon-size) + var(--space-2));
+    border: 1px solid var(--color-border-control);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--text-base);
+  }
+
+  .search__input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+
+  .search__input::-webkit-search-cancel-button {
+    appearance: none;
+  }
+
+  .search__clear {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: 100%;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  .search__clear:hover {
+    color: var(--color-text);
+  }
+
+  .search__input:placeholder-shown + .search__clear {
+    display: none;
   }
 
   /* Car paint: a class per paint sets --paint, which a screen uses for a

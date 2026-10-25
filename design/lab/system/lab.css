@@ -20,6 +20,10 @@
     margin-bottom: var(--space-3);
   }
 
+  .lab-section > .lab-intro {
+    margin: 0 0 var(--space-4);
+  }
+
   .lab-row {
     display: flex;
     flex-wrap: wrap;
@@ -43,6 +47,15 @@
     display: grid;
     gap: var(--space-4);
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  /* Confirmation card samples, side by side */
+  .lab-confirms {
+    display: grid;
+    gap: var(--space-4);
+    align-items: start;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    margin-top: var(--space-4);
   }
 
   /* Icon samples */
