@@ -36,8 +36,10 @@ polish, not decoration.
   none when the device asks for less motion.
 - **Delight at key moments:** a friendly empty state, a clear success with
   its sound, loading shaped like the content.
-- **Measured, not guessed.** Each signature screen's size and speed is
-  measured on the floor tablet, and a limit is set from that.
+- **Measured, not guessed.** A speed limit is set in Slice 1 from the
+  real job card, measured in Chrome set to act like a slow phone. The
+  staging trial (Phase 8) measures every go-live screen on the floor
+  tablet, and confirms or changes the limit.
 
 ## Devices and their users
 
@@ -57,8 +59,10 @@ A light theme only: the workshop is well lit, and dark text on a light
 screen reads best there. A dark mode can come later as a second set of
 token values, so components never hold a raw colour.
 
-Every screen works at phone, tablet and laptop widths. A design is chosen
-only after the real users have tried it on these devices.
+Every screen works at phone, tablet and laptop widths. The real users try
+every go-live screen on their own devices in the staging trial, before
+go-live (Phase 8). Until then v1's design stands: the owners settled it,
+and the staff have seen it.
 
 Every screen uses one frame: content up to 1,200px wide with a 16px side
 gutter, 16px between boxes, and 12px corners on every box. A wide screen
@@ -134,4 +138,4 @@ The target is WCAG 2.2, level AA.
   scrolls inside its own box.
 - Checked: every lab page at 320, 375, 768 and 1280 pixels wide, by
   measurement and with the keyboard. Not tried yet: a screen reader, and
-  the real devices.
+  the real devices (in the staging trial).

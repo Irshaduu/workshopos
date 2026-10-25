@@ -4,7 +4,7 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 3, design system (UI lab).
+**Now:** Phase 3 is done; Phase 4, core architecture, is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -74,7 +74,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | 0 | Plan and v1 freeze | `[x]` |
 | 1 | Foundation | `[x]` |
 | 2 | Understand v1 | `[x]` |
-| 3 | Design system (UI lab) | `[~]` |
+| 3 | Design system (UI lab) | `[x]` |
 | 4 | Core architecture | `[ ]` |
 | 5 | Slice 1, timed | `[ ]` |
 | 6 | Go-live modules | `[ ]` |
@@ -170,11 +170,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [x] Screen states, each designed once (`docs/DESIGN.md`)
 - [x] Three signature screens in the lab: live board, job card, owner
       dashboard
-- [ ] Each signature screen's size and speed measured on the floor tablet;
-      a limit set from it
 - [x] JavaScript unit tests, set up with the first JS module
 - [x] Checked at phone, tablet and laptop widths
-- [ ] Tried on the real devices by the real users (`docs/DESIGN.md`)
 - [x] Accessibility: WCAG 2.2 AA (`docs/DESIGN.md`)
 
 ### Phase 4: Core architecture
@@ -230,6 +227,9 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
       Safari's engines
 - [ ] The full test suite timed, and a time limit set from it; checked
       again at the end of each phase
+- [ ] A stand-in speed limit: the job card's size and speed measured in
+      Chrome set to act like a slow phone, and a limit set from it
+      (`docs/DESIGN.md`)
 - [ ] Time recorded; every Go-live module sized small / medium / large
 - [ ] From that, a realistic delivery date for the client
 
@@ -278,6 +278,10 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 
 - [ ] Agreement signed
 - [ ] Trial on staging with the client
+- [ ] In the trial, the real users try every go-live screen on their own
+      devices (`docs/DESIGN.md`)
+- [ ] In the trial, each go-live screen's size and speed measured on the
+      floor tablet; the Slice 1 limit confirmed or changed
 - [ ] Short training for each role
 - [ ] Go-live checklist; a written rollback plan, practised on staging
 - [ ] `CHANGELOG.md`; first release tag
