@@ -27,6 +27,19 @@
     font: inherit;
     color: inherit;
   }
+
+  /* A phone draws its own rectangle over a tapped control. It looks wrong
+     on our round controls, so it is off; the control's own change is the
+     answer to the tap. */
+  a,
+  button,
+  summary,
+  label,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @layer base {

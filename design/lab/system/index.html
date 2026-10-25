@@ -156,14 +156,16 @@
 
   <section class="lab-section" aria-labelledby="h-pay">
     <h2 id="h-pay">Payment row</h2>
-    <p class="lab-intro">One control for a spare shop, a supplies shop, a fleet account and owner withdrawals. The row scrolls sideways on a phone; it never wraps.</p>
+    <p class="lab-intro">One control for a spare shop, a supplies shop, a fleet account and owner withdrawals. The row scrolls sideways on a phone; it never wraps. Its note is behind the info button.</p>
     <div class="lab-stack">
       <p class="lab-label">Money out (a spare shop), dated today</p>
       <section class="card card--info pay" aria-labelledby="pay1-title">
         <div class="pay__head">
           <h3 class="pay__title" id="pay1-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#indian-rupee"></use></svg>Record a payment</h3>
+          <button class="info" type="button" aria-expanded="false" aria-controls="pay1-about" aria-label="How this payment is used"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></button>
           <span class="pay__name">Spare shop 1</span>
         </div>
+        <p class="info-note" id="pay1-about" hidden>This payment clears the oldest unpaid amount first.</p>
         <form class="pay__scroll">
           <div class="pay__row">
             <label class="pay__date"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>Today</span><input type="date" aria-label="Payment date" value="2026-10-25"></label>
@@ -187,15 +189,16 @@
             <button class="btn btn--danger" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-up"></use></svg>Pay</button>
           </div>
         </form>
-        <p class="pay__foot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Applied to the oldest unpaid items first.</p>
       </section>
 
-      <p class="lab-label">Money in (a fleet account), back-dated, amount typed</p>
+      <p class="lab-label">Money in (a fleet account), back-dated, amount typed, its note open</p>
       <section class="card card--info pay" aria-labelledby="pay2-title">
         <div class="pay__head">
           <h3 class="pay__title" id="pay2-title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#indian-rupee"></use></svg>Record a payment</h3>
+          <button class="info" type="button" aria-expanded="true" aria-controls="pay2-about" aria-label="How this payment is used"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></button>
           <span class="pay__name">Fleet account 1 with a very long name that is cut</span>
         </div>
+        <p class="info-note" id="pay2-about">It settles the oldest unpaid cars first. Any money left over stays as credit.</p>
         <form class="pay__scroll">
           <div class="pay__row">
             <label class="pay__date pay__date--back-dated"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>17 Oct</span><input type="date" aria-label="Payment date" value="2026-10-17"></label>
@@ -219,7 +222,6 @@
             <button class="btn btn--success" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-arrow-down"></use></svg>Pay</button>
           </div>
         </form>
-        <p class="pay__foot"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>Applied to the oldest unpaid bills first.</p>
       </section>
     </div>
   </section>
@@ -339,6 +341,29 @@
           <input class="search__input" type="search" name="q" aria-label="Search the list" placeholder="Search plate, car or customer" autocomplete="off" value="KL 00">
           <button class="search__clear" type="button" aria-label="Clear the search"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" aria-labelledby="h-info">
+    <h2 id="h-info">Info button</h2>
+    <p class="lab-intro">A "how it works" note, hidden until it is asked for. Never behind it: report pages, warnings, rules for what to type, errors and facts (docs/DESIGN.md, Help notes).</p>
+    <div class="card lab-stack">
+      <div>
+        <p class="lab-label">Closed</p>
+        <div class="lab-title-row">
+          <h3>Salary advance</h3>
+          <button class="info" type="button" aria-expanded="false" aria-controls="info1-note" aria-label="How an advance is paid back"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></button>
+        </div>
+        <p class="info-note" id="info1-note" hidden>It comes off that month's salary when the salary is settled.</p>
+      </div>
+      <div>
+        <p class="lab-label">Open</p>
+        <div class="lab-title-row">
+          <h3>Shop discount</h3>
+          <button class="info" type="button" aria-expanded="true" aria-controls="info2-note" aria-label="How a shop discount works"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></button>
+        </div>
+        <p class="info-note" id="info2-note">No cash moves. It comes off what we owe the shop.</p>
       </div>
     </div>
   </section>
@@ -589,6 +614,7 @@
   </section>
 
 </main>
+<script type="module" src="../../../static/js/info.js"></script>
 <script type="module" src="lab.js"></script>
 </body>
 </html>
