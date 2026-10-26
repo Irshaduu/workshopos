@@ -2,6 +2,7 @@
 
 import logging
 
+from django.contrib.auth.decorators import login_not_required
 from django.db import DatabaseError, connection
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
@@ -10,6 +11,8 @@ from django.views.decorators.http import require_safe
 logger = logging.getLogger(__name__)
 
 
+# Public: the host and the uptime monitor call it without signing in.
+@login_not_required
 @never_cache
 @require_safe
 def health(request):

@@ -4,7 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 4, core architecture: ADR-0005 accepted; the first apps next.
+**Now:** Phase 4, core architecture: the first app and the safe base are
+done; tenancy next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -190,9 +191,9 @@ Slice 1.
       (ADR-0021)
 - [x] Custom user model in `accounts`, made before any other app's first
       migration (the local database is reset once at that point)
-- [ ] Safe defaults from the first app: every page needs sign-in unless
+- [x] Safe defaults from the first app: every page needs sign-in unless
       marked public; a strict CSP (Django's own); ruff's security rules
-- [ ] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
+- [x] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
       (ADR-0015)
 - [x] Factories for test data (factory-boy, ADR-0013), with the first model
 

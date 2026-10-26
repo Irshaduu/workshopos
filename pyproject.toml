@@ -25,10 +25,13 @@ target-version = "py314"
 
 [tool.ruff.lint]
 # E/W style, F real errors, I import order, UP modern Python,
-# B likely bugs, DJ Django mistakes.
-select = ["E", "W", "F", "I", "UP", "B", "DJ"]
+# B likely bugs, DJ Django mistakes, S security mistakes.
+select = ["E", "W", "F", "I", "UP", "B", "DJ", "S"]
 
 [tool.ruff.lint.per-file-ignores]
+# Tests check with assert, and sign in with a password made for tests.
+"**/tests/**" = ["S101", "S105", "S106"]
+"tests/**" = ["S101", "S105", "S106"]
 # Django writes migrations; their help texts make long lines.
 "**/migrations/**" = ["E501"]
 
