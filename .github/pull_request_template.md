@@ -13,8 +13,8 @@
 Tick each item. If one does not apply, write "n/a" and why.
 
 - [ ] Rules listed with IDs; each rule has a test
-- [ ] CI green: lint, tests, migrations, audit, secret scan; import rules
-      from Phase 4
+- [ ] CI green: lint, tests, migrations, audit, secret scan; layer rules
+      (imports and model links) from the first app
 - [ ] Checked by hand in a browser at phone, tablet and laptop widths
 - [ ] Behaviour matches v1, or the difference is decided and recorded
 - [ ] Docs updated in the same pull request
