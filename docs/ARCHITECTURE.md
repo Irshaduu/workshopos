@@ -150,17 +150,27 @@ How each workshop's data stays its own: ADR-0023.
 - Customers and vehicles belong to the workshop, so all its branches share them.
 - Unique rules include the workshop (e.g. a bill number is unique per branch
   of a workshop).
-- **The workshop is passed by hand.** One middleware sets `request.workshop`
-  from the signed-in user's membership. Every selector and service takes the
-  workshop as its first argument, and its queries start with
-  `Model.objects.for_workshop(workshop)`. No hidden current workshop.
+- **The workshop is passed by hand.** One middleware
+  (`apps/accounts/middleware.py`) finds the signed-in account's membership
+  once per request and sets `request.membership` and `request.workshop`.
+  Every selector and service takes the workshop as its first argument, and
+  its queries start with `Model.objects.for_workshop(workshop)`. No hidden
+  current workshop.
+- **Every page needs a workshop that may work now**, unless it is public, in
+  the Django admin, or marked `@workshop_not_required` (like signing out).
+  Otherwise the answer is "not allowed" (403).
 - **A link stays inside its workshop.** A link to another workshop record
   carries a `SameWorkshop` constraint, so PostgreSQL refuses a link to a
   record of another workshop.
 - **Whether a workshop may work now** has one home: `may_work()` in
-  `apps/workshops/selectors.py`, asked by the middleware on every request.
-- Workshop members and platform staff are separate kinds of account
-  (ADR-0007). The Django admin is not scoped: it is for emergencies only.
+  `apps/workshops/selectors.py`, asked by the middleware.
+- **A membership** (`apps/accounts/models.py`) is an account's place in a
+  workshop, with its role (ADR-0007). For now an account belongs to one
+  workshop, a database rule. A shared login, like one Floor login on the
+  workshop tablet, is one account.
+- Staff and superusers run the system: they are never members and never get
+  a workshop (ADR-0007). The Django admin is not scoped: it is for
+  emergencies only.
 - **Leak tests:** `tests/test_tenancy.py` checks that every business model
   builds on `WorkshopModel`, and that each one shows a workshop only its own
   records. The permission matrix checks every page: a record of another

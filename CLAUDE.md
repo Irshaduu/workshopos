@@ -11,7 +11,7 @@ project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); the first apps are `core` (the base model), `workshops` (the
 workshop, its branches and the base of every business model) and
-`accounts` (the user). Run every command through `uv run` (see `README.md`). Every new
+`accounts` (the user and memberships). Run every command through `uv run` (see `README.md`). Every new
 dependency needs an ADR first.
 
 ## The documents: each fact has one home

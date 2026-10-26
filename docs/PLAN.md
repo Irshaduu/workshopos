@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 4, core architecture: the first app, the safe base and
-tenancy are done; members next.
+**Now:** Phase 4, core architecture: the first app, the safe base,
+tenancy and members are done; per-workshop choices next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -206,11 +206,11 @@ Slice 1.
       a workshop may work now
 
 **3. Members**
-- [ ] Accounts (ADR-0007): users; membership = user + workshop + role
-      (+ branches); roles checked in one place; platform staff kept apart;
-      the superuser is never a member; each request gets its workshop from
-      the membership and asks `may_work()` (ADR-0023)
-- [ ] One service in `accounts` creates a workshop with its first branch
+- [x] Accounts (ADR-0007): membership = account + workshop + role, one
+      workshop per account for now; staff and superusers are never members;
+      each request gets its workshop from the membership and asks
+      `may_work()` (ADR-0023)
+- [x] One service in `accounts` creates a workshop with its first branch
       and owner
 
 **4. Per-workshop choices**
@@ -243,6 +243,14 @@ Slice 1.
       car in, ready, delivered)
 - [ ] The first per-workshop settings, and the bill-number series per
       branch, each with the feature that uses it
+- [ ] Sign-in: what a person signs in with (v1: owners by email, others by
+      username or mobile); a username is unique across every workshop on a
+      server; the lockout, and the owner's unlock, so a shared floor login
+      is never stuck
+- [ ] Roles checked in one place, decided in an ADR with the first page: a
+      list of what each role may do, and no page checks a role by name, so
+      a new role is added without changing pages. v1's Floor sees the whole
+      floor, not only its own jobs as ADR-0007 says
 - [ ] Permission matrix test: every page for every role, from the first
       page; a record of another workshop is never found
 - [ ] Query-count tests for list pages, from the first list page, so a

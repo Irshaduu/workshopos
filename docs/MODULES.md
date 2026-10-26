@@ -20,7 +20,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Phone, tablet and laptop | Laid out for each device; installs on a phone like an app | `core` | Go-live |
 | Sign-in and password reset | Lockout after repeated wrong tries; reset code by email | `accounts` | Go-live |
 | Roles | Owner, Office, Floor; each sees only what it needs (ADR-0007) | `accounts` | Go-live |
-| Staff logins and devices | Staff list, staff logins, signed-in devices, remote sign-out | `accounts` | Go-live |
+| Staff logins and devices | Staff list, staff logins (one per person, or one shared, like the floor tablet's), signed-in devices, remote sign-out. The last owner can never be removed; a leaving person's login is turned off, never deleted | `accounts` | Go-live |
 | Owner alerts | Push alerts to the owners' phones, and an alert feed | `notifications` | Go-live |
 | Change history | Every deleted, edited and back-dated entry, month by month | `audit` | Go-live |
 | Master lists | Brands, models, parts and concerns, with rename and merge | `vehicles`, `jobs` | Go-live |
@@ -168,7 +168,8 @@ so adding them changes no existing table.
 | Support access | Logged, time-limited access to a workshop, with its consent | SaaS |
 | Sales and partner accounts | Leads, a demo workshop with fake data, referral tracking | SaaS |
 | Plans and limits | Which modules each plan includes; user and branch limits per plan (the switches are in Foundation) | SaaS |
-| Branch screens | Switching branch, stock transfers, combined reports, when a workshop with more than one branch joins | SaaS |
+| Branch screens | Switching branch, stock transfers, combined reports, members limited to some branches, when a workshop with more than one branch joins | SaaS |
+| Several workshops per account | One sign-in for a person who works in more than one workshop, with a workshop picker | SaaS |
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |
 | Setup wizard and help | First-day setup and help pages | SaaS |

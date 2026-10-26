@@ -103,6 +103,10 @@ closes the issue.
   A test checks every model.
 - **Every page needs sign-in.** A public page is marked
   `@login_not_required`, with a comment saying why.
+- **Every page needs a workshop that may work now**, read from
+  `request.workshop` (ADR-0023). A page that works without one, like
+  signing out, is marked `@workshop_not_required`
+  (`apps/accounts/decorators.py`), with a comment saying why.
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.
