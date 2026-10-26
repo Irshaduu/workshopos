@@ -4,8 +4,7 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 4, core architecture: the first app, the safe base,
-tenancy, members and per-workshop choices are done; shared cores next.
+**Now:** Phase 4, core architecture, is done; Phase 5, Slice 1, is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -77,7 +76,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | 1 | Foundation | `[x]` |
 | 2 | Understand v1 | `[x]` |
 | 3 | Design system (UI lab) | `[x]` |
-| 4 | Core architecture | `[~]` |
+| 4 | Core architecture | `[x]` |
 | 5 | Slice 1, timed | `[ ]` |
 | 6 | Go-live modules | `[ ]` |
 | 7 | Ready to run live | `[ ]` |
@@ -220,9 +219,8 @@ Slice 1.
       the first page (Slice 1) and when a workshop first needs a module off
 
 **5. Shared cores**
-- [ ] Shared cores: money (the parser is the only amount check), dates
-      (Indian date and number formats), audit log, notifications (the bell;
-      push and email come with their modules)
+- [x] Shared cores (money, dates, audit log, notifications): checked
+      again; each is built with its first user, in Slice 1 and Phase 6
 
 ### Phase 5: Slice 1, timed
 
@@ -241,6 +239,16 @@ Slice 1.
       car in, ready, delivered)
 - [ ] The first per-workshop settings (ADR-0024), and the bill-number
       series per branch, each with the feature that uses it
+- [ ] Money, with the first money column: one size for every money
+      column; typed amounts through Django's decimal form field, no parser
+      of our own; a zero or negative amount refused by the model and by
+      PostgreSQL; the money date rules (no future date, how far back Office
+      may go) with the first money page
+- [ ] Indian dates and numbers on screen (26 Oct 2026, 1,50,000.00), with
+      the first page: our own formats file
+- [ ] The audit log, in the same pull request as the first service that
+      changes, deletes or back-dates money: a frozen copy of what changed,
+      with who, when and why (v1's shape, in one table)
 - [ ] Every page and menu item names its module, from the first page: a
       list of modules in the code, where each app adds its own, and a test
       that fails for a page with no module or an unknown one (ADR-0011)
@@ -292,7 +300,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] Supplies shops, inventory and stock costing
 - [ ] Cashbook
 - [ ] Fleet accounts
-- [ ] Change history, alerts, push
+- [ ] The change history screen, alerts and push: the bell comes with
+      the first alert, v1's big-discount alert at settle
 - [ ] Decide (ADR): how background and scheduled jobs run (backups,
       clean-ups, push), with push, the first one
 - [ ] Go-live tools: old bills, opening stock, opening balances
