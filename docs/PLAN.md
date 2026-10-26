@@ -182,11 +182,12 @@ page, a form or a business record is built with the first one, mostly in
 Slice 1.
 
 **1. First app, safe base**
-- [~] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
+- [x] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
 - [x] Decide (ADR): primary keys, UUID7 or numbers, before the first model
       (ADR-0022)
-- [ ] Import rules and model links between apps checked in CI
+- [x] Import rules and model links between apps checked in CI
       (`import-linter`, with its ADR, and a test), from the first app
+      (ADR-0021)
 - [x] Custom user model in `accounts`, made before any other app's first
       migration (the local database is reset once at that point)
 - [ ] Safe defaults from the first app: every page needs sign-in unless

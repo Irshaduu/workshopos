@@ -10,6 +10,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "factory-boy>=3.3.3",
+    "import-linter>=2.15",
     "pre-commit>=4.7.0",
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
@@ -30,6 +31,30 @@ select = ["E", "W", "F", "I", "UP", "B", "DJ"]
 [tool.ruff.lint.per-file-ignores]
 # Django writes migrations; their help texts make long lines.
 "**/migrations/**" = ["E501"]
+
+# Apps use only the floors below their own (ADR-0005, ADR-0021), in the
+# order of docs/ARCHITECTURE.md, top floor first. Apps on one row never use
+# each other. An app not built yet is in brackets; they come off when it is
+# built. tests/test_layers.py runs this and reads the same floors.
+[tool.importlinter]
+root_packages = ["apps"]
+
+[[tool.importlinter.contracts]]
+name = "Apps use only the floors below their own"
+type = "layers"
+containers = ["apps"]
+layers = [
+    "(reports) | (onboarding) | (assistant)",
+    "(billing) | (finance) | (photos)",
+    "(jobs)",
+    "(suppliers)",
+    "(inventory) | (vehicles) | (staff)",
+    "(audit) | (notifications)",
+    "accounts",
+    "(workshops)",
+    "core",
+]
+exhaustive = true
 
 # Tests (ADR-0013).
 [tool.pytest.ini_options]

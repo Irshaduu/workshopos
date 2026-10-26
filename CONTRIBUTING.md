@@ -87,7 +87,10 @@ closes the issue.
 - **Code goes where `docs/ARCHITECTURE.md` says.** Views thin; rules in
   `services.py` (changes) and `selectors.py` (reads).
 - **Every business record belongs to a workshop.** No query without it.
-- **An app imports only from lower layers.**
+- **An app imports, and links its models, only to lower layers**
+  (ADR-0005). A new app is placed on its floor in `pyproject.toml` in the
+  same commit. No generic links (`GenericForeignKey`): PostgreSQL cannot
+  guard them. Tests check all three (ADR-0021).
 - **Every model builds on `core`'s base model** (`apps/core/models.py`), so
   its key is a UUID7 that exists before saving (ADR-0022). To know if a
   record is saved, ask Django's `_state.adding`, never "is the key empty?".
