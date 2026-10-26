@@ -30,11 +30,11 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Dark mode | A dark look for use at night, chosen per person; only if the client asks | `core` | After |
 | **Workshop and branches** (new in v2) | The business and its locations (ADR-0006) | `workshops` | Go-live |
 | **Workshop profile** (new in v2) | Name, logo, each branch's address and phone, UPI QR, used by every printed document. The GSTIN comes with GST invoicing | `workshops` | Go-live |
-| **Workshop settings** (new in v2) | Discount limit, edit window, back-date limit, markup; bill-number series per branch | `workshops` | Go-live |
+| **Workshop settings** (new in v2) | Discount limit, edit window, back-date limit, markup, each beside the rule that uses it (ADR-0024). A settings screen only if the owners want one | each app | Go-live |
 | **Workshop status** (new in v2) | Active or suspended. A suspended workshop's pages are blocked, except signing out | `workshops` | Go-live |
 | **Create a workshop** (new in v2) | One service creates a workshop, its first branch and its owner | `accounts` | Go-live |
 | **Platform accounts** (new in v2) | The company's own staff, kept apart from workshop members (ADR-0007) | `accounts` | Go-live |
-| **Module switches** (new in v2) | Each workshop turns modules on or off; off hides, never deletes (ADR-0011) | `workshops` | Go-live |
+| **Module switches** (new in v2) | Each workshop turns modules on or off; off hides, never deletes (ADR-0011). Every page names its module from the first page; the switch is built when a module must first be off | `workshops` | Go-live |
 
 ## Job cards and the floor
 
@@ -63,7 +63,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Module | What it does | App | When |
 |---|---|---|---|
 | Printed bill | A4 on the workshop's letterhead; PDF named after the car; WhatsApp button | `billing` | Go-live |
-| Settle bill | Shows anything still unfilled before the bill is settled | `billing` | Go-live |
+| Settle bill | Shows anything still unfilled before the bill is settled; gives the bill its number from the branch's own series | `billing` | Go-live |
 | Pending and paid bills | Who still owes, and every bill paid, by date | `billing` | Go-live |
 | Discount audit | Every bill settled for less, largest first | `billing` | Go-live |
 | Cashbook | Money in and out by the day it moved; asks before a double count | `finance` | Go-live |

@@ -53,7 +53,7 @@ workshopos/
 | App | Holds |
 |---|---|
 | `core` | shared tools: the base model that gives every model its UUID7 key (ADR-0022), money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
-| `workshops` | the tenant: the workshop, its branches, the base of every business model (ADR-0023), profile, status, settings, module switches, bill-number series |
+| `workshops` | the tenant: the workshop, its branches, the base of every business model (ADR-0023), profile, status, the module list and switches (ADR-0011) |
 | `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |
 | `notifications` | the bell, push alerts, email |
@@ -193,7 +193,13 @@ How each workshop's data stays its own: ADR-0023.
   cannot be filled in later.
 - **Module switches:** each workshop has its modules on or off (ADR-0011).
   Menus, pages and the assistant's tools check this in one place. Off hides
-  a module; it never deletes data.
+  a module; it never deletes data. Every page and menu item names its
+  module from the first page; the switch itself is built when a workshop
+  first needs a module off.
+- **Per-workshop settings** (ADR-0024): each lives beside the rule that
+  uses it, in its app's settings model, one row per workshop. No saved row
+  means the default in the code. A setting acts at the moment of an
+  action, never on saved records.
 
 ---
 
@@ -215,7 +221,8 @@ How each workshop's data stays its own: ADR-0023.
 | Photos | `photos` |
 | Legacy Data screens, PDF reader, go-live lock | `onboarding` |
 | Login, roles, sessions, lockout, password reset, Control Hub | `accounts` |
-| Business constants (discount threshold, edit window, back-date limit, markup), number series | `workshops` |
+| Business constants (discount threshold, edit window, back-date limit, markup) | the app of the rule that uses each (ADR-0024) |
+| Bill and job card number series | `billing`, `jobs` |
 | `money.py`, `money_dates.py`, base templates, design system | `core`, `templates/`, `static/` |
 | About page and system map | feature audit: keep or drop |
 
@@ -229,7 +236,8 @@ How each workshop's data stays its own: ADR-0023.
 2. Background and scheduled jobs: backups, clean-ups, push.
 3. Tenancy enforcement: decided in ADR-0023 (the workshop passed by hand;
    row-level security later).
-4. Per-workshop settings: one settings model, or settings per app.
+4. Per-workshop settings: decided in ADR-0024 (each beside the rule that
+   uses it).
 5. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.
 6. AI provider and model for the assistant (ADR-0008).

@@ -28,6 +28,7 @@ costs.
 | [0021](0021-layer-checks.md) | Layer checks: import-linter for imports, our own test for model links | Accepted |
 | [0022](0022-uuid7-primary-keys.md) | Primary keys: UUID7, made by Python, with PostgreSQL as backup | Accepted |
 | [0023](0023-tenancy.md) | Tenancy: the workshop passed by hand, links kept inside one workshop | Accepted |
+| [0024](0024-per-workshop-settings.md) | Per-workshop settings: each beside the rule that uses it | Accepted |
 
 ## Rules
 
