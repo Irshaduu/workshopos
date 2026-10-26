@@ -43,6 +43,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Every page needs sign-in, unless its view is marked @login_not_required.
     "django.contrib.auth.middleware.LoginRequiredMiddleware",
+    # Every page needs a workshop that may work now, unless its view is marked
+    # @workshop_not_required (ADR-0023).
+    "apps.accounts.middleware.WorkshopMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
