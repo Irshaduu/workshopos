@@ -138,6 +138,13 @@ closes the issue.
 - **Docs say what is true now.** History lives in git and in ADRs.
 - **An ADR for every decision that is hard to undo.** The format is in
   `docs/adr/README.md`.
+- **Re-check a plan when its building starts.** An ADR, plan task or
+  design written earlier is checked again against what changed since and
+  against the whole system: is there now a simpler, safer or more stable
+  way? The check fits the item: one line for a small task, full pros and
+  cons for an ADR, a design or a rule. It ends in a decision: keep,
+  change or drop. A Proposed ADR is edited; an Accepted one is replaced by
+  a new ADR. The aim is the best fit now, not perfect (`docs/PLAN.md`).
 - **Plain, natural English** in docs, screens and commit messages. Short
   sentences, everyday words, no em dashes, arrows or decorative symbols.
 - **Written so another developer could take over.**
