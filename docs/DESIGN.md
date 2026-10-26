@@ -76,7 +76,7 @@ it. A screen is not done until it handles every state that can happen on it.
 | State | What the person sees |
 |---|---|
 | Loading | A loading sign. The save button stays locked until the answer comes. |
-| Slow network | The same as loading. The server never saves the same thing twice (`docs/PLAN.md`, Phase 4). |
+| Slow network | The same as loading. The server never saves the same thing twice (`docs/PLAN.md`, Phase 5). |
 | Empty | That there is nothing here yet, and the next step (for example, add the first job card). |
 | No search results | That nothing matched the search, with a way to clear it. |
 | Form errors | Each error next to its field, in plain words. What was typed stays. |
