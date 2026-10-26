@@ -183,16 +183,17 @@ Slice 1.
 
 **1. First app, safe base**
 - [~] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
-- [ ] Decide (ADR): primary keys, UUID7 or numbers, before the first model
+- [x] Decide (ADR): primary keys, UUID7 or numbers, before the first model
+      (ADR-0022)
 - [ ] Import rules and model links between apps checked in CI
       (`import-linter`, with its ADR, and a test), from the first app
-- [ ] Custom user model in `accounts`, made before any other app's first
+- [x] Custom user model in `accounts`, made before any other app's first
       migration (the local database is reset once at that point)
 - [ ] Safe defaults from the first app: every page needs sign-in unless
       marked public; a strict CSP (Django's own); ruff's security rules
 - [ ] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
       (ADR-0015)
-- [ ] Factories for test data (factory-boy, ADR-0013), with the first model
+- [x] Factories for test data (factory-boy, ADR-0013), with the first model
 
 **2. Tenancy**
 - [ ] Tenancy, decided in an ADR first (`docs/ARCHITECTURE.md`, open

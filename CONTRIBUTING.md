@@ -88,6 +88,10 @@ closes the issue.
   `services.py` (changes) and `selectors.py` (reads).
 - **Every business record belongs to a workshop.** No query without it.
 - **An app imports only from lower layers.**
+- **Every model builds on `core`'s base model** (`apps/core/models.py`), so
+  its key is a UUID7 that exists before saving (ADR-0022). To know if a
+  record is saved, ask Django's `_state.adding`, never "is the key empty?".
+  A test checks every model.
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.

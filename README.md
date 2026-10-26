@@ -4,7 +4,8 @@ Management system for premium automotive workshops: job cards, billing,
 parts and stock, supplier ledgers, cash, staff pay and owner reports.
 
 > **Status: Phase 4, core architecture, has started.** The Django project
-> is set up; no business features yet. See [the plan](docs/PLAN.md).
+> and its first apps are set up; no business features yet. See
+> [the plan](docs/PLAN.md).
 
 ## Run it locally
 

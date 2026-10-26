@@ -25,6 +25,7 @@ costs.
 | [0018](0018-lucide-icons-kept-in-the-repo.md) | Icons: Lucide, only the icons we use, kept in the repo | Accepted |
 | [0019](0019-postgresql-18-on-every-machine.md) | PostgreSQL 18 on every machine; no Docker on the laptop | Accepted |
 | [0020](0020-javascript-unit-tests-with-node.md) | JavaScript unit tests with Node's own test runner | Accepted |
+| [0022](0022-uuid7-primary-keys.md) | Primary keys: UUID7, made by Python, with PostgreSQL as backup | Accepted |
 
 ## Rules
 
