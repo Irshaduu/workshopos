@@ -38,7 +38,7 @@ workshopos/
 ├── templates/         base layout and shared components
 ├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
-├── tests/             project-wide tests (settings); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
+├── tests/             project-wide tests (settings, keys); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
@@ -52,7 +52,7 @@ workshopos/
 
 | App | Holds |
 |---|---|
-| `core` | shared tools: money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
+| `core` | shared tools: the base model that gives every model its UUID7 key (ADR-0022), money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
 | `workshops` | the tenant: the workshop, its branches, profile, status, settings, module switches, bill-number series |
 | `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |

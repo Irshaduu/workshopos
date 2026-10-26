@@ -25,6 +25,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Our apps, each on its floor (docs/ARCHITECTURE.md).
+    "apps.core",
+    "apps.accounts",
 ]
 
 MIDDLEWARE = [
@@ -36,6 +39,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+AUTH_USER_MODEL = "accounts.User"
+
+# Our models get a UUID7 key from apps/core/models.py (ADR-0022). This is
+# only for the tables Django makes itself, like its many-to-many link tables.
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ROOT_URLCONF = "config.urls"
 
