@@ -177,43 +177,53 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 ### Phase 4: Core architecture
 
+Phase 4 builds only what every later app stands on. A task that needs a
+page, a form or a business record is built with the first one, mostly in
+Slice 1.
+
+**1. First app, safe base**
 - [~] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
+- [ ] Decide (ADR): primary keys, UUID7 or numbers, before the first model
 - [ ] Import rules and model links between apps checked in CI
       (`import-linter`, with its ADR, and a test), from the first app
+- [ ] Custom user model in `accounts`, made before any other app's first
+      migration (the local database is reset once at that point)
 - [ ] Safe defaults from the first app: every page needs sign-in unless
       marked public; a strict CSP (Django's own); ruff's security rules
 - [ ] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
       (ADR-0015)
 - [ ] Factories for test data (factory-boy, ADR-0013), with the first model
-- [ ] Tenancy: `Workshop` and `Branch` (ADR-0006); a workshop link on every
-      business record, a branch link on operational ones; scoped queries
-- [ ] Leak test: one workshop can never read another's data
-- [ ] Workshop status: active or suspended
-- [ ] One service creates a workshop with its first branch and owner
-- [ ] Workshop profile: logo, name, address, GSTIN, UPI QR, used by every
-      printed document
-- [ ] Accounts (ADR-0007): users; membership = user + workshop + role
-      (+ branches); platform staff kept apart; superuser for emergencies only
-- [ ] Custom user model in `accounts`, made before any other app's first
-      migration (the local database is reset once at that point)
-- [ ] Permission matrix test: every page for every role
-- [ ] Query-count tests for list pages, so a longer list never means more
+
+**2. Tenancy**
+- [ ] Tenancy, decided in an ADR first (`docs/ARCHITECTURE.md`, open
+      decision 3): `Workshop` and `Branch` (ADR-0006); a workshop link on
+      every business record, a branch link on operational ones; scoped
       queries
-- [ ] Per-workshop settings (discount threshold, edit window, back-date
-      limit, markup); bill-number series per branch
-- [ ] Customers and vehicles as real records (ADR-0006); decide what
-      happens to a car's history when it is sold to a new owner
-- [ ] History from day one: kilometres as a number at every visit; times of
-      status changes (part ordered and received, work started and fixed,
-      car in, ready, delivered)
-- [ ] Module switches (ADR-0011): a registry of modules and what each needs;
-      one check for menus, pages and assistant tools; off never deletes
+- [ ] Leak test: one workshop can never read another's data; it covers
+      every workshop model by itself
+- [ ] Workshop status: active or suspended
+- [ ] Workshop profile: name, address, phone, GSTIN, used by every printed
+      document (the logo and UPI QR come with the printed bill, Phase 6)
+
+**3. Members**
+- [ ] Accounts (ADR-0007): users; membership = user + workshop + role
+      (+ branches); roles checked in one place; platform staff kept apart;
+      the superuser is never a member
+- [ ] One service in `accounts` creates a workshop with its first branch
+      and owner
+
+**4. Per-workshop choices**
+- [ ] Per-workshop settings: where they live, decided in an ADR
+      (`docs/ARCHITECTURE.md`, open decision 4); each setting is built with
+      the feature that uses it
+- [ ] Module switches (ADR-0011): a registry of modules and what each needs,
+      where each app registers its own; one check for menus, pages and
+      assistant tools; off never deletes
+
+**5. Shared cores**
 - [ ] Shared cores: money (the parser is the only amount check), dates
-      (Indian date and number formats; one period filter for every page),
-      audit log, notifications
-- [ ] A double tap or a slow network never saves a record twice
-- [ ] Decide: how background and scheduled jobs run (backups, clean-ups, push)
-- [ ] Safe-migration rules written down
+      (Indian date and number formats), audit log, notifications (the bell;
+      push and email come with their modules)
 
 ### Phase 5: Slice 1, timed
 
@@ -223,6 +233,18 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
   - the bargaining discount (a bill of 47,500 settled at 45,500, for
     example) is recorded at settle, before tax
   - the final bill number is given at settle
+- [ ] Customers and vehicles as real records (ADR-0006); decide what
+      happens to a car's history when it is sold to a new owner
+- [ ] History from day one: kilometres as a number at every visit; times of
+      status changes (part ordered and received, work started and fixed,
+      car in, ready, delivered)
+- [ ] The first per-workshop settings, and the bill-number series per
+      branch, each with the feature that uses it
+- [ ] Permission matrix test: every page for every role, from the first page
+- [ ] Query-count tests for list pages, from the first list page, so a
+      longer list never means more queries
+- [ ] A double tap or a slow network never saves a record twice, from the
+      first form
 - [ ] The job card has a separate form for each role; no hidden inputs
 - [ ] Browser tests (Playwright) for this flow, in both Chrome's and
       Safari's engines
@@ -231,7 +253,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] A stand-in speed limit: the job card's size and speed measured in
       Chrome set to act like a slow phone, and a limit set from it
       (`docs/DESIGN.md`)
-- [ ] Time recorded; every Go-live module sized small / medium / large
+- [ ] Time recorded, with the one-time setup kept apart; every Go-live
+      module sized small / medium / large
 - [ ] From that, a realistic delivery date for the client
 
 ### Phase 6: Go-live modules
@@ -242,6 +265,10 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] The rest of the job card and the floor: live board, live report,
       completed list
 - [ ] The rest of billing: printed bill, pending and paid bills, discount audit
+  - the workshop's logo and UPI QR on the printed bill, with the file
+    storage decision (`docs/ARCHITECTURE.md`, open decision 5)
+  - one period filter for every page that filters by date, from the first
+    one
   - internal jobs (own car, demo car, free redo) take no customer payment;
     any money from a customer is a sale and gets a proper bill
   - one sales register: every settled sale is in the reports and in the
@@ -251,6 +278,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] Cashbook
 - [ ] Fleet accounts
 - [ ] Change history, alerts, push
+- [ ] Decide (ADR): how background and scheduled jobs run (backups,
+      clean-ups, push), with push, the first one
 - [ ] Go-live tools: old bills, opening stock, opening balances
 
 ### Phase 7: Ready to run live
@@ -264,14 +293,16 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] `config/settings/production.py`: hosts and security settings from the
       environment (`wsgi.py` and `asgi.py` already point to it)
 - [ ] Deploy configuration in the repo; migrations run before traffic moves
+- [ ] Safe-migration rules written down, before the first real data
 - [ ] Decide (ADR): one Dockerfile as the deploy recipe, built in CI and used
       by the host; no Docker needed on the laptop (ADR-0019)
 - [ ] `main` goes to staging automatically; a release tag goes to production, on every server
 - [ ] Error tracking (Sentry) and an uptime monitor
 - [ ] Logs never contain customer data
 - [ ] Security pass before go-live: `manage.py check --deploy` clean in CI,
-      the dependency audit also weekly, the admin locked down, a review
-      against the OWASP Top 10
+      the dependency audit also weekly, the admin locked down, the
+      superuser's two-factor sign-in (ADR-0007), a review against the
+      OWASP Top 10
 - [ ] Automatic backups, an off-site copy, a test restore
 - [ ] `RUNBOOK.md`
 
