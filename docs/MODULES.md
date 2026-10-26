@@ -163,7 +163,7 @@ so adding them changes no existing table.
 | Module | What it does | When |
 |---|---|---|
 | Self sign-up and trial | A workshop signs up and tries the system | SaaS |
-| Subscriptions and payments | Plans, invoices for the subscription, a payment gateway | SaaS |
+| Subscriptions and payments | Plans, invoices for the subscription, a payment gateway. Paid every month on the start date (start 1 January, next due 1 February); 5 more days with a warning; from the 6th day (6 February) the workshop is blocked until it pays. The details are settled when it is built | SaaS |
 | Platform console | The company's view: workshops, plans, payments, suspension | SaaS |
 | Support access | Logged, time-limited access to a workshop, with its consent | SaaS |
 | Sales and partner accounts | Leads, a demo workshop with fake data, referral tracking | SaaS |
