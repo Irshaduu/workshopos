@@ -67,7 +67,7 @@ workshopos/
 | `finance` | cashbook, rent, owner withdrawals |
 | `reports` | profit, cash tracking, deep analysis, dashboard; read-only |
 | `assistant` | the AI assistant: tools over read-only selectors (ADR-0008); read-only |
-| `onboarding` | go-live import tools; the whole app can be removed once go-live import is done |
+| `onboarding` | go-live import tools; the whole app can be removed once go-live import is done (but see open decision 9) |
 
 An app is created with its first real code: a model, a page or a shared
 tool (ADR-0021). No empty apps.
@@ -219,3 +219,11 @@ jobs/
    `inventory`. Proposal: the `suppliers` service tells `inventory` how much
    came in at what cost, and costing replays only `inventory`'s own rows.
    Decided in the stock section.
+9. **Old data from other workshops.** Each workshop's old system has its
+   own format. Proposal: one standard import format, with a small reader per
+   source (Excel, Tally, another system, the first workshop's PDF bills);
+   every import checked, shown as a preview, and saved as one batch that
+   can be undone; each row keeps its source reference, so a second run adds
+   nothing twice. `onboarding` then stays after go-live, because each new
+   workshop imports. Decided with the go-live tools (Phase 6) and the SaaS
+   data import.
