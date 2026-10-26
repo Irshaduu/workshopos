@@ -1,7 +1,6 @@
 # Architecture
 
-> **Status: Proposed.** It becomes binding when ADR-0005 is accepted in
-> Phase 4, before the first app is created. After that, change it only
+> **Status: Accepted** (ADR-0005, 2026-10-26). Binding: change it only
 > through a new ADR.
 
 How the code is organised. What is planned: `docs/PLAN.md`. Why: `docs/adr/`.
@@ -58,7 +57,7 @@ workshopos/
 | `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |
 | `notifications` | the bell, push alerts, email |
-| `photos` | photos of cars and parts, linked generically to their subject |
+| `photos` | photos of cars and parts: a real link to the job card or the part, and a database check that exactly one is set (v1's shape) |
 | `inventory` | products, categories, stock, costing, opening stock |
 | `vehicles` | customers, vehicles, brands and models, vehicle profile |
 | `staff` | staff roster, salary, advances |
@@ -70,15 +69,17 @@ workshopos/
 | `assistant` | the AI assistant: tools over read-only selectors (ADR-0008); read-only |
 | `onboarding` | go-live import tools; the whole app can be removed once go-live import is done |
 
+An app is created when its first model or page is built. No empty apps.
+
 ## Layers: who may import whom
 
 ```
 Top        reports, onboarding, assistant    <- nothing imports these
-Business   billing, finance
+Business   billing, finance, photos
            jobs
            suppliers
            inventory, vehicles, staff
-Services   audit, notifications, photos     <- any business app may call these
+Services   audit, notifications             <- any business app may call these
 Base       accounts
            workshops
            core
@@ -86,7 +87,16 @@ Base       accounts
 
 - An app may import only from apps in **lower rows**, never the same row,
   never above.
-- CI checks this with `import-linter`, so the rule cannot quietly break.
+- **Model links follow the same rule.** A model links only to its own app's
+  models or to lower rows. A link written as text
+  (`ForeignKey("billing.FleetAccount")`) needs no import, so import-linter
+  cannot see it.
+- A lower app never reads an upper one. When it needs data that an upper app
+  creates, the upper app's service passes it down.
+- CI checks both, so the rule cannot quietly break: `import-linter` reads
+  the imports, and a test walks every model link and fails on one that
+  points up. The test reads the row order from the `import-linter`
+  settings, so the order has one home.
 
 ## Inside every app: the same files every time
 
@@ -197,3 +207,12 @@ jobs/
 5. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.
 6. AI provider and model for the assistant (ADR-0008).
+7. **Fleet accounts and the job card.** In v1 the job card points to its
+   fleet account, but `billing` sits above `jobs`, so that link would point
+   up. Move fleet accounts down beside customers in `vehicles`, or put the
+   link on the bill? Decided in the billing loop.
+8. **Stock costing and purchases.** v1 works out the average cost by
+   replaying the restock bill rows, but purchases live in `suppliers`, above
+   `inventory`. Proposal: the `suppliers` service tells `inventory` how much
+   came in at what cost, and costing replays only `inventory`'s own rows.
+   Decided in the stock section.

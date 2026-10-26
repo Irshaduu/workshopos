@@ -6,7 +6,7 @@ reports.
 
 ## Status
 
-**Phase 3 is done; Phase 4 (core architecture) is next.** The Django
+**Phase 4 (core architecture) has started: ADR-0005 is accepted.** The Django
 project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); no apps yet. Run every command through `uv run` (see `README.md`). Every new

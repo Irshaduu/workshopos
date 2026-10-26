@@ -9,7 +9,7 @@ costs.
 | [0002](0002-rebuild-in-a-fresh-repository.md) | Rebuild in a fresh repository; v1 frozen as the specification | Accepted |
 | [0003](0003-one-codebase-tenant-ready.md) | One codebase, tenant-ready; dedicated or shared deployments | Accepted |
 | [0004](0004-saas-features-wait-for-a-second-workshop.md) | SaaS business features wait for a second workshop | Accepted |
-| [0005](0005-modular-monolith-layered-apps.md) | Modular monolith: layered apps, services and selectors | Proposed |
+| [0005](0005-modular-monolith-layered-apps.md) | Modular monolith: layered apps, services and selectors | Accepted |
 | [0006](0006-branches-and-shared-vehicles.md) | Branches inside a workshop; customers and vehicles shared by its branches | Accepted |
 | [0007](0007-workshop-members-and-platform-staff.md) | Two kinds of account: workshop members and platform staff | Accepted |
 | [0008](0008-ai-assistant-tools-over-tested-functions.md) | AI assistant: tools over tested read-only functions | Proposed |

@@ -4,7 +4,7 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 3 is done; Phase 4, core architecture, is next.
+**Now:** Phase 4, core architecture: ADR-0005 accepted; the first apps next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -75,7 +75,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | 1 | Foundation | `[x]` |
 | 2 | Understand v1 | `[x]` |
 | 3 | Design system (UI lab) | `[x]` |
-| 4 | Core architecture | `[ ]` |
+| 4 | Core architecture | `[~]` |
 | 5 | Slice 1, timed | `[ ]` |
 | 6 | Go-live modules | `[ ]` |
 | 7 | Ready to run live | `[ ]` |
@@ -176,9 +176,9 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 
 ### Phase 4: Core architecture
 
-- [ ] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
-- [ ] Import rules between apps checked in CI (`import-linter`, with its
-      ADR), from the first app
+- [~] Apps and layers as in `docs/ARCHITECTURE.md`; ADR-0005 accepted
+- [ ] Import rules and model links between apps checked in CI
+      (`import-linter`, with its ADR, and a test), from the first app
 - [ ] Safe defaults from the first app: every page needs sign-in unless
       marked public; a strict CSP (Django's own); ruff's security rules
 - [ ] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
