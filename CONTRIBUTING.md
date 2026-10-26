@@ -144,7 +144,9 @@ closes the issue.
   way? The check fits the item: one line for a small task, full pros and
   cons for an ADR, a design or a rule. It ends in a decision: keep,
   change or drop. A Proposed ADR is edited; an Accepted one is replaced by
-  a new ADR. The aim is the best fit now, not perfect (`docs/PLAN.md`).
+  a new ADR. The aim is the best fit for the whole system now. Scope can
+  wait; quality never does: whatever is built gets every rule, edge case
+  and test (`docs/PLAN.md`).
 - **Plain, natural English** in docs, screens and commit messages. Short
   sentences, everyday words, no em dashes, arrows or decorative symbols.
 - **Written so another developer could take over.**
