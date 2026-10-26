@@ -172,3 +172,4 @@ so adding them changes no existing table.
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |
 | Setup wizard and help | First-day setup and help pages | SaaS |
+| Old data import | A workshop's old data from Excel, Tally or another system, read into one standard format; checked, shown as a preview, saved as a batch that can be undone (`docs/ARCHITECTURE.md`, open decision 9) | SaaS |
