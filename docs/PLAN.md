@@ -5,7 +5,7 @@ How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
 **Now:** Phase 4, core architecture: the first app, the safe base,
-tenancy and members are done; per-workshop choices next.
+tenancy, members and per-workshop choices are done; shared cores next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -214,12 +214,10 @@ Slice 1.
       and owner
 
 **4. Per-workshop choices**
-- [ ] Per-workshop settings: where they live, decided in an ADR
-      (`docs/ARCHITECTURE.md`, open decision 4); each setting is built with
-      the feature that uses it
-- [ ] Module switches (ADR-0011): a registry of modules and what each needs,
-      where each app registers its own; one check for menus, pages and
-      assistant tools; off never deletes
+- [x] Per-workshop settings: where they live, decided in an ADR
+      (ADR-0024); each setting is built with the feature that uses it
+- [x] Module switches (ADR-0011): checked again; built in two steps, from
+      the first page (Slice 1) and when a workshop first needs a module off
 
 **5. Shared cores**
 - [ ] Shared cores: money (the parser is the only amount check), dates
@@ -241,8 +239,11 @@ Slice 1.
 - [ ] History from day one: kilometres as a number at every visit; times of
       status changes (part ordered and received, work started and fixed,
       car in, ready, delivered)
-- [ ] The first per-workshop settings, and the bill-number series per
-      branch, each with the feature that uses it
+- [ ] The first per-workshop settings (ADR-0024), and the bill-number
+      series per branch, each with the feature that uses it
+- [ ] Every page and menu item names its module, from the first page: a
+      list of modules in the code, where each app adds its own, and a test
+      that fails for a page with no module or an unknown one (ADR-0011)
 - [ ] Sign-in: what a person signs in with (v1: owners by email, others by
       username or mobile); a username is unique across every workshop on a
       server; the lockout, and the owner's unlock, so a shared floor login
@@ -295,6 +296,10 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] Decide (ADR): how background and scheduled jobs run (backups,
       clean-ups, push), with push, the first one
 - [ ] Go-live tools: old bills, opening stock, opening balances
+- [ ] Module switches, if the client does not use a go-live module: the
+      on/off choice per workshop, one check for menus, pages and
+      assistant tools, the modules each one needs, and "module off" in
+      the permission tests (ADR-0011)
 
 ### Phase 7: Ready to run live
 
