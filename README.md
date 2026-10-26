@@ -28,6 +28,9 @@ You need [uv](https://docs.astral.sh/uv/) and PostgreSQL 18
   Node's own test runner and nothing to install
   ([ADR-0020](docs/adr/0020-javascript-unit-tests-with-node.md)).
 - `uv run ruff check .` and `uv run ruff format .` check and format by hand.
+- `uv run lint-imports` checks by hand that each app imports only from the
+  floors below its own; the tests run it too
+  ([ADR-0021](docs/adr/0021-layer-checks.md)).
 - `uv audit --preview-features audit-command` checks every package in
   `uv.lock` for known security issues.
 - CI runs all of these on GitHub, plus a secret scan, on every push to `main`

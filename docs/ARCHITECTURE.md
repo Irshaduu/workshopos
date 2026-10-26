@@ -38,11 +38,11 @@ workshopos/
 ├── templates/         base layout and shared components
 ├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
-├── tests/             project-wide tests (settings, keys); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
+├── tests/             project-wide tests (settings, layers, keys); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
-├── pyproject.toml     dependencies, ruff and pytest settings
+├── pyproject.toml     dependencies, ruff, import-linter and pytest settings
 ├── uv.lock            exact versions of every dependency
 └── manage.py, README.md, CLAUDE.md, CONTRIBUTING.md, LICENSE, .env.example,
     .pre-commit-config.yaml
@@ -69,7 +69,8 @@ workshopos/
 | `assistant` | the AI assistant: tools over read-only selectors (ADR-0008); read-only |
 | `onboarding` | go-live import tools; the whole app can be removed once go-live import is done |
 
-An app is created when its first model or page is built. No empty apps.
+An app is created with its first real code: a model, a page or a shared
+tool (ADR-0021). No empty apps.
 
 ## Layers: who may import whom
 
@@ -93,10 +94,12 @@ Base       accounts
   cannot see it.
 - A lower app never reads an upper one. When it needs data that an upper app
   creates, the upper app's service passes it down.
-- CI checks both, so the rule cannot quietly break: `import-linter` reads
-  the imports, and a test walks every model link and fails on one that
-  points up. The test reads the row order from the `import-linter`
-  settings, so the order has one home.
+- CI checks both, so the rule cannot quietly break (ADR-0021):
+  `import-linter` reads the imports, and a test walks every model link and
+  fails on one that points up, or on a generic link. Both run in
+  `tests/test_layers.py`. The row order lives in the `import-linter`
+  settings in `pyproject.toml`, so it has one home; a new app is placed
+  there in the same commit.
 
 ## Inside every app: the same files every time
 
