@@ -86,7 +86,13 @@ closes the issue.
 - **Extract on the second use**, never before. No abstraction for one caller.
 - **Code goes where `docs/ARCHITECTURE.md` says.** Views thin; rules in
   `services.py` (changes) and `selectors.py` (reads).
-- **Every business record belongs to a workshop.** No query without it.
+- **Every business model builds on `WorkshopModel`**
+  (`apps/workshops/models.py`), so each record belongs to one workshop
+  (ADR-0023). A model left out is listed, with why, in
+  `tests/test_tenancy.py`.
+- **No query without its workshop.** A selector or service takes the
+  workshop as its first argument, and its queries start with
+  `Model.objects.for_workshop(workshop)`. Never a hidden current workshop.
 - **An app imports, and links its models, only to lower layers**
   (ADR-0005). A new app is placed on its floor in `pyproject.toml` in the
   same commit. No generic links (`GenericForeignKey`): PostgreSQL cannot
@@ -132,7 +138,11 @@ closes the issue.
 - **Test the invariant, not the implementation.** For example, two screens agree, or a
   total adds up from its own rows.
 - **Factories, not hand-made fixtures.**
-- **A leak test per app** and a **permission matrix** (every page for every role).
+- **The leak test covers every workshop model by itself**
+  (`tests/test_tenancy.py`). Each one needs a factory: `<Model>Factory` in
+  its app's `tests/factories.py`.
+- **A permission matrix**: every page for every role, and a record of
+  another workshop is never found.
 - **Browser tests** for the key flows.
 - **A JavaScript module's plain functions are tested with Node's own test
   runner**, in `tests/js/` (ADR-0020). No npm and no test library.

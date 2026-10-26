@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 4, core architecture: the first app and the safe base are
-done; tenancy next.
+**Now:** Phase 4, core architecture: the first app, the safe base and
+tenancy are done; members next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -198,20 +198,18 @@ Slice 1.
 - [x] Factories for test data (factory-boy, ADR-0013), with the first model
 
 **2. Tenancy**
-- [ ] Tenancy, decided in an ADR first (`docs/ARCHITECTURE.md`, open
-      decision 3): `Workshop` and `Branch` (ADR-0006); a workshop link on
-      every business record, a branch link on operational ones; scoped
-      queries
-- [ ] Leak test: one workshop can never read another's data; it covers
+- [x] Tenancy, decided in an ADR first (ADR-0023): `Workshop` and `Branch`
+      (ADR-0006); a workshop link on every business record; scoped queries
+- [x] Leak test: one workshop can never read another's data; it covers
       every workshop model by itself
-- [ ] Workshop status: active or suspended
-- [ ] Workshop profile: name, address, phone, GSTIN, used by every printed
-      document (the logo and UPI QR come with the printed bill, Phase 6)
+- [x] Workshop status: active or suspended, and one place that says whether
+      a workshop may work now
 
 **3. Members**
 - [ ] Accounts (ADR-0007): users; membership = user + workshop + role
       (+ branches); roles checked in one place; platform staff kept apart;
-      the superuser is never a member
+      the superuser is never a member; each request gets its workshop from
+      the membership and asks `may_work()` (ADR-0023)
 - [ ] One service in `accounts` creates a workshop with its first branch
       and owner
 
@@ -238,12 +236,15 @@ Slice 1.
   - the final bill number is given at settle
 - [ ] Customers and vehicles as real records (ADR-0006); decide what
       happens to a car's history when it is sold to a new owner
+- [ ] A branch link on operational records, and every link kept inside its
+      workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the job card
 - [ ] History from day one: kilometres as a number at every visit; times of
       status changes (part ordered and received, work started and fixed,
       car in, ready, delivered)
 - [ ] The first per-workshop settings, and the bill-number series per
       branch, each with the feature that uses it
-- [ ] Permission matrix test: every page for every role, from the first page
+- [ ] Permission matrix test: every page for every role, from the first
+      page; a record of another workshop is never found
 - [ ] Query-count tests for list pages, from the first list page, so a
       longer list never means more queries
 - [ ] A double tap or a slow network never saves a record twice, from the
@@ -268,8 +269,10 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] The rest of the job card and the floor: live board, live report,
       completed list
 - [ ] The rest of billing: printed bill, pending and paid bills, discount audit
-  - the workshop's logo and UPI QR on the printed bill, with the file
-    storage decision (`docs/ARCHITECTURE.md`, open decision 5)
+  - the workshop profile on the printed bill: its name and logo, the
+    branch's address and phone, the UPI QR, with the file storage decision
+    (`docs/ARCHITECTURE.md`, open decision 5); an old bill keeps the
+    details it was printed with
   - one period filter for every page that filters by date, from the first
     one
   - internal jobs (own car, demo car, free redo) take no customer payment;
@@ -326,7 +329,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 
 - [ ] Every module marked After in `docs/MODULES.md`, through the loop, in
       the order the client needs
-- [ ] GST details from the client and their accountant: GSTIN, HSN/SAC codes,
+- [ ] GST details from the client and their accountant: GSTIN (one per
+      state, so a branch in another state has its own), HSN/SAC codes,
       rates, tax-invoice format, CGST + SGST or IGST, rounding, credit notes
   - the workshop's GST type, with its start date, sets the final document:
     none gives a plain bill, regular a tax invoice, composition a bill of
@@ -352,5 +356,7 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 
 - [ ] The SaaS modules in `docs/MODULES.md`
 - [ ] Own hosting account and domain
+- [ ] PostgreSQL row-level security as a second guard, before a second
+      workshop's data shares a database (ADR-0023)
 - [ ] Pilot workshops before any marketing
 - [ ] A "Dedicated" plan for workshops that want their own server

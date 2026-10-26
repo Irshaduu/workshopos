@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Our apps, each on its floor (docs/ARCHITECTURE.md).
     "apps.core",
+    "apps.workshops",
     "apps.accounts",
 ]
 
