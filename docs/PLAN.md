@@ -35,7 +35,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
   the agreement is needed before go-live.
 - **Go live with the daily-work modules** (marked Go-live in
   `docs/MODULES.md`). Everything else follows after go-live.
-- **"Complete for daily work", not "perfect".** Polish after go-live.
+- **Go live complete for daily work.** Extra features and polish wait
+  until after go-live; correctness, edge cases and tests never wait.
 - **No delivery date until Slice 1 (Phase 5) has been timed.**
 - **GST is printed only for a workshop with a valid GSTIN.** All tax rules
   live in one place.
