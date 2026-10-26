@@ -29,9 +29,9 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | System guide and map | A tour of every section | to decide | After |
 | Dark mode | A dark look for use at night, chosen per person; only if the client asks | `core` | After |
 | **Workshop and branches** (new in v2) | The business and its locations (ADR-0006) | `workshops` | Go-live |
-| **Workshop profile** (new in v2) | Logo, name, address, GSTIN, UPI QR, used by every printed document | `workshops` | Go-live |
+| **Workshop profile** (new in v2) | Name, logo, each branch's address and phone, UPI QR, used by every printed document. The GSTIN comes with GST invoicing | `workshops` | Go-live |
 | **Workshop settings** (new in v2) | Discount limit, edit window, back-date limit, markup; bill-number series per branch | `workshops` | Go-live |
-| **Workshop status** (new in v2) | Active or suspended. A suspended workshop cannot sign in | `workshops` | Go-live |
+| **Workshop status** (new in v2) | Active or suspended. A suspended workshop's pages are blocked, except signing out | `workshops` | Go-live |
 | **Create a workshop** (new in v2) | One service creates a workshop, its first branch and its owner | `accounts` | Go-live |
 | **Platform accounts** (new in v2) | The company's own staff, kept apart from workshop members (ADR-0007) | `accounts` | Go-live |
 | **Module switches** (new in v2) | Each workshop turns modules on or off; off hides, never deletes (ADR-0011) | `workshops` | Go-live |

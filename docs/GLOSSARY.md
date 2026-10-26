@@ -9,6 +9,8 @@ the code (models, functions, files, URLs) and in the docs.
 
 | Say | In code | Never say | Means |
 |---|---|---|---|
+| Workshop | `Workshop` | | The business that uses the system, with all its branches |
+| Branch | `Branch` | | One place where a workshop works. A workshop has one or more |
 | Fleet account | `FleetAccount` | bulk payer | A company that sends many cars and pays for them together |
 | Fleet payment | `FleetPayment` | bulk payment | One payment from a fleet account that settles many of its bills |
 | Staff member | `StaffMember` | mechanic, for everyone | A person who works at the workshop. Mechanic is one of the roles |

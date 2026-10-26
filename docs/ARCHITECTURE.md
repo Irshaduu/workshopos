@@ -38,7 +38,7 @@ workshopos/
 ├── templates/         base layout and shared components
 ├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
-├── tests/             project-wide tests (settings, safe defaults, layers, keys); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
+├── tests/             project-wide tests (settings, safe defaults, layers, keys, tenancy); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
@@ -53,7 +53,7 @@ workshopos/
 | App | Holds |
 |---|---|
 | `core` | shared tools: the base model that gives every model its UUID7 key (ADR-0022), money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
-| `workshops` | the tenant: the workshop, its branches, profile, status, settings, module switches, bill-number series |
+| `workshops` | the tenant: the workshop, its branches, the base of every business model (ADR-0023), profile, status, settings, module switches, bill-number series |
 | `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |
 | `notifications` | the bell, push alerts, email |
@@ -140,20 +140,33 @@ jobs/
 
 ## Tenancy
 
+How each workshop's data stays its own: ADR-0023.
+
 - `Workshop` and `Branch` live in `workshops`. A workshop is the business; a
   branch is one of its locations (ADR-0006).
-- Every business model inherits an abstract base from `workshops`, which adds a
-  required, indexed `workshop` link. Operational records (job cards, invoices,
-  stock, cash) also link to a branch.
+- Every business model builds on `WorkshopModel` (`apps/workshops/models.py`):
+  a required workshop link, and a unique (workshop, id) pair. Operational
+  records (job cards, invoices, stock, cash) also link to a branch.
 - Customers and vehicles belong to the workshop, so all its branches share them.
 - Unique rules include the workshop (e.g. a bill number is unique per branch
   of a workshop).
-- Queries go through workshop-scoped managers. The current workshop comes from
-  the signed-in user's membership.
+- **The workshop is passed by hand.** One middleware sets `request.workshop`
+  from the signed-in user's membership. Every selector and service takes the
+  workshop as its first argument, and its queries start with
+  `Model.objects.for_workshop(workshop)`. No hidden current workshop.
+- **A link stays inside its workshop.** A link to another workshop record
+  carries a `SameWorkshop` constraint, so PostgreSQL refuses a link to a
+  record of another workshop.
+- **Whether a workshop may work now** has one home: `may_work()` in
+  `apps/workshops/selectors.py`, asked by the middleware on every request.
 - Workshop members and platform staff are separate kinds of account
-  (ADR-0007).
-- Every app has a **leak test**: data from workshop A is never visible to
-  workshop B.
+  (ADR-0007). The Django admin is not scoped: it is for emergencies only.
+- **Leak tests:** `tests/test_tenancy.py` checks that every business model
+  builds on `WorkshopModel`, and that each one shows a workshop only its own
+  records. The permission matrix checks every page: a record of another
+  workshop is never found.
+- PostgreSQL's row-level security is added as a second guard before a second
+  workshop's data shares a database.
 
 ## Shared rules
 
@@ -204,8 +217,8 @@ jobs/
    purchase record; a job's shop-part line points to it (`jobs` imports
    `suppliers`). An unassigned spare is then simply a purchase no job uses yet.
 2. Background and scheduled jobs: backups, clean-ups, push.
-3. Tenancy enforcement: scoped managers now; PostgreSQL row-level security as
-   a second guard later?
+3. Tenancy enforcement: decided in ADR-0023 (the workshop passed by hand;
+   row-level security later).
 4. Per-workshop settings: one settings model, or settings per app.
 5. Photo storage: one bucket with a prefix per workshop, or a bucket per
    deployment.

@@ -54,7 +54,7 @@ layers = [
     "(inventory) | (vehicles) | (staff)",
     "(audit) | (notifications)",
     "accounts",
-    "(workshops)",
+    "workshops",
     "core",
 ]
 exhaustive = true
