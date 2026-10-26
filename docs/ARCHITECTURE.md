@@ -180,12 +180,22 @@ How each workshop's data stays its own: ADR-0023.
 
 ## Shared rules
 
-- **Money** (`core`): `Decimal` only, bounds read from the column, a zero or
-  negative amount refused by the parser itself.
-- **Dates** (`core`): India time, `timezone.localdate()`, never `date.today()`.
+- **Money:** `Decimal` only, never `float`. A typed amount goes through
+  Django's decimal form field, which takes its digits from the column and
+  refuses NaN, Infinity, extra decimals and commas. A zero or negative
+  amount is refused by the model and by a PostgreSQL check. Every money
+  column has one size, set with the first one.
+- **Dates:** India time, `timezone.localdate()`, never `date.today()`.
+  Screens show Indian dates and numbers (26 Oct 2026, 1,50,000.00) from our
+  own formats file, made with the first page: Django has none for Indian
+  English.
 - **Audit:** services call `audit` whenever money is changed, deleted or
-  back-dated.
-- **Notifications:** services call `notifications`; views never do.
+  back-dated. Each entry keeps a frozen copy of what changed, with who, when
+  and why, and no link to the record, so it outlives the record. The log is
+  built in the same pull request as the first service that changes money,
+  because history cannot be filled in later.
+- **Notifications:** services call `notifications`; views never do. Built
+  with the first alert.
 - **History:** record when things happen. Status changes that matter store
   their time (part ordered and received, work started and fixed, car in,
   ready and delivered), and kilometres are a number at every visit.
