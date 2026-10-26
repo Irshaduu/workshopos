@@ -6,6 +6,9 @@ Values that differ between machines come from environment variables
 
 from pathlib import Path
 
+from django.utils.csp import CSP
+from django.utils.translation import gettext_lazy as _
+
 from config.env import env, load_env_file
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -32,13 +35,31 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Every page needs sign-in, unless its view is marked @login_not_required.
+    "django.contrib.auth.middleware.LoginRequiredMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# Only our own server may send scripts, styles, pictures and fonts, and no
+# inline script or style runs, so a script slipped into a page cannot run.
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF],
+    "style-src": [CSP.SELF],
+    "img-src": [CSP.SELF],
+    "font-src": [CSP.SELF],
+    "connect-src": [CSP.SELF],
+    "object-src": [CSP.NONE],
+    "base-uri": [CSP.NONE],
+    "form-action": [CSP.SELF],
+    "frame-ancestors": [CSP.NONE],
+}
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -85,6 +106,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = "en-us"
+
+# English only until a second language is wanted (ADR-0015).
+LANGUAGES = [("en", _("English"))]
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 # India time for every date the system shows or stores as "today".
 TIME_ZONE = "Asia/Kolkata"

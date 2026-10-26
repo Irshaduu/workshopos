@@ -95,6 +95,8 @@ closes the issue.
   its key is a UUID7 that exists before saving (ADR-0022). To know if a
   record is saved, ask Django's `_state.adding`, never "is the key empty?".
   A test checks every model.
+- **Every page needs sign-in.** A public page is marked
+  `@login_not_required`, with a comment saying why.
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.
