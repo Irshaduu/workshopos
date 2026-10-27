@@ -1,4 +1,5 @@
-"""Each request gets its workshop, and every page is guarded (apps/accounts/middleware.py)."""
+"""Each request gets its workshop, every page is guarded, and signed-in pages stay out
+of the browser's cache (apps/accounts/middleware.py)."""
 
 import pytest
 from django.contrib import admin
@@ -100,3 +101,28 @@ def test_a_page_costs_one_query_for_its_workshop(client, django_assert_num_queri
     # The session, the account, then the membership with its workshop.
     with django_assert_num_queries(3):
         client.get("/workshop/")
+
+
+@pytest.mark.django_db
+def test_a_signed_in_page_is_never_kept_by_the_browser(client):
+    # So Back, after signing out on a shared device, shows nothing private.
+    client.force_login(MembershipFactory().user)
+
+    cache_control = client.get("/workshop/")["Cache-Control"]
+
+    assert "no-store" in cache_control
+    assert "private" in cache_control
+
+
+@pytest.mark.django_db
+def test_a_refused_page_is_never_kept_either(client):
+    client.force_login(UserFactory())
+
+    response = client.get("/workshop/")
+
+    assert response.status_code == 403
+    assert "no-store" in response["Cache-Control"]
+
+
+def test_a_page_for_visitors_is_left_alone(client):
+    assert not client.get("/public/").has_header("Cache-Control")
