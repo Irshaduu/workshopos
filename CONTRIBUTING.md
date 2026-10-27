@@ -111,6 +111,11 @@ closes the issue.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.
 - **No business logic in signals.**
+- **Business records are never in the Django admin.** It holds only the
+  setup records listed in `tests/test_safe_defaults.py`, for emergencies
+  (ADR-0023). A business record changes only through its service, so the
+  audit log and every rule run, and platform staff never read a workshop's
+  data (ADR-0007). The test fails for any other model.
 - **Let PostgreSQL 18 guard the data** (ADR-0019). Before writing a model or
   a query, check what PostgreSQL 18 and Django can do in the database:
   constraints (unique, check, exclusion), generated fields, database
