@@ -125,8 +125,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
-    },
-}
+# Each machine sets its own mailer (local.py, test.py, production later).
+# Here there is none, so a machine that forgets cannot send mail, nor print
+# password reset codes into its logs.
+MAILERS: dict[str, dict] = {}

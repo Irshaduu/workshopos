@@ -11,6 +11,12 @@ def test_debug_is_off_unless_a_machine_turns_it_on():
     assert base.DEBUG is False
 
 
+def test_the_shared_settings_have_no_mailer():
+    # Each machine sets its own. One that forgets cannot send mail, nor print
+    # password reset codes into its logs.
+    assert base.MAILERS == {}
+
+
 def test_dates_use_india_time():
     assert settings.TIME_ZONE == "Asia/Kolkata"
     assert settings.USE_TZ is True
