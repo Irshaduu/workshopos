@@ -65,6 +65,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | Stock moved through signals, an invisible flow | Explicit service calls; no business logic in signals |
 | A service worker re-sent form POSTs, which some browsers dropped | A service worker never re-sends a POST |
 | One thing had two names: a fleet account was `BulkPayer` in the code | One name per thing, from `docs/GLOSSARY.md` |
+| Back, after signing out on a shared laptop, showed a customer's bill again | A signed-in page is never kept by the browser |
 
 ---
 
@@ -191,7 +192,8 @@ Slice 1.
 - [x] Custom user model in `accounts`, made before any other app's first
       migration (the local database is reset once at that point)
 - [x] Safe defaults from the first app: every page needs sign-in unless
-      marked public; a strict CSP (Django's own); ruff's security rules
+      marked public; a signed-in page is never kept by the browser; a
+      strict CSP (Django's own); ruff's security rules
 - [x] Translation set up with the first app: `LANGUAGES`, `LOCALE_PATHS`
       (ADR-0015)
 - [x] Factories for test data (factory-boy, ADR-0013), with the first model
