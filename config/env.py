@@ -15,7 +15,9 @@ def load_env_file(path: Path) -> None:
     """Copy NAME=value lines from the file into the environment, unless already set."""
     if not path.exists():
         return
-    for line in path.read_text(encoding="utf-8").splitlines():
+    # "utf-8-sig" skips a byte order mark, which Windows PowerShell 5.1 puts at
+    # the start of a file. Read as plain UTF-8, it would join the first name.
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue

@@ -45,6 +45,14 @@ def test_the_env_file_fills_values_and_skips_comments_and_blank_lines(tmp_path):
     assert "# a comment" not in os.environ
 
 
+def test_a_byte_order_mark_at_the_start_of_the_env_file_is_ignored(tmp_path):
+    # Windows PowerShell 5.1 saves text files with one.
+    env_file = tmp_path / ".env"
+    env_file.write_text("DJANGO_SECRET_KEY=abc\n", encoding="utf-8-sig")
+    load_env_file(env_file)
+    assert os.environ["DJANGO_SECRET_KEY"] == "abc"
+
+
 def test_a_real_environment_value_wins_over_the_env_file(tmp_path):
     os.environ["DB_HOST"] = "db.server"
     env_file = tmp_path / ".env"
