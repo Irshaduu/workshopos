@@ -232,15 +232,27 @@ Slice 1.
   - the bargaining discount (a bill of 47,500 settled at 45,500, for
     example) is recorded at settle, before tax
   - the final bill number is given at settle
+  - the settled bill keeps a frozen copy of the customer and the car as
+    printed, so fixing a name later, or a customer's request to delete
+    their data, never changes an old bill
 - [ ] Customers and vehicles as real records (ADR-0006); decide what
       happens to a car's history when it is sold to a new owner
 - [ ] A branch link on operational records, and every link kept inside its
-      workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the job card
+      workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the job card;
+      a factory gives its linked records the same workshop
+- [ ] A pre-commit check that every query in `apps/` starts with
+      `for_workshop()`, unless the line says why not, from the first
+      selector (ADR-0023)
 - [ ] History from day one: kilometres as a number at every visit; times of
       status changes (part ordered and received, work started and fixed,
       car in, ready, delivered)
-- [ ] The first per-workshop settings (ADR-0024), and the bill-number
-      series per branch, each with the feature that uses it
+- [ ] The first per-workshop settings (ADR-0024), each with the feature
+      that uses it
+- [ ] The bill-number series per branch: a counter locked inside the
+      settle, never a PostgreSQL sequence (it skips a number when a save
+      fails); it starts again each year like v1's (JB-26-097), or each
+      financial year if the accountant asks (GST: unique in a financial
+      year, at most 16 characters)
 - [ ] Money, with the first money column: one size for every money
       column; typed amounts through Django's decimal form field, no parser
       of our own; a zero or negative amount refused by the model and by
@@ -250,18 +262,24 @@ Slice 1.
       the first page: our own formats file
 - [ ] The audit log, in the same pull request as the first service that
       changes, deletes or back-dates money: a frozen copy of what changed,
-      with who, when and why (v1's shape, in one table)
+      with who, when and why (v1's shape, in one table); every service that
+      changes money is told who acts
 - [ ] Every page and menu item names its module, from the first page: a
       list of modules in the code, where each app adds its own, and a test
       that fails for a page with no module or an unknown one (ADR-0011)
 - [ ] Sign-in: what a person signs in with (v1: owners by email, others by
-      username or mobile); a username is unique across every workshop on a
-      server; the lockout, and the owner's unlock, so a shared floor login
-      is never stuck
+      username or mobile); usernames and emails unique whatever their
+      capitals; a username is unique across every workshop on a server, and
+      stays unique when a workshop moves to a shared one; the lockout
+      counted per account, in the database (v1: all devices share one
+      internet connection), and the owner's unlock, so a shared floor login
+      is never stuck; how long a person stays signed in (v1: 40 days, the
+      owners' choice)
 - [ ] Roles checked in one place, decided in an ADR with the first page: a
-      list of what each role may do, and no page checks a role by name, so
-      a new role is added without changing pages. v1's Floor sees the whole
-      floor, not only its own jobs as ADR-0007 says
+      list of what each role may do (each app adds its own, like the module
+      list), and no page checks a role by name, so a new role is added
+      without changing pages. v1's Floor sees the whole floor, not only its
+      own jobs as ADR-0007 says
 - [ ] Permission matrix test: every page for every role, from the first
       page; a record of another workshop is never found
 - [ ] Query-count tests for list pages, from the first list page, so a
@@ -321,7 +339,19 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] Load test on staging with fake workshops; the worker count and the
       server size come from it
 - [ ] `config/settings/production.py`: hosts and security settings from the
-      environment (`wsgi.py` and `asgi.py` already point to it)
+      environment (`wsgi.py` and `asgi.py` already point to it); errors
+      written to the console, database connections kept open, and a
+      "noindex" header on every answer, as v1's settings do
+- [ ] The host's health check gets its answer: its host name allowed
+      (Railway calls `/health/` as `healthcheck.railway.app`), and no
+      redirect to HTTPS first
+- [ ] Decide (ADR): static files with hashed names and compressed pages,
+      and how both are served (v1: WhiteNoise and GZipMiddleware, because
+      Railway's proxy did not compress); JS imports rewritten too
+      (`support_js_module_import_aggregation`)
+- [ ] The production mailer: a web service, not SMTP (v1: Railway blocks
+      SMTP below its Pro plan, so v1 used Resend); the shared settings have
+      none
 - [ ] Deploy configuration in the repo; migrations run before traffic moves
 - [ ] Safe-migration rules written down, before the first real data
 - [ ] Decide (ADR): one Dockerfile as the deploy recipe, built in CI and used
