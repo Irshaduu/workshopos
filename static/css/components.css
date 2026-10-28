@@ -935,6 +935,15 @@
     color: var(--color-text-muted);
   }
 
+  /* Two ways on: side by side, or one above the other on a narrow phone,
+     never touching. */
+  .state-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
   /* Car paint: a class per paint sets --paint, which a screen uses for a
      car's stripe, wash or swatch. The values are tokens. */
   .paint-black { --paint: var(--paint-black); }

@@ -12,6 +12,7 @@ The page after signing in, for now: who is signed in, and where. Roles
     {% include "components/notices.html" %}
     <h1 class="state-card__title">{{ request.workshop.name }}</h1>
     <p class="state-card__text">{% blocktranslate with name=user.username role=request.membership.get_role_display %}Signed in as {{ name }} ({{ role }}).{% endblocktranslate %}</p>
+    <a class="btn" href="{% url 'accounts:sign_out' %}">{% translate "Sign out" %}</a>
   </div>
 </main>
 {% endblock %}

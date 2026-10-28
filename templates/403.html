@@ -3,7 +3,9 @@
 {% comment %}
 Shown by Django when a page refuses someone. A refusal that says why, like
 "This workshop is suspended." (apps/accounts/middleware.py), shows its own
-words; otherwise the page was for other roles.
+words; otherwise the page was for other roles. A signed-in person can
+always sign out from here (SIGN-42); its address is plain, so this page
+needs nothing from the app's address list.
 {% endcomment %}
 {% block title %}{% if exception %}{% translate "Not allowed" %}{% else %}{% translate "Not open to your role" %}{% endif %}{% endblock %}
 
@@ -18,7 +20,12 @@ words; otherwise the page was for other roles.
       <h1 class="state-card__title">{% translate "Not open to your role" %}</h1>
       <p class="state-card__text">{% translate "This page is for other roles. Ask the owner if you need it." %}</p>
     {% endif %}
-    <a class="btn btn--primary" href="/">{% translate "Go to the home page" %}</a>
+    <div class="state-card__actions">
+      <a class="btn btn--primary" href="/">{% translate "Go to the home page" %}</a>
+      {% if user.is_authenticated %}
+        <a class="btn" href="/sign-out/">{% translate "Sign out" %}</a>
+      {% endif %}
+    </div>
   </div>
 </main>
 {% endblock %}
