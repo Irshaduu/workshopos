@@ -42,7 +42,8 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Every page needs sign-in, unless its view is marked @login_not_required.
-    "django.contrib.auth.middleware.LoginRequiredMiddleware",
+    # Django's own, which also says when a change was not saved (SIGN-38).
+    "apps.accounts.middleware.SignInRequiredMiddleware",
     # Every page needs a workshop that may work now, unless its view is marked
     # @workshop_not_required (ADR-0023).
     "apps.accounts.middleware.WorkshopMiddleware",
@@ -73,6 +74,17 @@ AUTH_USER_MODEL = "accounts.User"
 # The one way to sign in, in place of Django's own (ADR-0025). Being the only
 # one, it guards every way in: our page, the Django admin's page, the tests.
 AUTHENTICATION_BACKENDS = ["apps.accounts.backends.SignInBackend"]
+
+# The sign-in page. An address, not a name, so it also works in a test with
+# its own addresses.
+LOGIN_URL = "/sign-in/"
+
+# Signed in until 40 days after the last visit (v1, the owners' choice):
+# each visit starts the 40 days again, and closing the browser signs nobody
+# out (SIGN-36, SIGN-37).
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 40
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # Our models get a UUID7 key from apps/core/models.py (ADR-0022). This is
 # only for the tables Django makes itself, like its many-to-many link tables.

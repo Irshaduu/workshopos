@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% comment %}
+The frame of every sign-in step (docs/design/sign-in.jpg): the product's
+name, the notices, one card, and the line under it. It names no role and
+links to no other way in (SIGN-1).
+{% endcomment %}
+{% block css %}<link rel="stylesheet" href="{% static 'accounts/sign-in.css' %}">{% endblock %}
+
+{% block body %}
+<main class="signin">
+  <p class="signin__brand">WorkshopOS</p>
+  <div class="signin__column">
+    {% include "components/notices.html" %}
+    {% block card %}{% endblock %}
+  </div>
+  <p class="signin__foot">{% translate "Authorised access only" %}</p>
+</main>
+{% endblock %}
