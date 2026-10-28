@@ -11,6 +11,7 @@ class WorkshopFactory(DjangoModelFactory):
         model = Workshop
 
     name = factory.Sequence(lambda n: f"Workshop {n}")
+    short_code = factory.Sequence(lambda n: f"w{n}")
 
 
 class BranchFactory(DjangoModelFactory):
