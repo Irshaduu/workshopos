@@ -110,6 +110,12 @@ closes the issue.
   signing out, is marked `@workshop_not_required`
   (`apps/accounts/decorators.py`), with a comment saying why.
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
+- **A service that changes money or stock runs in one transaction** and
+  locks the rows it reads to decide (`transaction.atomic`,
+  `select_for_update`).
+- **A balance or total is worked out from its rows when it is read.** It is
+  stored only when measured slowness needs it, with a test that it equals
+  its rows.
 - **Every text a person sees is marked for translation** (ADR-0015):
   `{% translate %}` in templates, `gettext_lazy` in Python.
 - **No business logic in signals.**
@@ -148,6 +154,10 @@ closes the issue.
   its rule ID.
 - **Test the invariant, not the implementation.** For example, two screens agree, or a
   total adds up from its own rows.
+- **A rule is tested at its service or selector.** A page test checks only
+  the page's wiring and who may open it.
+- **`transaction=True` only when a test needs a real commit.** It empties
+  every table after each test, so it is slow.
 - **Factories, not hand-made fixtures.**
 - **The leak test covers every workshop model by itself**
   (`tests/test_tenancy.py`). Each one needs a factory: `<Model>Factory` in
