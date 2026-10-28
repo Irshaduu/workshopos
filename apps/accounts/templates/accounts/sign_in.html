@@ -1,0 +1,23 @@
+{% extends "accounts/sign_in_layout.html" %}
+{% load i18n %}
+{% comment %}
+Step 1, for every role: an email goes on to a code, a username to a
+password (SIGN-2).
+{% endcomment %}
+{% block title %}{% translate "Sign in" %}{% endblock %}
+
+{% block card %}
+<form class="signin__card" action="{% url 'accounts:sign_in' %}" method="post">
+  {% csrf_token %}
+  <h1 class="signin__title">{% translate "Sign in" %}</h1>
+  <div class="field">
+    <label class="field__label" for="sign-in-who">{% translate "Email or username" %}</label>
+    <input class="field__input" id="sign-in-who" name="who" type="text" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required autofocus value="{{ form.who.value|default_if_none:'' }}"{% if form.who.errors %} aria-invalid="true" aria-describedby="sign-in-who-error"{% endif %}>
+    {% if form.who.errors %}
+      <p class="field__error" id="sign-in-who-error" role="alert">{{ form.who.errors.0 }}</p>
+    {% endif %}
+  </div>
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn btn--primary signin__submit" type="submit">{% translate "Continue" %}</button>
+</form>
+{% endblock %}

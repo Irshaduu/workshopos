@@ -98,8 +98,10 @@ def test_a_page_costs_one_query_for_its_workshop(client, django_assert_num_queri
     member = MembershipFactory()
     client.force_login(member.user)
 
-    # The session, the account, then the membership with its workshop.
-    with django_assert_num_queries(3):
+    # The session, the account, then the membership with its workshop. Then
+    # the session is saved again, to move its end date 40 days on (SIGN-36):
+    # one update, inside a savepoint and its release.
+    with django_assert_num_queries(6):
         client.get("/workshop/")
 
 

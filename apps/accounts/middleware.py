@@ -1,12 +1,34 @@
-"""Gives each request its workshop, guards every page (ADR-0023), and keeps
-signed-in pages out of the browser's cache."""
+"""Sends a visitor to sign in first, gives each request its workshop, guards
+every page (ADR-0023), and keeps signed-in pages out of the browser's cache."""
 
+from django.contrib import messages
+from django.contrib.auth.middleware import LoginRequiredMiddleware
 from django.core.exceptions import PermissionDenied
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.selectors import membership_of
 from apps.workshops.selectors import may_work
+
+
+class SignInRequiredMiddleware(LoginRequiredMiddleware):
+    """Django's own "sign in first", which also says when a change was lost (SIGN-38).
+
+    A visitor whose session ended while saving sends a POST. They go to the
+    sign-in page like anyone else, and back to the page after signing in;
+    the sign-in page says that the change was not saved.
+    """
+
+    def handle_no_permission(self, request, view_func):
+        if request.method == "POST":
+            messages.warning(
+                request,
+                _(
+                    "You were signed out after a long break, so your last change was not "
+                    "saved. Sign in, then enter it again."
+                ),
+            )
+        return super().handle_no_permission(request, view_func)
 
 
 class WorkshopMiddleware:

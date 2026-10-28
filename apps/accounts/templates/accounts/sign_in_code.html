@@ -1,0 +1,33 @@
+{% extends "accounts/sign_in_layout.html" %}
+{% load i18n %}
+{% comment %}
+Step 2 for an owner: the code from the email (SIGN-3). A wrong code stays in
+its box, so one wrong digit can be fixed (SIGN-23). "Send a new code" runs
+step 1 again with the same email.
+{% endcomment %}
+{% block title %}{% translate "Enter your code" %}{% endblock %}
+
+{% block card %}
+<form class="signin__card" action="{% url 'accounts:sign_in_code' %}" method="post">
+  {% csrf_token %}
+  <h1 class="signin__title">{% translate "Enter your code" %}</h1>
+  <p class="signin__who">{% blocktranslate %}Sent to <strong>{{ email }}</strong>{% endblocktranslate %} <a class="signin__change" href="{% url 'accounts:sign_in' %}">{% translate "Change" %}</a></p>
+  <div class="field">
+    <label class="field__label" for="sign-in-code">{% translate "6-digit code" %}</label>
+    {% if form.code.errors %}
+      <input class="field__input signin__code" id="sign-in-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" required autofocus value="{{ form.code.value|default_if_none:'' }}" aria-invalid="true" aria-describedby="sign-in-code-error">
+      <p class="field__error" id="sign-in-code-error" role="alert">{{ form.code.errors.0 }}</p>
+    {% else %}
+      <input class="field__input signin__code" id="sign-in-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" required autofocus aria-describedby="sign-in-code-hint">
+      <p class="field__hint" id="sign-in-code-hint">{% blocktranslate %}It is in the email's subject line, and works for {{ minutes }} minutes. Not there? Look in spam.{% endblocktranslate %}</p>
+    {% endif %}
+  </div>
+  <button class="btn btn--primary signin__submit" type="submit">{% translate "Sign in" %}</button>
+</form>
+<form class="signin__more" action="{% url 'accounts:sign_in' %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="who" value="{{ email }}">
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn signin__switch" type="submit">{% translate "Send a new code" %}</button>
+</form>
+{% endblock %}

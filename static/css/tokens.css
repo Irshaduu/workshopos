@@ -128,6 +128,10 @@
     --empty-icon-size: 2.5rem;
     --state-card-max-width: 31.25rem;
     --text-display: 5rem;
+    /* The sign-in page (v1): its column, and its tall boxes and button,
+       52 pixels, well past the 44 minimum */
+    --signin-max-width: 26.25rem;
+    --signin-control-height: 3.25rem;
 
     /* Car paint: v1's paint list and values, exactly (CAR_COLOR_HEX in v1).
        A car's own colour, not a tone. */
