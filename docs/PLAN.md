@@ -4,7 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 4, core architecture, is done; Phase 5, Slice 1, is next.
+**Now:** Phase 5, Slice 1, is in progress: its plan is re-checked, and
+building is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -78,7 +79,7 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 | 2 | Understand v1 | `[x]` |
 | 3 | Design system (UI lab) | `[x]` |
 | 4 | Core architecture | `[x]` |
-| 5 | Slice 1, timed | `[ ]` |
+| 5 | Slice 1, timed | `[~]` |
 | 6 | Go-live modules | `[ ]` |
 | 7 | Ready to run live | `[ ]` |
 | 8 | Staging trial, go-live, close watch | `[ ]` |
@@ -226,77 +227,166 @@ Slice 1.
 
 ### Phase 5: Slice 1, timed
 
-- [ ] Login, vehicle, job card, invoice and settle, end to end, with tests.
-      Billing rules for it:
+Build order. Each step goes through the loop in `CONTRIBUTING.md`; base
+work gets its own pull request, just before the page that first uses it.
+
+1. Sign-in and password reset, with its ADR
+2. Roles, with its ADR: the page mark, the module list, the permission
+   matrix
+3. Base for the first pages: Indian formats, the `for_workshop()` check,
+   the double-tap guard, the query-count test
+4. Staff list: the first list page and form
+5. Money base, just before the first money column
+6. Job card: customers and cars, the number, the links, history, a form
+   per role
+7. Known plate: old plates, the chassis number, moving an open job card
+8. Settle bill: payments, the discount, the frozen copy, the first
+   settings, the audit log
+9. Browser tests and limits, with the Playwright ADR
+10. Close: the hours sorted, the other modules sized, the delivery date
+
+- [ ] One car, from sign-in to a settled bill, end to end, with tests. It
+      builds these Go-live modules whole (`docs/MODULES.md`), each through
+      the loop in `CONTRIBUTING.md`: Sign-in and password reset, Roles,
+      Staff list, Job card, Known plate, Settle bill. The rest waits for
+      Phase 6, like parts on the job card, fleet accounts and the printed
+      bill. Billing rules for it:
   - the bill is a preview until it is settled
-  - the bargaining discount (a bill of 47,500 settled at 45,500, for
-    example) is recorded at settle, before tax
-  - the final bill number is given at settle
+  - settle is one step: Office or an owner types what the customer paid,
+    by method (cash, UPI, card or bank transfer; one bill can use two),
+    and the rest of the bill is the discount, shown before saving; each
+    payment is its own row; an amount above the bill is refused
+  - the bargaining discount (a bill of 43,000 settled at 40,000, for
+    example) is saved as its own amount, before tax, and the bill shows
+    it with its label; the total is called Net, never Paid
+  - one number per visit, as in v1 (JB-26-027): given when the job card
+    is made, it is the job card's number and its bill's number; a job
+    card that ends with no bill is cancelled with a reason, never
+    deleted, and keeps its number
   - the settled bill keeps a frozen copy of the customer and the car as
     printed, so fixing a name later, or a customer's request to delete
     their data, never changes an old bill
-- [ ] Customers and vehicles as real records (ADR-0006); decide what
-      happens to a car's history when it is sold to a new owner
+- [ ] Customers and vehicles as real records (ADR-0006), built with the
+      job card. In a workshop, a car keeps one record and its whole
+      history; each job card keeps the customer and the plate of that
+      visit; a sale changes only the owner, and a new plate (a car from
+      another state registered here, a temporary plate made permanent)
+      only the plate, from that day on; Floor never sees customers (v1). A
+      job card finds its car by the plate, an old plate or the chassis
+      number (VIN), as v1's Known plate did; old bills join that search
+      with the old bills tool (Phase 6). The chassis number stays optional,
+      with v1's checks. A plate or a chassis number belongs to one car in a
+      workshop; when two cars claim one, the car in front of you, checked
+      against its RC, keeps it, and the other car's is asked again at its
+      next visit. A chassis number never decides alone: a match asks "same
+      car with a new number?", only when the make matches. Office can move
+      an open job card to the right car; a settled one never moves. The
+      car's page (Car profiles, After) gets the same changes; no merge tool
+      unless the staging trial shows a need
 - [ ] A branch link on operational records, and every link kept inside its
       workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the job card;
       a factory gives its linked records the same workshop
 - [ ] A pre-commit check that every query in `apps/` starts with
       `for_workshop()`, unless the line says why not, from the first
-      selector (ADR-0023)
-- [ ] History from day one: kilometres as a number at every visit; times of
-      status changes (part ordered and received, work started and fixed,
-      car in, ready, delivered)
-- [ ] The first per-workshop settings (ADR-0024), each with the feature
-      that uses it
-- [ ] The bill-number series per branch: a counter locked inside the
-      settle, never a PostgreSQL sequence (it skips a number when a save
-      fails); it starts again each year like v1's (JB-26-097), or each
-      financial year if the accountant asks (GST: unique in a financial
-      year, at most 16 characters)
+      selector (ADR-0023); it also flags Django's shortcuts that query by
+      themselves (`get_object_or_404(Model, ...)`, a class-based view's
+      `model =`, `_default_manager`)
+- [ ] History from day one, with the job card: kilometres as a whole
+      number at every visit, or blank when the odometer does not work,
+      never miles (settle warns when it is blank, as v1 does); the time of
+      every step the workflow has (car in, each concern started and fixed,
+      on hold and back, ready), kept as rows, one per change, because ready
+      can be undone; part ordered and received come with parts (Phase 6); a
+      delivered step only if the client asks (v1 had none)
+- [ ] The first per-workshop settings (ADR-0024), with settle: how far
+      back Office may date money (v1: 3 days), and how long Office may
+      change a settled bill before only owners can (v1: 24 hours); the
+      big-discount alert limit comes with the bell (Phase 6)
+- [ ] The number series per branch: a counter locked when a job card is
+      made, never a PostgreSQL sequence (it skips a number when a save
+      fails); the letters (JB) and the yearly restart are the branch's,
+      like v1's JB-26-097, or each financial year if the accountant asks
+      (GST: unique in a financial year, at most 16 characters); it starts
+      after the last Excel bill number, and a number is used once, old
+      bills included
 - [ ] Money, with the first money column: one size for every money
-      column; typed amounts through Django's decimal form field, no parser
-      of our own; a zero or negative amount refused by the model and by
-      PostgreSQL; the money date rules (no future date, how far back Office
-      may go) with the first money page
-- [ ] Indian dates and numbers on screen (26 Oct 2026, 1,50,000.00), with
-      the first page: our own formats file
+      column, v1's numeric(12, 2); typed amounts through Django's decimal
+      form field, no parser of our own; a zero or negative amount refused
+      by the model and by PostgreSQL; the money date rules (no future date,
+      how far back Office may go) with the first money page
+- [ ] Indian dates and numbers on screen, with the first page: one formats
+      file, read by Django's own filters (26 Oct 2026; 1,50,000, 1,50,000.50
+      or 1,50,000.00 through `floatformat`), so v1's own rupee filters are
+      not rebuilt; only the short figure for a big number on a phone
+      (45.2L) is our own code, in `core`; which style each screen uses, with
+      v1's reasons, written in `docs/DESIGN.md`
 - [ ] The audit log, in the same pull request as the first service that
       changes, deletes or back-dates money: a frozen copy of what changed,
-      with who, when and why (v1's shape, in one table); every service that
-      changes money is told who acts
+      with who, when and why (v1's shape, in one table), saved in the same
+      transaction; every service that changes money is told who acts. Its
+      first entries: a change to a settled bill (amount, discount, payment,
+      date); a first settle is not a change (v1)
 - [ ] Every page and menu item names its module, from the first page: a
       list of modules in the code, where each app adds its own, and a test
-      that fails for a page with no module or an unknown one (ADR-0011)
-- [ ] Sign-in: what a person signs in with (v1: owners by email, others by
-      username or mobile); usernames and emails unique whatever their
-      capitals; a username is unique across every workshop on a server, and
-      stays unique when a workshop moves to a shared one; the lockout
-      counted per account, in the database (v1: all devices share one
-      internet connection), and the owner's unlock, so a shared floor login
-      is never stuck; how long a person stays signed in (v1: 40 days, the
-      owners' choice)
+      that fails for a page with no module or an unknown one (ADR-0011). A
+      page's one mark names its module and what it needs from the roles
+      list, and one check reads both (decided with the roles ADR); this
+      test and the permission matrix go through the same list of pages
+- [ ] Sign-in, decided in an ADR with the sign-in page: owners sign in
+      with their email, Office and Floor with a username (v1's mobile
+      sign-in is not in use, so it is left out); every username starts
+      with its workshop's short code, so it stays unique on a shared server
+      and when a workshop moves to one; usernames and emails unique
+      whatever their capitals; the lockout counted per account, in the
+      database (v1: all devices share one internet connection), and the
+      owner's unlock, so a shared floor login is never stuck; how long a
+      person stays signed in (v1: 40 days, the owners' choice)
 - [ ] Roles checked in one place, decided in an ADR with the first page: a
       list of what each role may do (each app adds its own, like the module
       list), and no page checks a role by name, so a new role is added
-      without changing pages. v1's Floor sees the whole floor, not only its
-      own jobs as ADR-0007 says
-- [ ] Permission matrix test: every page for every role, from the first
-      page; a record of another workshop is never found
-- [ ] Query-count tests for list pages, from the first list page, so a
-      longer list never means more queries
+      without changing pages; Django's own permission check (`has_perm`,
+      `perms` in templates) tried first. The ADR replaces ADR-0007's Floor
+      line: Floor sees the whole floor (one shared login), never prices or
+      customer details
+- [ ] Permission matrix test, from the first page: it finds every page by
+      itself, so a page with no row fails; the expected answers are typed
+      in the test, never read from the roles list; for each page, a visitor
+      who is signed out is sent to sign in, each role gets in or is
+      refused, and a record of another workshop is never found
+- [ ] Query-count tests for every page that shows rows (a list page, a job
+      card's lines), from the first one: the page opened with a few rows
+      and with many makes the same number of queries, so a longer list
+      never means more queries
 - [ ] A double tap or a slow network never saves a record twice, from the
-      first form
-- [ ] The job card has a separate form for each role; no hidden inputs
-- [ ] Browser tests (Playwright) for this flow, in both Chrome's and
-      Safari's engines
-- [ ] The full test suite timed, and a time limit set from it; checked
+      first form. The server is the guard; the button only shows it is
+      busy. A new record's key comes in the form's address (UUID7 keys exist
+      before saving, ADR-0022), so PostgreSQL refuses a second copy and the
+      page shows the saved one; a change runs in one locked transaction
+      that refuses a repeat (a settled bill is never settled twice)
+- [ ] A separate form for each role, on every form, not only the job card:
+      a field a role may not change is left out of its form, never hidden
+      (v1: a Floor post changed a price it could not see); the rule goes
+      into `CONTRIBUTING.md` with the first role form
+- [ ] Browser tests (Playwright, with its ADR first) for the key flows
+      only: sign in, open a job card, settle a bill; in both Chrome's and
+      Safari's engines (`docs/DESIGN.md`), in their own CI job, which
+      `main` also requires; the real iPhones are checked in the staging
+      trial (Phase 8)
+- [ ] The full test suite timed, and a time limit set from it in CI (the
+      test job's `timeout-minutes`), so a slow suite fails loudly; checked
       again at the end of each phase
-- [ ] A stand-in speed limit: the job card's size and speed measured in
-      Chrome set to act like a slow phone, and a limit set from it
-      (`docs/DESIGN.md`)
-- [ ] Time recorded, with the one-time setup kept apart; every Go-live
-      module sized small / medium / large
-- [ ] From that, a realistic delivery date for the client
+- [ ] A stand-in speed limit, measured with Playwright in Chrome set to act
+      like a slow phone (`docs/DESIGN.md`): CI fails when the job card
+      page's size (bytes downloaded, number of files) passes the limit;
+      its time on a slow phone is written down at the end of each phase,
+      and the floor tablet confirms it in the staging trial
+- [ ] Time recorded per pull request, each sorted as one module's work or
+      one-time setup (base work gets its own pull request, before the page
+      that first uses it); then every other Go-live module and every Phase 7
+      task sized small, medium or large against them
+- [ ] From that, a delivery date for the client, as a range: the rest of
+      Phases 6 to 8, from the measured sizes and hours per week, saying the
+      hours per week it assumes; checked again at the end of each phase
 
 ### Phase 6: Go-live modules
 

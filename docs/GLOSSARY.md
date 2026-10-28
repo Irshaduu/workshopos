@@ -15,7 +15,8 @@ the code (models, functions, files, URLs) and in the docs.
 | Role | `Role` | group | What a member may do: Owner, Office or Floor |
 | Fleet account | `FleetAccount` | bulk payer | A company that sends many cars and pays for them together |
 | Fleet payment | `FleetPayment` | bulk payment | One payment from a fleet account that settles many of its bills |
-| Staff member | `StaffMember` | mechanic, for everyone | A person who works at the workshop. Mechanic is one of the roles |
+| Staff member | `StaffMember` | mechanic, for everyone | A person who works at the workshop. Mechanic is one of the designations |
+| Designation | `designation` | role, for a staff member | A staff member's job, like Mechanic or Helper. A member's Owner, Office or Floor is their role |
 | Supplier | `suppliers` (the app) | | Any shop we buy from: a spare shop or a supplies shop |
 | Spare shop | `SpareShop` | | A shop we buy a part from for one job |
 | Supplies shop | `SuppliesShop` | supplier shop | A shop we buy stock from, for the shelf |

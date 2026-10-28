@@ -45,8 +45,10 @@ closes the issue.
 4. **Build:** small commits on a branch, tests in the same commit.
 5. **Explain:** every commit is explained and understood before merge.
 6. **Check:** CI green; clicked through in a browser; behaviour matches v1.
-7. **Sign-off:** the client checks it on staging.
-8. **Merge:** rule catalogue updated; an ADR if a decision was made.
+7. **Merge:** rule catalogue updated; an ADR if a decision was made.
+8. **Sign-off:** the client checks it on staging, before a release tag
+   takes it to production. A section built before staging exists is
+   signed off in the staging trial (Phase 8).
 
 ## UI lab
 
