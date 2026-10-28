@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 5, Slice 1, is in progress: Sign-in has its rules,
-decision and lab screen, and its build is next.
+**Now:** Phase 5, Slice 1, is in progress: Sign-in is built; Roles is
+next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -333,9 +333,10 @@ work gets its own pull request, just before the page that first uses it.
       page's one mark names its module and what it needs from the roles
       list, and one check reads both (decided with the roles ADR); this
       test and the permission matrix go through the same list of pages
-- [ ] Sign-in, as ADR-0025 decides, with every rule in
-      `docs/rules/sign-in.md` built and tested; the rules marked Phase 6
-      come with the Staff logins page and the bell
+- [x] Sign-in, as ADR-0025 decides, with every rule in
+      `docs/rules/sign-in.md` built and tested; SIGN-39 comes with the first
+      htmx call, and the rules marked Phase 6 with the Staff logins page and
+      the bell
 - [ ] Roles checked in one place, decided in an ADR with the first page: a
       list of what each role may do (each app adds its own, like the module
       list), and no page checks a role by name, so a new role is added

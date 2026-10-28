@@ -1,6 +1,6 @@
 # 0025: Sign-in: a code by email for owners, a password for Office and Floor
 
-**Status:** Proposed (2026-10-28)
+**Status:** Accepted (2026-10-29)
 
 ## Context
 

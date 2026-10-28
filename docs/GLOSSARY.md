@@ -16,6 +16,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Sign in | `sign_in`, the page `sign-in/` | log in, login (as a verb) | Start using the system: an owner types the email and the code sent to it; Office and Floor type a username and the password |
 | Sign out | `sign_out`, the page `sign-out/` | log out, logout | End the session on this device |
 | Username | `username` | identifier | What Office and Floor type to sign in. It starts with the workshop's short code and a dot, like `ab.floor` |
+| Login name | `login_name` | | The part of a username after the short code and its dot: `floor` in `ab.floor`. Small letters and digits |
 | Short code | `short_code` | | A workshop's 2 to 8 small letters or digits, set once and unique on the server. Every username of the workshop starts with it |
 | Locked | `minutes_locked()` | | An account with a password that cannot sign in for 15 minutes, after 5 wrong passwords in a row |
 | Unlock | `unlock()` | | An owner lets a locked Office or Floor account sign in again at once |
