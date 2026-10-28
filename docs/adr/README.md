@@ -29,6 +29,7 @@ costs.
 | [0022](0022-uuid7-primary-keys.md) | Primary keys: UUID7, made by Python, with PostgreSQL as backup | Accepted |
 | [0023](0023-tenancy.md) | Tenancy: the workshop passed by hand, links kept inside one workshop | Accepted |
 | [0024](0024-per-workshop-settings.md) | Per-workshop settings: each beside the rule that uses it | Accepted |
+| [0025](0025-sign-in.md) | Sign-in: a code by email for owners, a password for Office and Floor | Proposed |
 
 ## Rules
 

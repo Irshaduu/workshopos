@@ -230,7 +230,7 @@ Slice 1.
 Build order. Each step goes through the loop in `CONTRIBUTING.md`; base
 work gets its own pull request, just before the page that first uses it.
 
-1. Sign-in and password reset, with its ADR
+1. Sign-in, with its ADR
 2. Roles, with its ADR: the page mark, the module list, the permission
    matrix
 3. Base for the first pages: Indian formats, the `for_workshop()` check,
@@ -247,8 +247,8 @@ work gets its own pull request, just before the page that first uses it.
 
 - [ ] One car, from sign-in to a settled bill, end to end, with tests. It
       builds these Go-live modules whole (`docs/MODULES.md`), each through
-      the loop in `CONTRIBUTING.md`: Sign-in and password reset, Roles,
-      Staff list, Job card, Known plate, Settle bill. The rest waits for
+      the loop in `CONTRIBUTING.md`: Sign-in, Roles, Staff list, Job
+      card, Known plate, Settle bill. The rest waits for
       Phase 6, like parts on the job card, fleet accounts and the printed
       bill. Billing rules for it:
   - the bill is a preview until it is settled
@@ -332,15 +332,9 @@ work gets its own pull request, just before the page that first uses it.
       page's one mark names its module and what it needs from the roles
       list, and one check reads both (decided with the roles ADR); this
       test and the permission matrix go through the same list of pages
-- [ ] Sign-in, decided in an ADR with the sign-in page: owners sign in
-      with their email, Office and Floor with a username (v1's mobile
-      sign-in is not in use, so it is left out); every username starts
-      with its workshop's short code, so it stays unique on a shared server
-      and when a workshop moves to one; usernames and emails unique
-      whatever their capitals; the lockout counted per account, in the
-      database (v1: all devices share one internet connection), and the
-      owner's unlock, so a shared floor login is never stuck; how long a
-      person stays signed in (v1: 40 days, the owners' choice)
+- [ ] Sign-in, as ADR-0025 decides, with every rule in
+      `docs/rules/sign-in.md` built and tested; the rules marked Phase 6
+      come with the Staff logins page and the bell
 - [ ] Roles checked in one place, decided in an ADR with the first page: a
       list of what each role may do (each app adds its own, like the module
       list), and no page checks a role by name, so a new role is added
@@ -441,7 +435,9 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       (`support_js_module_import_aggregation`)
 - [ ] The production mailer: a web service, not SMTP (v1: Railway blocks
       SMTP below its Pro plan, so v1 used Resend); the shared settings have
-      none
+      none. Owners sign in with an emailed code (ADR-0025), so the sending
+      domain gets its SPF, DKIM and DMARC records, and a code is tried in
+      each owner's own mailbox
 - [ ] Deploy configuration in the repo; migrations run before traffic moves
 - [ ] Safe-migration rules written down, before the first real data
 - [ ] Decide (ADR): one Dockerfile as the deploy recipe, built in CI and used
@@ -453,6 +449,9 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       the dependency audit also weekly, the admin locked down, the
       superuser's two-factor sign-in (ADR-0007), a review against the
       OWASP Top 10
+- [ ] Decide a sign-in limit per internet address, once the host's proxy
+      is measured; needed before a second workshop shares a server
+      (ADR-0025)
 - [ ] Automatic backups, an off-site copy, a test restore
 - [ ] `RUNBOOK.md`
 
