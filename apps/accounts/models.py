@@ -3,6 +3,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseModel
@@ -20,6 +21,22 @@ class User(BaseModel, AbstractUser):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+        # Capitals never make a second account: AB.Floor is ab.floor, and an
+        # email in any capitals is the same email (SIGN-9). Office and Floor
+        # have no email, so an empty one is left out.
+        constraints = [
+            models.UniqueConstraint(
+                Lower("username"),
+                name="accounts_user_username_once",
+                violation_error_message=_("Another account already has this username."),
+            ),
+            models.UniqueConstraint(
+                Lower("email"),
+                condition=~models.Q(email=""),
+                name="accounts_user_email_once",
+                violation_error_message=_("Another account already has this email."),
+            ),
+        ]
 
     @property
     def is_platform_staff(self):
