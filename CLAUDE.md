@@ -6,13 +6,12 @@ reports.
 
 ## Status
 
-**Phase 5 (Slice 1) is in progress: Sign-in has its rules, decision and lab
-screen, and its build is next.** The Django
+**Phase 5 (Slice 1) is in progress: Sign-in is built; Roles is next.** The Django
 project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); the first apps are `core` (the base model), `workshops` (the
 workshop, its branches and the base of every business model) and
-`accounts` (the user and memberships). Run every command through `uv run` (see `README.md`). Every new
+`accounts` (the user, memberships and sign-in). Run every command through `uv run` (see `README.md`). Every new
 dependency needs an ADR first.
 
 ## The documents: each fact has one home
