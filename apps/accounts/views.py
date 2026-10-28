@@ -9,8 +9,9 @@ redirect, so Back or refresh never sends it again.
 import math
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_not_required
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -22,6 +23,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_GET, require_http_methods
 
+from apps.accounts.decorators import workshop_not_required
 from apps.accounts.forms import CodeForm, PasswordForm, WhoForm
 from apps.accounts.selectors import (
     CODE_GAP,
@@ -145,6 +147,18 @@ def home(request):
     """The page after signing in. For now it shows who is signed in, and where;
     Roles (step 2 of Slice 1) brings v1's top bar and menu."""
     return render(request, "accounts/home.html")
+
+
+@workshop_not_required  # Signing out works even when the workshop is suspended (SIGN-42).
+@require_http_methods(["GET", "POST"])
+def sign_out(request):
+    """Signing out takes two taps: Sign out opens this card, and only the card's
+    own Sign out button, a POST, signs out (SIGN-40, SIGN-41). Then the
+    sign-in page shows (SIGN-43)."""
+    if request.method == "POST":
+        logout(request)
+        return redirect(settings.LOGIN_URL)
+    return render(request, "accounts/sign_out.html")
 
 
 def _ask_for_code(request, email, next_url):

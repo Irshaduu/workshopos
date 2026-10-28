@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% comment %}
+Signing out takes two taps: Sign out, then Sign out again on this card, so
+one tap never signs a mechanic out in the middle of a job card (SIGN-40).
+v1's card and words, changed for codes: an owner has no password.
+{% endcomment %}
+{% block title %}{% translate "Sign out?" %}{% endblock %}
+
+{% block body %}
+<main class="state-page">
+  <div class="confirm">
+    <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#user"></use></svg></div>
+    <h1 class="confirm__title">{% translate "Sign out?" %}</h1>
+    <p class="confirm__text">
+      {% if request.membership.role == "owner" %}
+        {% translate "You will need a new code from your email to get back in." %}
+      {% else %}
+        {% translate "You will need your username and password to get back in." %}
+      {% endif %}
+    </p>
+    <form class="confirm__actions" action="{% url 'accounts:sign_out' %}" method="post">
+      {% csrf_token %}
+      <a class="btn" href="{% url 'accounts:home' %}">{% translate "Stay signed in" %}</a>
+      <button class="btn btn--primary" type="submit">{% translate "Sign out" %}</button>
+    </form>
+  </div>
+</main>
+{% endblock %}
