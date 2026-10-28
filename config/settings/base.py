@@ -70,6 +70,10 @@ SECURE_CSP = {
 
 AUTH_USER_MODEL = "accounts.User"
 
+# The one way to sign in, in place of Django's own (ADR-0025). Being the only
+# one, it guards every way in: our page, the Django admin's page, the tests.
+AUTHENTICATION_BACKENDS = ["apps.accounts.backends.SignInBackend"]
+
 # Our models get a UUID7 key from apps/core/models.py (ADR-0022). This is
 # only for the tables Django makes itself, like its many-to-many link tables.
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

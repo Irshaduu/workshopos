@@ -18,6 +18,18 @@ class User(BaseModel, AbstractUser):
     their membership (ADR-0007).
     """
 
+    # The lockout for a password (SIGN-29 to SIGN-34): the wrong passwords in
+    # a row, and when the last one came. Kept on the account, never per
+    # internet address: the whole workshop uses one connection, so one
+    # person's wrong tries never lock anyone else (SIGN-31). PostgreSQL gives
+    # a row added outside Django its 0 too.
+    wrong_passwords = models.PositiveSmallIntegerField(
+        _("wrong passwords in a row"), default=0, db_default=0
+    )
+    last_wrong_password_at = models.DateTimeField(
+        _("last wrong password at"), null=True, blank=True
+    )
+
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")

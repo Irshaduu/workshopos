@@ -3,9 +3,11 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import transaction
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import Membership, Role, User
+from apps.accounts.selectors import LOCK_TIME, minutes_locked
 from apps.workshops.models import Branch, Workshop
 
 # The part of a member's username after the short code and the dot.
@@ -46,3 +48,31 @@ def create_workshop(*, name, short_code, branch_name, owner_login_name, owner_em
         record.full_clean()
         record.save()
     return workshop
+
+
+@transaction.atomic
+def count_wrong_password(user):
+    """Counts one more wrong password for this account (SIGN-29, SIGN-30).
+
+    The account's row is locked first, so two wrong tries at the same moment
+    count as two. A wrong password 15 minutes or more after the one before
+    starts the count again at one. While the account is locked, nothing is
+    counted, so the lock never grows longer (SIGN-32).
+    """
+    account = User.objects.select_for_update().get(pk=user.pk)
+    if minutes_locked(account):
+        return
+    now = timezone.now()
+    last = account.last_wrong_password_at
+    in_a_row = last is not None and now - last < LOCK_TIME
+    account.wrong_passwords = account.wrong_passwords + 1 if in_a_row else 1
+    account.last_wrong_password_at = now
+    account.save(update_fields=["wrong_passwords", "last_wrong_password_at"])
+
+
+def clear_wrong_passwords(user):
+    """The right password clears the count (SIGN-34). An account with no count costs no write."""
+    if user.wrong_passwords:
+        User.objects.filter(pk=user.pk).update(wrong_passwords=0, last_wrong_password_at=None)
+        user.wrong_passwords = 0
+        user.last_wrong_password_at = None
