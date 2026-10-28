@@ -3,13 +3,22 @@
 import math
 from datetime import timedelta
 
+from django.db.models import Count, Max
 from django.utils import timezone
 
-from apps.accounts.models import Membership, Role, User
+from apps.accounts.models import Membership, Role, SignInCode, User
 
 # The lockout for a password, the same for every workshop, as in v1 (ADR-0025).
 LOCK_AFTER = 5
 LOCK_TIME = timedelta(minutes=15)
+
+# An owner's sign-in code, as in v1 (ADR-0025): it works for 10 minutes and
+# for 5 tries (SIGN-16, SIGN-22); an account gets one a minute, 3 an hour
+# (SIGN-20).
+CODE_TIME = timedelta(minutes=10)
+WRONG_CODES = 5
+CODE_GAP = timedelta(minutes=1)
+CODES_PER_HOUR = 3
 
 
 def membership_of(user):
@@ -44,3 +53,41 @@ def minutes_locked(user):
         return 0
     left = user.last_wrong_password_at + LOCK_TIME - timezone.now()
     return max(0, math.ceil(left.total_seconds() / 60))
+
+
+def owner_by_email(email):
+    """The turned-on owner with this email, whatever its capitals; or None (SIGN-10, SIGN-15)."""
+    account = User.objects.filter(email__iexact=email.strip(), is_active=True).first()
+    return account if account is not None and is_owner(account) else None
+
+
+def may_ask_for_code(user):
+    """Whether this account may get a new code now: one a minute, 3 an hour (SIGN-20).
+
+    Counted from the codes in the database, so clearing a browser's cookies
+    never resets it.
+    """
+    now = timezone.now()
+    last_hour = SignInCode.objects.filter(user=user, created_at__gt=now - timedelta(hours=1))
+    asked = last_hour.aggregate(count=Count("id"), newest=Max("created_at"))
+    if asked["newest"] is not None and now - asked["newest"] < CODE_GAP:
+        return False
+    return asked["count"] < CODES_PER_HOUR
+
+
+def tries_left(sign_in_code):
+    """How many more tries a code has (SIGN-16, SIGN-22).
+
+    No tries once it is used, ended, or guessed wrong 5 times. A missing code
+    (None) has none either.
+    """
+    if sign_in_code is None or sign_in_code.used_at is not None:
+        return 0
+    if sign_in_code.ends_at <= timezone.now():
+        return 0
+    return max(0, WRONG_CODES - sign_in_code.wrong_tries)
+
+
+def code_tries_left(sign_in_code_id):
+    """tries_left() for the code a browser holds, found by its id."""
+    return tries_left(SignInCode.objects.filter(pk=sign_in_code_id).first())
