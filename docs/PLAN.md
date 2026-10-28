@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 5, Slice 1, is in progress: its plan is re-checked, and
-building is next.
+**Now:** Phase 5, Slice 1, is in progress: Sign-in has its rules,
+decision and lab screen, and its build is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do

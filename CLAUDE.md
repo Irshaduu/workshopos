@@ -6,8 +6,8 @@ reports.
 
 ## Status
 
-**Phase 5 (Slice 1) is in progress: its plan is re-checked, and building is
-next.** The Django
+**Phase 5 (Slice 1) is in progress: Sign-in has its rules, decision and lab
+screen, and its build is next.** The Django
 project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); the first apps are `core` (the base model), `workshops` (the
