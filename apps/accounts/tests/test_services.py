@@ -17,7 +17,7 @@ def nothing_saved():
 def test_a_new_workshop_starts_with_its_branch_and_its_owner():
     owner = UserFactory()
 
-    workshop = create_workshop(name="Workshop A", branch_name="Main", owner=owner)
+    workshop = create_workshop(name="Workshop A", short_code="ab", branch_name="Main", owner=owner)
 
     assert [b.name for b in Branch.objects.for_workshop(workshop)] == ["Main"]
     membership = Membership.objects.for_workshop(workshop).get()
@@ -27,7 +27,12 @@ def test_a_new_workshop_starts_with_its_branch_and_its_owner():
 @pytest.mark.django_db
 def test_a_superuser_never_owns_a_workshop_and_nothing_is_saved():
     with pytest.raises(ValidationError, match="never members"):
-        create_workshop(name="Workshop A", branch_name="Main", owner=UserFactory(is_superuser=True))
+        create_workshop(
+            name="Workshop A",
+            short_code="ab",
+            branch_name="Main",
+            owner=UserFactory(is_superuser=True),
+        )
 
     assert nothing_saved()
 
@@ -38,7 +43,7 @@ def test_an_account_in_a_workshop_cannot_own_a_second_one():
     before = Workshop.objects.count()
 
     with pytest.raises(ValidationError, match="already belongs to a workshop"):
-        create_workshop(name="Workshop B", branch_name="Main", owner=member.user)
+        create_workshop(name="Workshop B", short_code="bb", branch_name="Main", owner=member.user)
 
     assert Workshop.objects.count() == before
 
@@ -47,6 +52,6 @@ def test_an_account_in_a_workshop_cannot_own_a_second_one():
 @pytest.mark.parametrize(("name", "branch_name"), [("", "Main"), ("Workshop A", "")])
 def test_a_workshop_and_its_branch_need_a_name(name, branch_name):
     with pytest.raises(ValidationError):
-        create_workshop(name=name, branch_name=branch_name, owner=UserFactory())
+        create_workshop(name=name, short_code="ab", branch_name=branch_name, owner=UserFactory())
 
     assert nothing_saved()

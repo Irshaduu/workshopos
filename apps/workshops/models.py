@@ -19,6 +19,16 @@ class Workshop(BaseModel):
     """
 
     name = models.CharField(_("name"), max_length=100)
+    # Every username of the workshop starts with it, like ab.floor, so a
+    # username stays unique on a shared server (SIGN-7, SIGN-8). Given when
+    # the workshop is made; nothing changes it after.
+    short_code = models.CharField(
+        _("short code"),
+        max_length=8,
+        unique=True,
+        error_messages={"unique": _("Another workshop already has this short code.")},
+        help_text=_("2 to 8 small letters or digits. It never changes."),
+    )
     status = models.CharField(
         _("status"), max_length=20, choices=WorkshopStatus, default=WorkshopStatus.ACTIVE
     )
@@ -30,6 +40,11 @@ class Workshop(BaseModel):
             models.CheckConstraint(
                 condition=models.Q(status__in=WorkshopStatus.values),
                 name="workshops_workshop_status_known",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(short_code__regex=r"^[a-z0-9]{2,8}$"),
+                name="workshops_workshop_short_code_form",
+                violation_error_message=_("A short code is 2 to 8 small letters or digits."),
             ),
         ]
 
