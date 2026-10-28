@@ -18,9 +18,9 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Module | What it does | App | When |
 |---|---|---|---|
 | Phone, tablet and laptop | Laid out for each device; installs on a phone like an app | `core` | Go-live |
-| Sign-in and password reset | Lockout after repeated wrong tries; reset code by email | `accounts` | Go-live |
+| Sign-in | Owners with a code sent to their email; Office and Floor with a password, locked after repeated wrong tries | `accounts` | Go-live |
 | Roles | Owner, Office, Floor; each sees only what it needs (ADR-0007) | `accounts` | Go-live |
-| Staff logins and devices | Staff logins (one per person, or one shared, like the floor tablet's), signed-in devices, remote sign-out. The last owner can never be removed; a leaving person's login is turned off, never deleted | `accounts` | Go-live |
+| Staff logins and devices | Staff logins (one per person, or one shared, like the floor tablet's), signed-in devices, remote sign-out, and Unlock for a locked Office or Floor login. The last owner can never be removed; a leaving person's login is turned off, never deleted | `accounts` | Go-live |
 | Owner alerts | Push alerts to the owners' phones, and an alert feed | `notifications` | Go-live |
 | Change history | Every deleted, edited and back-dated entry, month by month | `audit` | Go-live |
 | Master lists | Brands, models, parts and concerns, with rename and merge | `vehicles`, `jobs` | Go-live |
