@@ -89,13 +89,16 @@ it. A screen is not done until it handles every state that can happen on it.
 
 The components, in `static/css/components.css`:
 - Loading: the progress bar at the top (`.progress`) and the busy button
-  (`aria-busy`); loading rows (`.skeleton`) for a part of a page that
-  loads after the page.
+  (`aria-busy`, set by `static/js/busy.js`, so a form sends once); loading
+  rows (`.skeleton`) for a part of a page that loads after the page.
 - Empty and no search results: `.empty`.
 - Form errors, success, a failed save, session expired and offline on a
-  save: the notice (`.notice`), with the field errors for a form.
+  save: the notice (`.notice`), with the field errors for a form. A page
+  shows the server's messages as notices with
+  `templates/components/notices.html`.
 - Server error, not found, permission denied and offline: a page of its
-  own (`.state-page`).
+  own (`.state-page`). The first three are `templates/500.html`,
+  `404.html` and `403.html`.
 - The sound (`static/js/sound.js`, from v1): a short tone for a notice
   that carries `data-sound-tag` (success, error or warning; info stays
   silent), one per page, and a quieter tone when a confirmation card
