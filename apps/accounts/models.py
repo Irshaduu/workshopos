@@ -100,3 +100,30 @@ class Membership(WorkshopModel):
             raise ValidationError(
                 {"user": _("Staff and superusers run the system; they are never members.")}
             )
+
+
+class SignInCode(BaseModel):
+    """A 6-digit code emailed to an owner, who types it to sign in (ADR-0025).
+
+    Only a hash of the code is kept, made with the server's secret key
+    (SIGN-24). A code belongs to an account, not to a workshop. Rows stay
+    after use, because the limits are counted from them (SIGN-20); a
+    scheduled clean-up deletes old ones (the background jobs ADR, Phase 6).
+    """
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="+", verbose_name=_("account")
+    )
+    code_hash = models.CharField(_("code hash"), max_length=64)
+    created_at = models.DateTimeField(_("made at"))
+    # Ten minutes after it was made, or earlier: a new code, the right code
+    # or the fifth wrong try ends it at once.
+    ends_at = models.DateTimeField(_("ends at"))
+    wrong_tries = models.PositiveSmallIntegerField(_("wrong tries"), default=0, db_default=0)
+    used_at = models.DateTimeField(_("used at"), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("sign-in code")
+        verbose_name_plural = _("sign-in codes")
+        # The limits count an account's codes of the last hour (SIGN-20).
+        indexes = [models.Index(fields=["user", "-created_at"], name="accounts_code_user_recent")]

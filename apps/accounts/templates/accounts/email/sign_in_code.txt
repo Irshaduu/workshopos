@@ -1,0 +1,8 @@
+{% load i18n %}{% autoescape off %}{% blocktranslate %}Your code to sign in to {{ workshop }} is {{ code }}.{% endblocktranslate %}
+
+{% blocktranslate %}It works once, for {{ minutes }} minutes, only on the device where you asked for it.{% endblocktranslate %}
+
+{% blocktranslate %}Never share this code. Nobody will ever ask you for it, not even someone who says they are from {{ workshop }}.{% endblocktranslate %}
+
+{% blocktranslate %}Did you not ask for it? You can ignore this email: nobody can sign in without the code.{% endblocktranslate %}
+{% endautoescape %}

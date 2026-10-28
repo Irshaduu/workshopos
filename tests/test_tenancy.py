@@ -18,6 +18,7 @@ from apps.workshops.tests.factories import WorkshopFactory
 #: Models in our apps that do not belong to one workshop, and why.
 NOT_WORKSHOP_MODELS = {
     "accounts.User": "one person can belong to several workshops",
+    "accounts.SignInCode": "it belongs to an account, not to a workshop (ADR-0025)",
     "workshops.Workshop": "it is the workshop itself",
 }
 
