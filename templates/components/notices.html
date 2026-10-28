@@ -1,0 +1,31 @@
+{% load static %}
+{% comment %}
+The server's messages, each shown as a notice (docs/DESIGN.md, Screen
+states). A page includes this where its notices belong. An error or a
+warning is read out at once by a screen reader (role alert); info and
+success wait their turn (role status). The words carry the meaning; the
+colour and the icon only help.
+{% endcomment %}
+{% for message in messages %}
+  {% if message.level_tag == "error" %}
+    <div class="notice notice--danger" role="alert">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-alert"></use></svg>
+      <p class="notice__text">{{ message }}</p>
+    </div>
+  {% elif message.level_tag == "warning" %}
+    <div class="notice notice--warning" role="alert">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#info"></use></svg>
+      <p class="notice__text">{{ message }}</p>
+    </div>
+  {% elif message.level_tag == "success" %}
+    <div class="notice notice--success" role="status">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-check"></use></svg>
+      <p class="notice__text">{{ message }}</p>
+    </div>
+  {% else %}
+    <div class="notice" role="status">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#info"></use></svg>
+      <p class="notice__text">{{ message }}</p>
+    </div>
+  {% endif %}
+{% endfor %}

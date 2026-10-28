@@ -79,7 +79,9 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        # The base layout, shared components and state pages; each app keeps
+        # its own pages in its templates folder.
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -127,6 +129,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+
+# The design system (ADR-0017), icons (ADR-0018) and shared JS; each app keeps
+# its own page files in its static folder.
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Each machine sets its own mailer (local.py, test.py, production later).
 # Here there is none, so a machine that forgets cannot send mail, nor print
