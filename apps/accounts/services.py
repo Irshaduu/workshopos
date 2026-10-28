@@ -129,7 +129,7 @@ def send_sign_in_code(email):
         User.objects.select_for_update().get(pk=owner.pk)
         if not may_ask_for_code(owner):
             return None
-        code = f"{secrets.randbelow(1_000_000):06d}"
+        code = _new_code()
         now = timezone.now()
         # A new code ends the one before (SIGN-19).
         SignInCode.objects.filter(user=owner, used_at=None, ends_at__gt=now).update(ends_at=now)
@@ -138,6 +138,41 @@ def send_sign_in_code(email):
         )
         _email_code(owner, code)
     return record
+
+
+def remake_sign_in_code(email):
+    """A new value for the code an owner's browser holds, to give by phone (SIGN-28).
+
+    For a bad day for email: the owner typed their email on the sign-in page,
+    but the code never came. Their newest open code gets a new value, fresh
+    tries and 10 more minutes. It stays the code that browser holds, so it
+    still works only there (SIGN-16), and no limit is spent. Returns the code
+    and its record, or None when the owner has no open code.
+    """
+    owner = owner_by_email(email)
+    if owner is None:
+        return None
+    with transaction.atomic():
+        now = timezone.now()
+        record = (
+            SignInCode.objects.select_for_update()
+            .filter(user=owner, used_at=None, ends_at__gt=now, wrong_tries__lt=WRONG_CODES)
+            .order_by("-created_at")
+            .first()
+        )
+        if record is None:
+            return None
+        code = _new_code()
+        record.code_hash = code_hash(code)
+        record.wrong_tries = 0
+        record.ends_at = now + CODE_TIME
+        record.save(update_fields=["code_hash", "wrong_tries", "ends_at"])
+    return code, record
+
+
+def _new_code():
+    """Six digits from the operating system's secure random source."""
+    return f"{secrets.randbelow(1_000_000):06d}"
 
 
 def _email_code(owner, code):
