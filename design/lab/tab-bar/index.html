@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tab bar and menu lab</title>
+  <link rel="stylesheet" href="../../../static/css/tokens.css">
+  <link rel="stylesheet" href="../../../static/css/base.css">
+  <link rel="stylesheet" href="../../../static/css/components.css">
+  <link rel="stylesheet" href="tab-bar.css">
+  <script src="lab.js" type="module"></script>
+</head>
+<body data-role="owner" data-page="home">
+
+<!-- TAB BAR START -->
+<nav class="tab-bar" aria-label="Main">
+  <div class="tab-bar__inner">
+    <a class="tab" href="#" aria-current="page" data-tab="home">
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#house"></use></svg></span>
+      <span class="tab__label" data-lab-text="home">Owner</span>
+    </a>
+    <a class="tab" href="#" data-for="owner office" data-tab="completed">
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-check"></use></svg></span>
+      <span class="tab__label">Completed</span>
+    </a>
+    <a class="tab" href="#" data-for="owner office" data-tab="live">
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#clipboard-list"></use></svg></span>
+      <span class="tab__label">Live</span>
+    </a>
+    <a class="tab" href="#" data-for="floor" data-tab="new" hidden>
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#plus"></use></svg></span>
+      <span class="tab__label">New</span>
+    </a>
+    <a class="tab" href="#" data-for="floor" data-tab="inventory" hidden>
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></span>
+      <span class="tab__label">Inventory</span>
+    </a>
+    <a class="tab tab--bell" href="#" data-for="owner" data-tab="alerts">
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#bell"></use></svg></span>
+      <span class="tab__label">Alerts</span>
+      <span class="tab__badge num" data-badge><span data-badge-count>3</span><span class="tab__sr"> unread</span></span>
+    </a>
+    <button class="tab tab--menu" type="button" aria-haspopup="dialog" aria-controls="app-menu" aria-expanded="false" data-tab="menu">
+      <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#menu"></use></svg></span>
+      <span class="tab__label" data-lab-text="menu">Manage</span>
+    </button>
+  </div>
+</nav>
+<!-- TAB BAR END -->
+
+<main class="lab">
+
+  <a class="back" href="../system/">Design system</a>
+  <h1>Tab bar and menu</h1>
+  <p class="lab-intro">v1's bar and menu, rebuilt with the same contents, layout and colours, and fixed only where a v2 rule breaks. Make the window narrow for the phone bar at the bottom. Tap Manage (Menu for Floor) to open the menu, and its head for Sounds and Sign out. A prototype, never used by the app. All data is fake.</p>
+
+  <section class="lab-panel" aria-label="What the lab shows">
+    <p class="lab-label" id="lab-role">Show it as</p>
+    <div class="chip-group" role="group" aria-labelledby="lab-role">
+      <button class="chip" type="button" aria-pressed="true" data-lab-role="owner">Owner</button>
+      <button class="chip" type="button" aria-pressed="false" data-lab-role="office">Office</button>
+      <button class="chip" type="button" aria-pressed="false" data-lab-role="floor">Floor</button>
+    </div>
+    <p class="lab-label" id="lab-page">The page open now</p>
+    <div class="chip-group" role="group" aria-labelledby="lab-page">
+      <button class="chip" type="button" aria-pressed="true" data-lab-page="home">The live board</button>
+      <button class="chip" type="button" aria-pressed="false" data-lab-page="menu">A page from the menu</button>
+    </div>
+    <p class="lab-label" id="lab-alerts">Unread alerts (owners only)</p>
+    <div class="chip-group" role="group" aria-labelledby="lab-alerts">
+      <button class="chip" type="button" aria-pressed="false" data-lab-alerts="0">None</button>
+      <button class="chip" type="button" aria-pressed="true" data-lab-alerts="3">3</button>
+      <button class="chip" type="button" aria-pressed="false" data-lab-alerts="120">120</button>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2>Fixed from v1</h2>
+    <ul class="lab-list">
+      <li>Every tab and button is at least 44 pixels: v1's laptop tabs, bell and close button were 34 to 40.</li>
+      <li>The right end of the bar's blue is deeper, and the lit tab's white wash a little lighter, so every word on the bar passes AA. v1's words there fell to about 4 to 1.</li>
+      <li>The menu's section names are darker grey: v1's light grey was 2.6 to 1.</li>
+      <li>One plain colour for every icon tile, and for the head's square and role chip. v1 gave each row its own colour, and each role one (red for an owner); in v2 a colour means a status.</li>
+      <li>Sign out is a plain row, not red: signing out is not a danger. Its word is Sign out, not Logout (<code>docs/GLOSSARY.md</code>).</li>
+      <li>The owner's home tab and chip say Owner, not Admin: one name per thing.</li>
+      <li>On a laptop the bar spans the page's frame, 1,200 pixels, so its outer tabs sit above the content's edges, as v1's did over its 800-pixel frame.</li>
+      <li>Left out for now: the lit tab gliding to the next one on a phone, and the faint mark on a tapped tab while its page loads (polish, after go-live).</li>
+    </ul>
+  </section>
+
+  <section class="lab-section">
+    <h2>A sample page under the bar</h2>
+    <div class="lab-cards">
+      <article class="card"><h3>BMW 520d</h3><p>KL 10 AB 1234, Ajay</p></article>
+      <article class="card"><h3>Audi Q7</h3><p>KL 53 C 7701, Biju</p></article>
+      <article class="card"><h3>Mercedes GLE</h3><p>KL 11 BX 4410, Faisal</p></article>
+      <article class="card"><h3>Porsche Cayenne</h3><p>KL 10 AA 1006, Ajay</p></article>
+      <article class="card"><h3>Land Cruiser</h3><p>KL 65 D 2020, Biju</p></article>
+      <article class="card"><h3>BMW X5</h3><p>KL 10 AF 9090, Faisal</p></article>
+    </div>
+  </section>
+
+</main>
+
+<!-- MENU START -->
+<dialog class="menu" id="app-menu" aria-labelledby="menu-name">
+  <div class="menu__head">
+    <details class="menu-account">
+      <summary class="menu-account__toggle">
+        <span class="menu-account__avatar"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#user"></use></svg></span>
+        <span class="menu-account__who">
+          <span class="menu-account__name" id="menu-name" data-lab-text="name">Ravi</span>
+          <span class="menu-account__role" data-lab-text="role">Owner account</span>
+        </span>
+        <svg class="icon menu-account__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg>
+      </summary>
+      <div class="menu-account__rows">
+        <button class="menu-row" type="button" role="switch" aria-checked="true" data-lab-sound>
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#volume-2" data-lab-sound-icon></use></svg>
+          <span data-lab-sound-label>Sounds on</span>
+        </button>
+        <a class="menu-row" href="#">
+          <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#log-out"></use></svg>
+          Sign out
+        </a>
+      </div>
+    </details>
+    <button class="menu__close" type="button" aria-label="Close menu" data-menu-close>
+      <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg>
+    </button>
+  </div>
+
+  <div class="menu__body">
+
+    <h2 class="menu-label" data-for="owner office">Money</h2>
+    <ul class="menu-list" data-for="owner office">
+      <li><a class="menu-link" href="#" data-page="cashbook"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#wallet"></use></svg></span>General Cashbook<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li class="menu-group-end"><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#building"></use></svg></span>Deposit &amp; Rent<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#octagon-alert"></use></svg></span>Pending Bills<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li class="menu-group-end"><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-check"></use></svg></span>Paid Bills<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#banknote"></use></svg></span>Salary &amp; Advance<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li data-for="owner"><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#id-card"></use></svg></span>Owner Withdrawals<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="owner office">Stock &amp; Suppliers</h2>
+    <ul class="menu-list" data-for="owner office">
+      <li class="menu-group-end"><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></span>Inventory<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#truck"></use></svg></span>Supplies Shops<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#cog"></use></svg></span>Spare Shops<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="owner office">Records</h2>
+    <ul class="menu-list" data-for="owner office">
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg></span>Car Profiles<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li class="menu-group-end"><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#shield-check"></use></svg></span>Warranty<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#file-text"></use></svg></span>Estimates<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#library"></use></svg></span>Master Data<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#database"></use></svg></span>Legacy Data<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li data-for="owner"><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#rotate-ccw-clock"></use></svg></span>Change History<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="owner">Administration</h2>
+    <ul class="menu-list" data-for="owner">
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#users"></use></svg></span>Control Hub<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="owner">Insights</h2>
+    <ul class="menu-list" data-for="owner">
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#trending-up"></use></svg></span>Analysis &amp; Reports<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="floor" hidden>Stock</h2>
+    <ul class="menu-list" data-for="floor" hidden>
+      <li><a class="menu-link" href="#" data-page="low-stock"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg></span>Low Stock<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#rotate-ccw-clock"></use></svg></span>Stock History<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="floor" hidden>Spares</h2>
+    <ul class="menu-list" data-for="floor" hidden>
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></span>Unassigned Spares<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+    <h2 class="menu-label" data-for="owner">Guide</h2>
+    <ul class="menu-list" data-for="owner">
+      <li><a class="menu-link" href="#"><span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></span>About<svg class="icon menu-link__chevron" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-right"></use></svg></a></li>
+    </ul>
+
+  </div>
+</dialog>
+<!-- MENU END -->
+
+</body>
+</html>
