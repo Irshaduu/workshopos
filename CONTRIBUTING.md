@@ -109,6 +109,16 @@ closes the issue.
   `request.workshop` (ADR-0023). A page that works without one, like
   signing out, is marked `@workshop_not_required`
   (`apps/accounts/decorators.py`), with a comment saying why.
+- **Every page has one mark, written first above its view:**
+  `@page(module, permission)` (`apps/accounts/decorators.py`), with its
+  module from the module list and the permission it needs (ADR-0026). A
+  page with no mark is refused to everyone. A public page, and one that
+  works without a workshop, name no permission.
+- **No page checks a role by its name.** Views and forms ask `has_perm`;
+  templates ask `perms`. What a role may do lives in its app's
+  `permissions.py`, where each permission names its roles one by one, never
+  through a shortcut for every role, so a role added later starts with
+  none. A test scans every view, form and template.
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
 - **A service that changes money or stock runs in one transaction** and
   locks the rows it reads to decide (`transaction.atomic`,
@@ -162,8 +172,10 @@ closes the issue.
 - **The leak test covers every workshop model by itself**
   (`tests/test_tenancy.py`). Each one needs a factory: `<Model>Factory` in
   its app's `tests/factories.py`.
-- **A permission matrix**: every page for every role, and a record of
-  another workshop is never found.
+- **A permission matrix** (`tests/test_permissions.py`): every page, for
+  every kind of visitor, with each answer typed by hand, never read from
+  the permission lists. A new page adds its row in the same pull request.
+  A record of another workshop is never found.
 - **Browser tests** for the key flows.
 - **A JavaScript module's plain functions are tested with Node's own test
   runner**, in `tests/js/` (ADR-0020). No npm and no test library.

@@ -1,5 +1,5 @@
-"""Each request gets its workshop, every page is guarded, and signed-in pages stay out
-of the browser's cache (apps/accounts/middleware.py)."""
+"""Each request gets its workshop, every page is guarded by its mark, and signed-in
+pages stay out of the browser's cache (apps/accounts/middleware.py)."""
 
 import pytest
 from django.contrib import admin
@@ -7,15 +7,19 @@ from django.contrib.auth.decorators import login_not_required
 from django.http import HttpResponse
 from django.urls import path
 
-from apps.accounts.decorators import workshop_not_required
+from apps.accounts.decorators import page, workshop_not_required
+from apps.accounts.models import Role
+from apps.accounts.roles import PERMISSIONS
 from apps.accounts.tests.factories import MembershipFactory, UserFactory
 from apps.workshops.models import WorkshopStatus
 
 
+@page("roles", "accounts.open_home")
 def workshop_page(request):
     return HttpResponse(request.workshop.name)
 
 
+@page("roles")
 @workshop_not_required  # Like signing out: it works without a workshop.
 def account_page(request):
     return HttpResponse(request.membership.get_role_display() if request.membership else "none")
@@ -26,17 +30,42 @@ def public_page(request):
     return HttpResponse("public")
 
 
+def page_with_no_mark(request):
+    return HttpResponse("nobody should see this")
+
+
+@page("roles")
+def workshop_page_with_no_permission(request):
+    return HttpResponse("nobody should see this")
+
+
+@page("no_such_module", "accounts.open_home")
+def page_of_an_unknown_module(request):
+    return HttpResponse("nobody should see this")
+
+
+@page("roles", "tests.see_money")
+def money_page(request):
+    return HttpResponse("money")
+
+
 urlpatterns = [
     path("workshop/", workshop_page),
     path("account/", account_page),
     path("public/", public_page),
+    path("no-mark/", page_with_no_mark),
+    path("no-permission/", workshop_page_with_no_permission),
+    path("unknown-module/", page_of_an_unknown_module),
+    path("money/", money_page),
     path("admin/", admin.site.urls),
 ]
 
 
 @pytest.fixture(autouse=True)
-def these_pages(settings):
+def these_pages(settings, monkeypatch):
     settings.ROOT_URLCONF = __name__
+    # A permission for these tests only: Owner and Office have it, Floor does not.
+    monkeypatch.setitem(PERMISSIONS, "tests.see_money", frozenset({Role.OWNER, Role.OFFICE}))
 
 
 @pytest.mark.django_db
@@ -128,3 +157,41 @@ def test_a_refused_page_is_never_kept_either(client):
 
 def test_a_page_for_visitors_is_left_alone(client):
     assert not client.get("/public/").has_header("Cache-Control")
+
+
+@pytest.mark.django_db
+def test_role_8_a_page_with_no_mark_is_refused_to_everyone(client):
+    client.force_login(MembershipFactory(owner=True).user)
+
+    assert client.get("/no-mark/").status_code == 403
+
+
+@pytest.mark.django_db
+def test_role_8_a_workshop_page_that_names_no_permission_is_refused(client):
+    client.force_login(MembershipFactory(owner=True).user)
+
+    assert client.get("/no-permission/").status_code == 403
+
+
+@pytest.mark.django_db
+def test_role_6_a_page_of_a_module_not_in_the_list_is_refused(client):
+    client.force_login(MembershipFactory(owner=True).user)
+
+    assert client.get("/unknown-module/").status_code == 403
+
+
+@pytest.mark.django_db
+def test_role_9_a_role_without_the_permission_is_told_the_page_is_not_for_it(client):
+    client.force_login(MembershipFactory(role=Role.FLOOR).user)
+
+    response = client.get("/money/")
+
+    assert response.status_code == 403
+    assert "Not open to your role" in response.text
+
+
+@pytest.mark.django_db
+def test_role_9_a_role_with_the_permission_gets_in(client):
+    client.force_login(MembershipFactory(role=Role.OFFICE).user)
+
+    assert client.get("/money/").text == "money"

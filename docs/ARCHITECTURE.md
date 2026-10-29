@@ -110,6 +110,8 @@ jobs/
 ├── selectors.py   rules that READ data (lists, totals)
 ├── forms.py       checks what was typed
 ├── views.py       thin: request -> form -> service -> response
+├── permissions.py what each role may do in this app (ADR-0026)
+├── modules.py     this app's modules, for the module list (ADR-0011)
 ├── urls.py
 ├── admin.py
 ├── templates/jobs/
@@ -123,7 +125,9 @@ jobs/
 | anything that creates, changes or deletes data | `services.py` |
 | a query for a list, a total or a report | `selectors.py` |
 | a check on what a person typed | `forms.py` |
-| the handling of a page request | `views.py`, kept thin |
+| the handling of a page request | `views.py`, kept thin, each page with its mark (`@page`) |
+| what a role may do | `permissions.py`, added to the list in `apps.py` |
+| a module of `docs/MODULES.md` | `modules.py`, added to the list in `apps.py` |
 | a page address | `urls.py` |
 | HTML | `templates/<app>/` |
 | page-specific CSS or JS | `static/<app>/` |
@@ -206,6 +210,11 @@ How each workshop's data stays its own: ADR-0023.
   a module; it never deletes data. Every page and menu item names its
   module from the first page; the switch itself is built when a workshop
   first needs a module off.
+- **Roles** (ADR-0026): fixed in the code. Every page's mark names its
+  module and the permission it needs, and one check, `may_open()`
+  (`apps/accounts/selectors.py`), reads it for every page; the tab bar and
+  the menu ask the same check. A member's permissions come from each app's
+  `permissions.py`, through Django's own `has_perm`.
 - **Per-workshop settings** (ADR-0024): each lives beside the rule that
   uses it, in its app's settings model, one row per workshop. No saved row
   means the default in the code. A setting acts at the moment of an
