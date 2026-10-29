@@ -7,6 +7,7 @@ from django.db.models import Count, Max
 from django.utils import timezone
 
 from apps.accounts.models import Membership, Role, SignInCode, User
+from apps.workshops.modules import MODULES
 
 # The lockout for a password, the same for every workshop, as in v1 (ADR-0025).
 LOCK_AFTER = 5
@@ -25,10 +26,32 @@ def membership_of(user):
     """The account's membership, with its workshop, in one query; or None.
 
     Staff and superusers never have one (ADR-0007), whatever the data says.
+    The answer is kept on the account object, and each request loads its
+    account again, so a page asks once however often it checks a permission
+    (ROLE-11); a changed role counts from the next request.
     """
     if not user.is_authenticated or user.is_platform_staff:
         return None
-    return Membership.objects.select_related("workshop").filter(user=user).first()
+    if not hasattr(user, "_membership"):
+        user._membership = Membership.objects.select_related("workshop").filter(user=user).first()
+    return user._membership
+
+
+def may_open(user, view):
+    """May this account open this page? The one check (ROLE-6), read by every page.
+
+    The page's mark must name a module in the list, and a permission the
+    account has. A page with no mark is refused to everyone (ROLE-8). Only a
+    public page, or one that works without a workshop (like signing out),
+    may name no permission.
+    """
+    mark = getattr(view, "page_mark", None)
+    if mark is None or mark.module not in MODULES:
+        return False
+    if mark.permission is None:
+        public = not getattr(view, "login_required", True)
+        return public or not getattr(view, "workshop_required", True)
+    return user.has_perm(mark.permission)
 
 
 def is_owner(user):
