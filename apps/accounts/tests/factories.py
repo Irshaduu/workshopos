@@ -46,7 +46,9 @@ class MembershipFactory(DjangoModelFactory):
                 UserFactory,
                 username=factory.LazyAttributeSequence(member_username),
                 email=factory.LazyAttribute(lambda user: f"{user.username}@example.com"),
-                password=Password(None),
+                # A plain None: the password becomes unusable, as for a real
+                # owner. Password(None) here kept the test password.
+                password=None,
             ),
         )
 

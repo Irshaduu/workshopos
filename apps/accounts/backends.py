@@ -8,7 +8,8 @@ from asgiref.sync import sync_to_async
 from django.contrib.auth.backends import ModelBackend
 
 from apps.accounts.models import User
-from apps.accounts.selectors import account_by_username, is_owner, minutes_locked
+from apps.accounts.roles import permissions_of
+from apps.accounts.selectors import account_by_username, is_owner, membership_of, minutes_locked
 from apps.accounts.services import (
     check_sign_in_code,
     clear_wrong_passwords,
@@ -17,13 +18,33 @@ from apps.accounts.services import (
 
 
 class SignInBackend(ModelBackend):
-    """Django's own backend, with only its sign-in check replaced.
+    """Django's own backend, with its sign-in check and its permissions replaced.
 
     Two ways in: an owner's sign-in code, or a username and a password for
-    everyone else. Its permission checks stay as they are, for Roles
-    (has_perm). A backend can only say yes or no, never why: the sign-in
+    everyone else. A backend can only say yes or no, never why: the sign-in
     page asks minutes_locked() itself, only to say why (SIGN-33).
+
+    has_perm and perms in templates stay Django's own; only the permissions
+    they read change: a workshop member's come from the list in the code
+    (ADR-0026).
     """
+
+    def get_all_permissions(self, user_obj, obj=None):
+        """A member's permissions come from the list, for their role (ADR-0026).
+
+        Platform staff keep Django's own, from the database, for the admin; a
+        member never gets those, so the two kinds never mix. A turned-off
+        account has none. The role is read once per request (ROLE-11).
+        """
+        if not user_obj.is_active or user_obj.is_anonymous or obj is not None:
+            return set()
+        if user_obj.is_platform_staff:
+            return super().get_all_permissions(user_obj, obj)
+        membership = membership_of(user_obj)
+        return permissions_of(membership.role) if membership else set()
+
+    async def aget_all_permissions(self, user_obj, obj=None):
+        return await sync_to_async(self.get_all_permissions)(user_obj, obj)
 
     def authenticate(
         self, request, username=None, password=None, sign_in_code_id=None, code=None, **kwargs
