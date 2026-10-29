@@ -232,7 +232,7 @@ work gets its own pull request, just before the page that first uses it.
 
 1. Sign-in, with its ADR
 2. Roles, with its ADR: the page mark, the module list, the permission
-   matrix, and the app's top bar and menu (v1's, through the lab), which
+   matrix, and the app's tab bar and menu (v1's, through the lab), which
    takes over Sign out from the plain home page
 3. Base for the first pages: Indian formats, the `for_workshop()` check,
    the double-tap guard, the query-count test

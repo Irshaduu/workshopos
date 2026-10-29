@@ -12,7 +12,13 @@ the code (models, functions, files, URLs) and in the docs.
 | Workshop | `Workshop` | | The business that uses the system, with all its branches |
 | Branch | `Branch` | | One place where a workshop works. A workshop has one or more |
 | Membership | `Membership` | | An account's place in a workshop, with its role |
-| Role | `Role` | group | What a member may do: Owner, Office or Floor |
+| Role | `Role` | group; Admin, for an owner | A member's part in the workshop: Owner, Office or Floor. What each role may do is its permissions |
+| Permission | `has_perm()`, `perms`, `permissions.py` | ability, right | One thing a role may do, like see prices or settle a bill. Each app lists its own, with the roles that have each |
+| Module | `Module`, `modules.py` | feature | One part of the system, as listed in `docs/MODULES.md`, like Sign-in or Job card |
+| Page mark | `@page` | | The line above a page's view that names its module and the permission it needs |
+| Tab bar | `tab_bar` | nav bar, top bar | The row of tabs on every page of the app: at the top on a tablet and a laptop, at the bottom on a phone |
+| Tab | `tab` | pill | One place on the tab bar, like New or Inventory |
+| Menu | `menu` | drawer, for the menu | The list of every other page, opened from the tab bar's Manage (Office, Owners) or Menu (Floor) |
 | Sign in | `sign_in`, the page `sign-in/` | log in, login (as a verb) | Start using the system: an owner types the email and the code sent to it; Office and Floor type a username and the password |
 | Sign out | `sign_out`, the page `sign-out/` | log out, logout | End the session on this device |
 | Username | `username` | identifier | What Office and Floor type to sign in. It starts with the workshop's short code and a dot, like `ab.floor` |
