@@ -23,7 +23,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_GET, require_http_methods
 
-from apps.accounts.decorators import workshop_not_required
+from apps.accounts.decorators import page, workshop_not_required
 from apps.accounts.forms import CodeForm, PasswordForm, WhoForm
 from apps.accounts.selectors import (
     CODE_GAP,
@@ -48,6 +48,7 @@ PENDING = "sign_in"
 ASKED = "sign_in_codes_asked"
 
 
+@page("sign_in")
 @login_not_required  # The first step of signing in: nobody is signed in yet.
 @never_cache
 @require_http_methods(["GET", "POST"])
@@ -72,6 +73,7 @@ def sign_in(request):
     return render(request, "accounts/sign_in.html", {"form": form, "next": next_url})
 
 
+@page("sign_in")
 @login_not_required  # A step of signing in: nobody is signed in yet.
 @never_cache
 @sensitive_post_parameters("code")
@@ -119,6 +121,7 @@ def sign_in_code(request):
     return render(request, "accounts/sign_in_code.html", context)
 
 
+@page("sign_in")
 @login_not_required  # A step of signing in: nobody is signed in yet.
 @never_cache
 @sensitive_post_parameters("password")
@@ -142,6 +145,7 @@ def sign_in_password(request):
     return render(request, "accounts/sign_in_password.html", {"form": form, "username": username})
 
 
+@page("roles", "accounts.open_home")
 @require_GET
 def home(request):
     """The page after signing in. For now it shows who is signed in, and where;
@@ -149,6 +153,7 @@ def home(request):
     return render(request, "accounts/home.html")
 
 
+@page("sign_in")
 @workshop_not_required  # Signing out works even when the workshop is suspended (SIGN-42).
 @require_http_methods(["GET", "POST"])
 def sign_out(request):

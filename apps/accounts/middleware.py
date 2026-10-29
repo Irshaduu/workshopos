@@ -1,5 +1,6 @@
 """Sends a visitor to sign in first, gives each request its workshop, guards
-every page (ADR-0023), and keeps signed-in pages out of the browser's cache."""
+every page (ADR-0023, ADR-0026), and keeps signed-in pages out of the
+browser's cache."""
 
 from django.contrib import messages
 from django.contrib.auth.middleware import LoginRequiredMiddleware
@@ -7,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.selectors import membership_of
+from apps.accounts.selectors import may_open, membership_of
 from apps.workshops.selectors import may_work
 
 
@@ -37,7 +38,8 @@ class WorkshopMiddleware:
     Both are None for staff and superusers, for an account with no
     membership, and on pages that are public or in the Django admin, which
     never look one up. Every other page needs a workshop that may work now,
-    unless its view is marked @workshop_not_required.
+    unless its view is marked @workshop_not_required, and must let this
+    account in by its page mark (may_open(), ADR-0026).
 
     It runs after LoginRequiredMiddleware, so a visitor who is not signed in
     is sent to sign in first.
@@ -60,12 +62,15 @@ class WorkshopMiddleware:
         request.membership = membership_of(request.user)
         request.workshop = request.membership.workshop if request.membership else None
 
-        if not getattr(view_func, "workshop_required", True):
-            return None
-        if request.workshop is None:
-            raise PermissionDenied(_("This account does not belong to a workshop."))
-        if not may_work(request.workshop):
-            raise PermissionDenied(_("This workshop is suspended."))
+        if getattr(view_func, "workshop_required", True):
+            if request.workshop is None:
+                raise PermissionDenied(_("This account does not belong to a workshop."))
+            if not may_work(request.workshop):
+                raise PermissionDenied(_("This workshop is suspended."))
+        # Then the page's own mark: its module, and the permission it needs.
+        # No reason is given, so the page says "Not open to your role" (ROLE-9).
+        if not may_open(request.user, view_func):
+            raise PermissionDenied
         return None
 
 
