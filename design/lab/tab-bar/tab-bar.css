@@ -1,0 +1,642 @@
+/* Tab bar and menu lab: v1's bar and menu rebuilt (base.html in v1), the
+   reference until the real ones are built, then deleted. Never used by the
+   app. Sizes are v1's, in pixels; each takes a token when it is built. */
+
+@layer page {
+  /* The bar's height, one number every part reads (v1's --nav-h). On a
+     phone the bar floats, and --bar-clear is all the room it takes at the
+     bottom: its height, the iPhone's home strip and the gap under it. */
+  :root {
+    --bar-h: 58px;
+    --bar-float: 0px;
+    --bar-inset: 0px;
+    --bar-clear: calc(var(--bar-h) + var(--bar-inset) + var(--bar-float));
+    --bar-blue: linear-gradient(
+      90deg,
+      var(--color-bar-start) 0%,
+      var(--color-bar-middle) 45%,
+      var(--color-bar-end) 100%
+    );
+
+    scroll-padding-top: calc(var(--bar-h) + 8px);
+  }
+
+  /* Tablets: a taller bar (v1). */
+  @media (max-width: 991.98px) {
+    :root {
+      --bar-h: 62px;
+    }
+  }
+
+  body {
+    padding-top: var(--bar-h);
+  }
+
+  /* ---------- The lab page around the bar ---------- */
+
+  .lab {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-4) var(--space-12);
+  }
+
+  .lab-intro {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .lab-panel {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .lab-label {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .lab-section {
+    margin-top: var(--space-8);
+  }
+
+  .lab-section > h2 {
+    margin-bottom: var(--space-3);
+  }
+
+  .lab-list {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: var(--space-6);
+  }
+
+  .lab-cards {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+
+  /* The lab shows each role by hiding the others' tabs and rows. The app
+     never sends them, so it needs no such rule. */
+  [data-for][hidden] {
+    display: none;
+  }
+
+  /* ---------- The tab bar ---------- */
+  /* v1: one bar on every device. A blue bar at the top on a tablet and a
+     laptop; on a phone, the same bar floats at the bottom, white. */
+
+  .tab-bar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    height: var(--bar-h);
+    border-bottom: 1px solid var(--color-bar-edge);
+    background: var(--bar-blue);
+    box-shadow: var(--shadow-bar);
+  }
+
+  /* The page's own frame (docs/DESIGN.md), so the outer tabs sit right
+     above the content's edges. v1 did the same with its 800-pixel frame. */
+  .tab-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+  }
+
+  /* v1's tab was 40 pixels tall on a laptop; 44 is our minimum. */
+  .tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: var(--tap-min);
+    padding: 0 16px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--color-on-bar-muted);
+    font-size: 13.5px;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.01em;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .tab__glyph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tab__glyph .icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Hover only where there is a pointer: on a touch screen it sticks to
+     the last tab tapped and reads as a second "you are here" (v1). */
+  @media (hover: hover) {
+    .tab:hover:not([aria-current="page"], [data-lit]) {
+      background: var(--color-on-strong-wash-sm);
+      color: var(--color-text-on-strong);
+    }
+  }
+
+  .tab:focus-visible {
+    outline-color: var(--color-primary-edge);
+    color: var(--color-text-on-strong);
+  }
+
+  /* The lit tab: a white wash. v1's wash was stronger; at the bright end
+     of the bar its white word then fell below AA. */
+  .tab[aria-current="page"],
+  .tab[data-lit] {
+    background: var(--color-on-strong-wash-md);
+    color: var(--color-text-on-strong);
+  }
+
+  /* The bell: its icon alone on a tablet and a laptop, the quieter tab; its
+     word is kept for a screen reader. On a phone it shows its word, Alerts.
+     A screen reader hears "Alerts 3 unread". */
+  .tab--bell {
+    width: var(--tap-min);
+    padding: 0;
+  }
+
+  .tab--bell .tab__label,
+  .tab__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* The count sits on the bell, so the tab keeps its size; it stops at 99+
+     (ROLE-30). */
+  .tab__badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: var(--radius-pill);
+    background: var(--color-danger);
+    color: var(--color-text-on-strong);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 16px;
+    text-align: center;
+  }
+
+  /* ---------- Phones: the same bar, floating at the bottom ---------- */
+  /* Where a thumb reaches (ROLE-27). The fixed box stays full width and
+     clear; the white pill is the inner box, with the gap as padding. */
+
+  @media (max-width: 640px) {
+    :root {
+      --bar-float: 12px;
+      --bar-inset: env(safe-area-inset-bottom, 0px);
+
+      scroll-padding-top: 8px;
+      scroll-padding-bottom: calc(var(--bar-clear) + 8px);
+    }
+
+    body {
+      padding-top: 0;
+      padding-bottom: calc(var(--bar-clear) + 24px);
+    }
+
+    .tab-bar {
+      inset: auto 0 0;
+      height: auto;
+      padding: 0 var(--bar-float) calc(var(--bar-inset) + var(--bar-float));
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    /* Equal columns; 3 pixels of padding and the 1-pixel edge put each tab
+       4 pixels inside the pill all round, so the corners follow the pill. */
+    .tab-bar__inner {
+      justify-content: space-evenly;
+      height: var(--bar-h);
+      padding: 0 3px;
+      border: 1px solid var(--color-border);
+      border-radius: 18px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-bar-float);
+    }
+
+    .tab {
+      flex: 1 1 0;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      max-width: 96px;
+      height: 54px;
+      padding: 4px 0;
+      border-radius: 14px;
+      color: var(--color-text-muted);
+    }
+
+    /* Every glyph sits in a capsule's box, lit or not, so lighting one
+       moves nothing. The lit capsule is the app's selected ink, as on the
+       live board's mechanic chips. */
+    .tab__glyph {
+      width: 50px;
+      max-width: 100%;
+      height: 28px;
+      border-radius: var(--radius-pill);
+      transition: transform 0.12s ease;
+    }
+
+    .tab__glyph .icon {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab[aria-current="page"],
+    .tab[data-lit] {
+      background: transparent;
+      color: var(--color-text);
+    }
+
+    .tab[aria-current="page"] .tab__glyph,
+    .tab[data-lit] .tab__glyph {
+      background: var(--color-text);
+      color: var(--color-text-on-strong);
+    }
+
+    /* The label grows with the phone: 9.5 pixels at 320, 11 from 393. Its
+       line is 1.25 tall, or the tails of g and p are cut off (v1). */
+    .tab__label {
+      max-width: 100%;
+      overflow: hidden;
+      font-size: clamp(9.5px, 2.8vw, 11px);
+      font-weight: var(--weight-medium);
+      line-height: 1.25;
+      text-overflow: ellipsis;
+    }
+
+    .tab[aria-current="page"] .tab__label,
+    .tab[data-lit] .tab__label {
+      font-weight: var(--weight-bold);
+    }
+
+    /* A finger gets a press: the capsule squashes, and on an unlit tab it
+       shows faintly where it lands. */
+    .tab:active .tab__glyph {
+      transform: scale(0.9);
+    }
+
+    .tab:active:not([aria-current="page"], [data-lit]) .tab__glyph {
+      background: var(--color-wash-pressed);
+    }
+
+    @media (hover: hover) {
+      .tab:hover:not([aria-current="page"], [data-lit]) {
+        background: transparent;
+        color: var(--color-text);
+      }
+
+      .tab:hover:not([aria-current="page"], [data-lit]) .tab__glyph {
+        background: var(--color-wash-pressed);
+      }
+    }
+
+    .tab:focus-visible {
+      outline-color: var(--color-focus);
+      color: var(--color-text);
+    }
+
+    .tab--bell {
+      width: auto;
+      padding: 4px 0;
+    }
+
+    .tab--bell .tab__label {
+      position: static;
+      width: auto;
+      height: auto;
+      clip-path: none;
+    }
+
+    /* On the glyph's shoulder, ringed in the pill's white. */
+    .tab--bell .tab__badge {
+      top: 3px;
+      right: auto;
+      left: calc(50% + 3px);
+      box-shadow: 0 0 0 2px var(--color-surface);
+    }
+  }
+
+  /* ---------- The menu ---------- */
+  /* v1's drawer from the right. About 70 percent of a phone, so the page
+     still shows beside it; 240 pixels keeps the longest name on one line
+     at 320, and 340 stops a laptop getting a wall (v1's measures). */
+
+  .menu:modal {
+    inset: 0 0 0 auto;
+    width: clamp(240px, 70vw, 340px);
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-menu);
+    color: var(--color-text);
+  }
+
+  .menu[open] {
+    display: flex;
+    flex-direction: column;
+    animation: menu-in 0.25s ease-out;
+  }
+
+  .menu::backdrop {
+    background: var(--color-backdrop);
+  }
+
+  @keyframes menu-in {
+    from {
+      transform: translateX(100%);
+    }
+  }
+
+  /* The head: who is signed in, as tall as the bar, in the bar's blue.
+     A tap opens Sounds and Sign out under it (ROLE-34). */
+  .menu__head {
+    position: relative;
+    flex: none;
+  }
+
+  .menu-account__toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: var(--bar-h);
+    padding: 0 calc(var(--tap-min) + 14px) 0 16px;
+    background: var(--bar-blue);
+    color: var(--color-text-on-strong);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .menu-account__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-account__toggle:hover {
+    background:
+      linear-gradient(var(--color-on-strong-wash-sm), var(--color-on-strong-wash-sm)),
+      var(--bar-blue);
+  }
+
+  .menu-account__toggle:focus-visible {
+    outline-color: var(--color-primary-edge);
+    outline-offset: -4px;
+  }
+
+  /* v1 gave each role its own colour here (red for an owner). Colour
+     means a status, so the square and the chip are plain. */
+  .menu-account__avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--color-neutral-soft);
+    color: var(--color-neutral-text);
+  }
+
+  .menu-account__avatar .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .menu-account__who {
+    display: grid;
+    justify-items: start;
+    min-width: 0;
+  }
+
+  .menu-account__name {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.92rem;
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-account__role {
+    margin-top: 2px;
+    padding: 1px 7px;
+    border-radius: var(--radius-pill);
+    background: var(--color-on-strong-wash-lg);
+    font-size: 0.63rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .menu-account__chevron {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    color: var(--color-on-bar-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .menu-account[open] .menu-account__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* v1's close button was 34 pixels; 44 is our minimum. */
+  .menu__close {
+    position: absolute;
+    top: calc((var(--bar-h) - var(--tap-min)) / 2);
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border: 0;
+    border-radius: 10px;
+    background: var(--color-on-strong-wash-sm);
+    color: var(--color-text-on-strong);
+    cursor: pointer;
+  }
+
+  .menu__close:hover {
+    background: var(--color-on-strong-wash-lg);
+  }
+
+  .menu__close:focus-visible {
+    outline-color: var(--color-primary-edge);
+  }
+
+  .menu-account__rows {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Sounds and Sign out: plain rows, since both are rare. v1's Logout was
+     red; signing out is not a danger, so it is plain too. */
+  .menu-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: 13px 17px;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: var(--weight-semibold);
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .menu-row:hover {
+    background: var(--color-surface-sunken);
+  }
+
+  .menu-row[aria-checked="false"] {
+    color: var(--color-text-muted);
+  }
+
+  .menu-row .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .menu__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 6px 8px 14px;
+  }
+
+  /* Section names: v1's light grey fell below AA, so they take the muted
+     text colour. */
+  .menu-label {
+    padding: 16px 9px 6px;
+    color: var(--color-text-muted);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: var(--leading-normal);
+    text-transform: uppercase;
+  }
+
+  .menu-list {
+    padding: 0;
+    list-style: none;
+  }
+
+  /* A row for a thumb: 56 pixels tall, a 38-pixel icon tile (v1). */
+  .menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 56px;
+    padding: 8px 9px;
+    border-radius: 12px;
+    color: var(--color-text);
+    font-size: 1.02rem;
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+    text-decoration: none;
+  }
+
+  .menu-link:hover,
+  .menu-link:focus-visible {
+    background: var(--color-surface-sunken);
+  }
+
+  .menu-link[aria-current="page"] {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-text);
+    font-weight: 800;
+  }
+
+  /* v1 gave each row its own colour; here every tile is plain. */
+  .menu-link__tile {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: var(--color-neutral-soft);
+    color: var(--color-neutral-text);
+  }
+
+  .menu-link__tile .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .menu-link__chevron {
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    color: var(--color-border-strong);
+  }
+
+  .menu-link[aria-current="page"] .menu-link__chevron {
+    color: var(--color-primary-text);
+  }
+
+  /* A thin line splits a section into its smaller groups (ROLE-36),
+     inset to the row's own padding, with room above and below. */
+  .menu-group-end {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .menu-group-end::after {
+    content: "";
+    position: absolute;
+    right: 9px;
+    bottom: -5px;
+    left: 9px;
+    height: 1px;
+    background: var(--color-line-faint);
+  }
+}
