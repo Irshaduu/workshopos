@@ -111,6 +111,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 
 | Module | What it does | App | When |
 |---|---|---|---|
+| Overview | An owner's first page: cars on the floor, money and what needs a look today, each number opening its page. It only reads, with no table of its own. Owners' tabs become Overview, Work (the live board), Completed, Alerts and Manage, and the Live tab becomes a tile. First in line after go-live; if the client wants it on day one, it is built last in Phase 6 | `reports` | After |
 | Profit | Turnover, expenses and what earned the profit, for any period | `reports` | After |
 | Cash and position | Cash in and out; who owes what; stock on the shelf | `reports` | After |
 | Deep analysis | Mechanics, parts, stock, cars, fleet, shops and more | `reports` | After |
@@ -170,6 +171,7 @@ so adding them changes no existing table.
 | Support access | Logged, time-limited access to a workshop, with its consent | SaaS |
 | Sales and partner accounts | Leads, a demo workshop with fake data, referral tracking | SaaS |
 | Plans and limits | Which modules each plan includes; user and branch limits per plan (the switches are in Foundation) | SaaS |
+| More roles | Main Manager, Branch Owner, Service Advisor, Floor Supervisor, Parts Manager, a read-only Accountant and a read-only Viewer, each only when a real workshop asks (ADR-0026). Each needs one small migration for the role check and changes no record. A read-only role also needs one check in the guard: any save needs one more permission, which it does not have | SaaS |
 | Several workshops per account | One sign-in for a person who works in more than one workshop, with a workshop picker | SaaS |
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |
