@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load menu static %}
+{% comment %}
+The layout of every page of the app: the tab bar, the page, and the menu
+(ROLE-23). The sign-in steps, the sign-out card and the state pages build on
+base.html instead, and have neither. A page fills the content block; its own
+CSS and JS go in page_css and page_js.
+{% endcomment %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block page_css %}{% endblock %}
+{% endblock %}
+{% block js %}
+  <script src="{% static 'js/menu.js' %}" type="module"></script>
+  {% block page_js %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+{% tab_bar %}
+<main class="app-main">
+  {% include "components/notices.html" %}
+  {% block content %}{% endblock %}
+</main>
+{% menu %}
+{% endblock %}

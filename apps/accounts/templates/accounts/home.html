@@ -1,18 +1,14 @@
-{% extends "base.html" %}
+{% extends "app.html" %}
 {% load i18n %}
 {% comment %}
-The page after signing in, for now: who is signed in, and where. Roles
-(step 2 of Slice 1) replaces it with v1's top bar and menu.
+The page after signing in, for now: who is signed in, and where. The live
+board takes this address in Phase 6.
 {% endcomment %}
 {% block title %}{{ request.workshop.name }}{% endblock %}
 
-{% block body %}
-<main class="state-page">
-  <div class="state-card">
-    {% include "components/notices.html" %}
-    <h1 class="state-card__title">{{ request.workshop.name }}</h1>
-    <p class="state-card__text">{% blocktranslate with name=user.username role=request.membership.get_role_display %}Signed in as {{ name }} ({{ role }}).{% endblocktranslate %}</p>
-    <a class="btn" href="{% url 'accounts:sign_out' %}">{% translate "Sign out" %}</a>
-  </div>
-</main>
+{% block content %}
+<div class="card">
+  <h1>{{ request.workshop.name }}</h1>
+  <p>{% blocktranslate with name=user.username role=request.membership.get_role_display %}Signed in as {{ name }} ({{ role }}).{% endblocktranslate %}</p>
+</div>
 {% endblock %}

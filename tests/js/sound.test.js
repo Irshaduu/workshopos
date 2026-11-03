@@ -12,6 +12,8 @@ import {
   isEnabled,
   loudness,
   PEAK_LIMIT,
+  readEnabled,
+  setEnabled,
   TONES,
 } from "../../static/js/sound.js";
 
@@ -43,6 +45,32 @@ test("sound is on unless this device turned it off", () => {
   assert.equal(isEnabled(null), true);
   assert.equal(isEnabled("on"), true);
   assert.equal(isEnabled("off"), false);
+});
+
+test("the Sounds switch keeps its choice for this device (ROLE-34)", (t) => {
+  const kept = new Map();
+  globalThis.localStorage = {
+    getItem: (key) => kept.get(key) ?? null,
+    setItem: (key, value) => kept.set(key, value),
+  };
+  t.after(() => delete globalThis.localStorage);
+
+  assert.equal(readEnabled(), true);
+  setEnabled(false);
+  assert.equal(readEnabled(), false);
+  setEnabled(true);
+  assert.equal(readEnabled(), true);
+});
+
+test("with no storage, as in private browsing, the sound stays on", (t) => {
+  const refuse = () => {
+    throw new Error("No storage here.");
+  };
+  globalThis.localStorage = { getItem: refuse, setItem: refuse };
+  t.after(() => delete globalThis.localStorage);
+
+  setEnabled(false);
+  assert.equal(readEnabled(), true);
 });
 
 test("no note is loud enough to distort the speaker", () => {
