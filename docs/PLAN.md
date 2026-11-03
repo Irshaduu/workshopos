@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 5, Slice 1, is in progress: Sign-in is built; Roles is
-next.
+**Now:** Phase 5, Slice 1, is in progress: Sign-in and Roles are built;
+the base for the first pages is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -327,7 +327,7 @@ work gets its own pull request, just before the page that first uses it.
       transaction; every service that changes money is told who acts. Its
       first entries: a change to a settled bill (amount, discount, payment,
       date); a first settle is not a change (v1)
-- [ ] Every page and menu item names its module, from the first page: a
+- [x] Every page and menu item names its module, from the first page: a
       list of modules in the code, where each app adds its own, and a test
       that fails for a page with no module or an unknown one (ADR-0011). A
       page's one mark names its module and what it needs from the roles
@@ -337,18 +337,19 @@ work gets its own pull request, just before the page that first uses it.
       `docs/rules/sign-in.md` built and tested; SIGN-39 comes with the first
       htmx call, and the rules marked Phase 6 with the Staff logins page and
       the bell
-- [ ] Roles checked in one place, decided in an ADR with the first page: a
-      list of what each role may do (each app adds its own, like the module
-      list), and no page checks a role by name, so a new role is added
-      without changing pages; Django's own permission check (`has_perm`,
-      `perms` in templates) tried first. The ADR replaces ADR-0007's Floor
-      line: Floor sees the whole floor (one shared login), never prices or
-      customer details
-- [ ] Permission matrix test, from the first page: it finds every page by
+- [x] Roles, as ADR-0026 decides, with every rule in `docs/rules/roles.md`
+      built and tested: a list of what each role may do (each app adds its
+      own, like the module list), no page checks a role by name, so a new
+      role is added without changing pages, and the app's tab bar and menu
+      (v1's). ROLE-3 and ROLE-13 come with the job card, and ROLE-22 and
+      ROLE-30 with the bell; each later tab and menu row comes with its
+      page
+- [x] Permission matrix test, from the first page: it finds every page by
       itself, so a page with no row fails; the expected answers are typed
       in the test, never read from the roles list; for each page, a visitor
-      who is signed out is sent to sign in, each role gets in or is
-      refused, and a record of another workshop is never found
+      who is signed out is sent to sign in, and each role gets in or is
+      refused. That a record of another workshop is never found (ROLE-10)
+      comes with the first page that shows a record
 - [ ] Query-count tests for every page that shows rows (a list page, a job
       card's lines), from the first one: the page opened with a few rows
       and with many makes the same number of queries, so a longer list

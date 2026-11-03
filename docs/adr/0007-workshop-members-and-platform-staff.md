@@ -1,6 +1,6 @@
 # 0007: Two kinds of account: workshop members and platform staff
 
-**Status:** Accepted (2026-10-15)
+**Status:** Accepted (2026-10-15). Its Floor line is replaced by ADR-0026.
 
 ## Context
 

@@ -18,6 +18,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Page mark | `@page` | | The line above a page's view that names its module and the permission it needs |
 | Tab bar | `tab_bar` | nav bar, top bar | The row of tabs on every page of the app: at the top on a tablet and a laptop, at the bottom on a phone |
 | Tab | `tab` | pill | One place on the tab bar, like New or Inventory |
+| Role menu | `RoleMenu` | | One role's tabs and menu sections, written once in `apps/accounts/menu.py` |
 | Menu | `menu` | drawer, for the menu | The list of every other page, opened from the tab bar's Manage (Office, Owners) or Menu (Floor) |
 | Sign in | `sign_in`, the page `sign-in/` | log in, login (as a verb) | Start using the system: an owner types the email and the code sent to it; Office and Floor type a username and the password |
 | Sign out | `sign_out`, the page `sign-out/` | log out, logout | End the session on this device |

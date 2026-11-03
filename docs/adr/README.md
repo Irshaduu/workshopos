@@ -11,7 +11,7 @@ costs.
 | [0004](0004-saas-features-wait-for-a-second-workshop.md) | SaaS business features wait for a second workshop | Accepted |
 | [0005](0005-modular-monolith-layered-apps.md) | Modular monolith: layered apps, services and selectors | Accepted |
 | [0006](0006-branches-and-shared-vehicles.md) | Branches inside a workshop; customers and vehicles shared by its branches | Accepted |
-| [0007](0007-workshop-members-and-platform-staff.md) | Two kinds of account: workshop members and platform staff | Accepted |
+| [0007](0007-workshop-members-and-platform-staff.md) | Two kinds of account: workshop members and platform staff | Accepted; its Floor line is replaced by 0026 |
 | [0008](0008-ai-assistant-tools-over-tested-functions.md) | AI assistant: tools over tested read-only functions | Proposed |
 | [0009](0009-django-6-1-then-6-2-lts.md) | Django 6.1 now, then 6.2 LTS | Accepted |
 | [0010](0010-python-3-14-and-uv.md) | Python 3.14, managed with uv | Accepted |
@@ -30,7 +30,7 @@ costs.
 | [0023](0023-tenancy.md) | Tenancy: the workshop passed by hand, links kept inside one workshop | Accepted |
 | [0024](0024-per-workshop-settings.md) | Per-workshop settings: each beside the rule that uses it | Accepted |
 | [0025](0025-sign-in.md) | Sign-in: a code by email for owners, a password for Office and Floor | Accepted |
-| [0026](0026-roles.md) | Roles: each app lists its permissions, and every page asks has_perm | Proposed |
+| [0026](0026-roles.md) | Roles: each app lists its permissions, and every page asks has_perm | Accepted |
 
 ## Rules
 

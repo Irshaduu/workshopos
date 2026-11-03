@@ -1,6 +1,6 @@
 # 0026: Roles: each app lists its permissions, and every page asks has_perm
 
-**Status:** Proposed (2026-10-29)
+**Status:** Accepted (2026-11-03)
 
 ## Context
 

@@ -35,7 +35,7 @@ one repository -> CI -> staging -> production servers
 workshopos/
 ├── apps/              all Django apps (below)
 ├── config/            settings (base, local, test, production), urls, wsgi, health check
-├── templates/         base layout and shared components
+├── templates/         base layouts (base.html, app.html), shared components, state pages
 ├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
 ├── tests/             project-wide tests (settings, safe defaults, layers, keys, tenancy); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
@@ -129,7 +129,7 @@ jobs/
 | what a role may do | `permissions.py`, added to the list in `apps.py` |
 | a module of `docs/MODULES.md` | `modules.py`, added to the list in `apps.py` |
 | a page address | `urls.py` |
-| HTML | `templates/<app>/` |
+| HTML | `templates/<app>/`; a page of the app extends `app.html` |
 | page-specific CSS or JS | `static/<app>/` |
 | a component used by several pages | `templates/components/` and `static/` |
 | a rule used by many apps (money, dates) | `core` |

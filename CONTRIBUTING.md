@@ -119,6 +119,9 @@ closes the issue.
   `permissions.py`, where each permission names its roles one by one, never
   through a shortcut for every role, so a role added later starts with
   none. A test scans every view, form and template.
+- **A page reached from the tab bar or the menu adds its line in
+  `apps/accounts/menu.py`**, in the same pull request. A page that is not
+  built has no line (ROLE-32).
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
 - **A service that changes money or stock runs in one transaction** and
   locks the rows it reads to decide (`transaction.atomic`,
