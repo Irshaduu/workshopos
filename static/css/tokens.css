@@ -204,5 +204,38 @@
     --shadow-bar-float: 0 8px 28px rgb(15 23 42 / 0.14),
       0 2px 6px rgb(15 23 42 / 0.08);
     --shadow-menu: -12px 0 40px rgb(15 23 42 / 0.18);
+    --gradient-bar: linear-gradient(
+      90deg,
+      var(--color-bar-start) 0%,
+      var(--color-bar-middle) 45%,
+      var(--color-bar-end) 100%
+    );
+
+    /* The frame of every screen (docs/DESIGN.md) */
+    --frame-max-width: 75rem;
+
+    /* The tab bar, from v1: 58 pixels tall on a laptop, 62 on a tablet and a
+       phone, where its tabs must clear the 44 minimum */
+    --bar-height: 3.625rem;
+    --bar-height-touch: 3.875rem;
+    --bar-pill-radius: 1.125rem;
+    --bar-tab-max-width: 6rem;
+    --bar-capsule-width: 3.125rem;
+    --bar-capsule-height: 1.75rem;
+    --bar-label-min: 0.59375rem;
+    --bar-label-max: 0.6875rem;
+    /* The iPhone's home strip, under the floating bar */
+    --bar-inset: env(safe-area-inset-bottom, 0px);
+
+    /* The menu, from v1: its width keeps the longest name on one line at 320
+       pixels and stops a laptop getting a wall; a row is sized for a thumb */
+    --menu-width-min: 15rem;
+    --menu-width-max: 21.25rem;
+    --menu-avatar-size: 2.125rem;
+    --menu-row-height: 3.5rem;
+    --menu-tile-size: 2.375rem;
+    /* The role chip in the menu's head and the section names */
+    --text-2xs: 0.625rem;
+    --tracking-wider: 0.12em;
   }
 }

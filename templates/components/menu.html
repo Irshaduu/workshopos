@@ -1,0 +1,48 @@
+{% load i18n static %}
+{% comment %}
+The menu (ROLE-33 to ROLE-37), opened by static/js/menu.js. Its head shows who
+is signed in; a tap on it opens Sounds and the app's one Sign out link, which
+leads to the confirmation card (SIGN-40). The server sends both Sounds words,
+and app.css shows the one that matches the switch. The rows come from
+apps/accounts/menu.py, and only those whose page lets this person in.
+{% endcomment %}
+<dialog class="menu" id="app-menu" aria-label="{{ menu_word }}">
+  <div class="menu__head">
+    <details class="menu-account">
+      <summary class="menu-account__toggle">
+        <span class="menu-account__avatar"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#user"></use></svg></span>
+        <span class="menu-account__who">
+          <span class="menu-account__name">{{ name }}</span>
+          <span class="menu-account__role">{% blocktranslate %}{{ role }} account{% endblocktranslate %}</span>
+        </span>
+        <svg class="icon menu-account__chevron" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#chevron-down"></use></svg>
+      </summary>
+      <div class="menu-account__rows">
+        <button class="menu-row" type="button" role="switch" aria-checked="true" data-menu-sounds>
+          <span class="menu-sounds-on"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#volume-2"></use></svg>{% translate "Sounds on" %}</span>
+          <span class="menu-sounds-off"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#volume-x"></use></svg>{% translate "Sounds off" %}</span>
+        </button>
+        <a class="menu-row" href="{% url 'accounts:sign_out' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#log-out"></use></svg>{% translate "Sign out" %}</a>
+      </div>
+    </details>
+    <button class="menu__close" type="button" aria-label="{% translate 'Close menu' %}" data-menu-close>
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#x"></use></svg>
+    </button>
+  </div>
+  <div class="menu__body">
+    {% for section in sections %}
+      <h2 class="menu-label">{{ section.word }}</h2>
+      <ul class="menu-list">
+        {% for row in section.rows %}
+          <li{% if row.ends_group %} class="menu-group-end"{% endif %}>
+            <a class="menu-link" href="{{ row.address }}"{% if row.lit %} aria-current="page"{% endif %}>
+              <span class="menu-link__tile"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#{{ row.icon }}"></use></svg></span>
+              {{ row.word }}
+              <svg class="icon menu-link__chevron" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#chevron-right"></use></svg>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </div>
+</dialog>

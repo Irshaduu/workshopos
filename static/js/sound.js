@@ -97,7 +97,7 @@ function note(ctx, [frequency, when, length, peak]) {
   oscillator.stop(start + length + 0.02);
 }
 
-function readEnabled() {
+export function readEnabled() {
   try {
     return isEnabled(localStorage.getItem(STORAGE_KEY));
   } catch {

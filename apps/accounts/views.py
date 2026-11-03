@@ -149,7 +149,7 @@ def sign_in_password(request):
 @require_GET
 def home(request):
     """The page after signing in. For now it shows who is signed in, and where;
-    Roles (step 2 of Slice 1) brings v1's top bar and menu."""
+    the live board takes this address in Phase 6."""
     return render(request, "accounts/home.html")
 
 
