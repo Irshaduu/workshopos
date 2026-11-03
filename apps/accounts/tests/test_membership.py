@@ -12,7 +12,7 @@ from apps.workshops.tests.factories import WorkshopFactory
 
 
 @pytest.mark.django_db
-def test_an_account_belongs_to_one_workshop_for_now():
+def test_role_2_an_account_belongs_to_one_workshop_for_now():
     member = MembershipFactory()
     second = Membership(workshop=WorkshopFactory(), user=member.user, role=Role.OWNER)
 
