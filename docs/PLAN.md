@@ -28,6 +28,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - **Branches inside a workshop; customers and vehicles shared by its
   branches.** (ADR-0006)
 - **Two kinds of account: workshop members and platform staff.** (ADR-0007)
+- **No passwords for workshop people.** Owners use their email and a code;
+  every other role links a device. (ADR-0027)
 - **Modules can be switched on or off per workshop.** Off hides, never
   deletes. (ADR-0011)
 - **SaaS business features are planned now and built when a second workshop
@@ -37,7 +39,9 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - **Go live with the daily-work modules** (marked Go-live in
   `docs/MODULES.md`). Everything else follows after go-live.
 - **Go live complete for daily work.** Extra features and polish wait
-  until after go-live; correctness, edge cases and tests never wait.
+  until after go-live; correctness, edge cases and tests never wait. One
+  exception: the sign-in page's second design comes with Linked devices,
+  because it is every person's first screen (ADR-0027).
 - **No delivery date until Slice 1 (Phase 5) has been timed.**
 - **GST is printed only for a workshop with a valid GSTIN.** All tax rules
   live in one place.
@@ -243,8 +247,9 @@ work gets its own pull request, just before the page that first uses it.
 7. Known plate: old plates, the chassis number, moving an open job card
 8. Settle bill: payments, the discount, the frozen copy, the first
    settings, the audit log
-9. Browser tests and limits, with the Playwright ADR
-10. Close: the hours sorted, the other modules sized, the delivery date
+9. Linked devices (ADR-0027), with the second design of the sign-in page
+10. Browser tests and limits, with the Playwright ADR
+11. Close: the hours sorted, the other modules sized, the delivery date
 
 - [ ] One car, from sign-in to a settled bill, end to end, with tests. It
       builds these Go-live modules whole (`docs/MODULES.md`), each through
@@ -364,6 +369,10 @@ work gets its own pull request, just before the page that first uses it.
       a field a role may not change is left out of its form, never hidden
       (v1: a Floor post changed a price it could not see); the rule goes
       into `CONTRIBUTING.md` with the first role form
+- [ ] Linked devices, as ADR-0027 decides: one pull request before the
+      browser tests, with the second design of the sign-in page through the
+      lab, proved on real devices before it merges; the sign-in rules change
+      in that pull request
 - [ ] Browser tests (Playwright, with its ADR first) for the key flows
       only: sign in, open a job card, settle a bill; in both Chrome's and
       Safari's engines (`docs/DESIGN.md`), in their own CI job, which
@@ -421,7 +430,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 
 - [ ] Decide hosting for the client: its own account, or the shared server
 - [ ] Decide (ADR): the final product name and its domain; the repository
-      can be renamed to match
+      can be renamed to match. The address is chosen once, before go-live,
+      because sessions and the installed app belong to it (ADR-0027)
 - [ ] Staging (fake data) and production
 - [ ] Load test on staging with fake workshops; the worker count and the
       server size come from it
