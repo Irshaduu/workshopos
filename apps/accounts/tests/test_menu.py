@@ -1,7 +1,7 @@
 """The tab bar and the menu on every page of the app (apps/accounts/menu.py).
 
 Opening and closing the menu needs a browser: that test comes with Playwright
-(step 9 of Slice 1). Until then it is clicked through by hand.
+(step 10 of Slice 1). Until then it is clicked through by hand.
 """
 
 import pytest

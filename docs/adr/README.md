@@ -31,6 +31,7 @@ costs.
 | [0024](0024-per-workshop-settings.md) | Per-workshop settings: each beside the rule that uses it | Accepted |
 | [0025](0025-sign-in.md) | Sign-in: a code by email for owners, a password for Office and Floor | Accepted |
 | [0026](0026-roles.md) | Roles: each app lists its permissions, and every page asks has_perm | Accepted |
+| [0027](0027-linked-devices.md) | Linked devices: no passwords for workshop people | Proposed |
 
 ## Rules
 

@@ -28,6 +28,10 @@ the code (models, functions, files, URLs) and in the docs.
 | Locked | `minutes_locked()` | | An account with a password that cannot sign in for 15 minutes, after 5 wrong passwords in a row |
 | Unlock | `unlock()` | | An owner lets a locked Office or Floor account sign in again at once |
 | Sign-in code | `SignInCode` | OTP, reset code | 6 digits emailed to an owner, who types them to sign in. It works once, for 10 minutes, in the browser that asked for it |
+| Link a device | `link_device`, the page `link-device/` | pair, approve a device | What an approver does so a new device signs in: types its device code, picks a login and agrees (ADR-0027). Not built yet |
+| Device code | `DeviceCode` | pairing code, PIN | 8 letters a new device shows while it waits to be linked. It only names the waiting device, and ends after 10 minutes. Not built yet |
+| Approver | | | Someone signed in who may link devices: an owner, at first |
+| Remove | `remove_device()` | kick out, revoke | An owner ends a device's session from the list of devices. The device is out at its next request. Not built yet |
 | Fleet account | `FleetAccount` | bulk payer | A company that sends many cars and pays for them together |
 | Fleet payment | `FleetPayment` | bulk payment | One payment from a fleet account that settles many of its bills |
 | Staff member | `StaffMember` | mechanic, for everyone | A person who works at the workshop. Mechanic is one of the designations |
