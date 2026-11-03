@@ -511,7 +511,7 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] Malayalam, when the client wants it: translations, a language choice
       per person, a font check on screens and printed documents (ADR-0015)
 - [ ] AI assistant (ADR-0008): first version on fake data, an eval set in CI,
-      cost per question measured
+      its log and cost limits, cost per question measured
 
 ### Phase 10: Running it
 

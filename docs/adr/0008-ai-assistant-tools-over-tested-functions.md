@@ -31,6 +31,24 @@
   data, run in CI.
 - **The AI provider and model** are chosen when this is built (their own ADR).
   The code talks to the provider through one module, so it can be changed.
+- **The workshop and the role come from the signed-in request**, never from
+  what the model or a person types. Each tool runs in a read-only database
+  transaction, so even a bug cannot change data.
+- **Every question is logged:** who asked, which tools ran and the cost,
+  with no personal data. The rows live in `assistant`, and totals are worked
+  out from them. This log gives the cost per question.
+- **Cost limits, from the first version:** a limit per question (answer
+  length, tool rounds), so a bug or a retry stays small; and a monthly limit
+  per workshop. At the limit the assistant pauses, and everything else keeps
+  working.
+- **No prepaid wallet for now.** It waits for measured numbers. It would not
+  end the risk: the provider still bills us, the cost is known only after
+  each call, and unused balance is customers' money we hold (the accountant
+  answers on GST for a recharge, refunds and the rules for prepaid money).
+  It also needs a payment gateway. If the market asks, a recharge only adds
+  to the month's limit: new rows, no change to real records.
+- **No MCP server and no webhooks for now.** Each is a new door with its own
+  sign-in.
 - **Built after go-live.** The cost per question is measured on the first
   version before it is priced.
 

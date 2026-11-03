@@ -146,7 +146,8 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 ## AI assistant (ADR-0008)
 
 The assistant never calculates. It calls tested, read-only functions and
-explains the result in plain words, in English or Malayalam.
+explains the result in plain words, in English or Malayalam. Every question
+is logged, with a limit per question and a monthly limit per workshop.
 
 | Module | What it does | App | When |
 |---|---|---|---|
@@ -155,6 +156,7 @@ explains the result in plain words, in English or Malayalam.
 | Bill from a photo | A photo of a supplier's bill fills a draft restock bill; Office checks it and saves | `assistant` | After |
 | Daily summary | A short daily message for the owners: cars waiting for parts, cash, big discounts | `assistant` | After |
 | Voice input | Speak a concern in Malayalam; it fills the line on the job card | `assistant` | After |
+| Copy car details for AI | A car's make, model, chassis code, kilometres, concerns, work done and parts, as text to paste into a person's own AI app, so it costs no AI fee. A fixed list of fields, never name, phone, plate, VIN, price or typed notes; a box shows the text before Copy. Legal advice confirms it is not personal data | `jobs` | After (client confirms) |
 
 ---
 
