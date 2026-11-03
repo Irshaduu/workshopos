@@ -27,6 +27,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
   specification, not as a code template. (ADR-0002)
 - **Branches inside a workshop; customers and vehicles shared by its
   branches.** (ADR-0006)
+- **One workshop by default, however many places it has.** A second workshop
+  only when a wall is truly needed, by law or by choice. (ADR-0028)
 - **Two kinds of account: workshop members and platform staff.** (ADR-0007)
 - **No passwords for workshop people.** Owners use their email and a code;
   every other role links a device. (ADR-0027)
@@ -239,7 +241,7 @@ work gets its own pull request, just before the page that first uses it.
    matrix, and the app's tab bar and menu (v1's, through the lab), which
    takes over Sign out from the plain home page
 3. Base for the first pages: Indian formats, the `for_workshop()` check,
-   the double-tap guard, the query-count test
+   branch-ready pages (ADR-0028), the double-tap guard, the query-count test
 4. Staff list: the first list page and form
 5. Money base, just before the first money column
 6. Job card: customers and cars, the number, the links, history, a form
@@ -290,8 +292,13 @@ work gets its own pull request, just before the page that first uses it.
       car's page (Car profiles, After) gets the same changes; no merge tool
       unless the staging trial shows a need
 - [ ] A branch link on operational records, and every link kept inside its
-      workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the job card;
-      a factory gives its linked records the same workshop
+      workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the first one,
+      the staff list; a factory gives its linked records the same workshop
+- [ ] Pages branch-ready, with the base for the first pages (ADR-0028): a
+      query on a record with a branch asks for the branch too
+      (`for_branch()`), and every new model has a branch link or sits on a
+      short workshop-wide list with the reason; a rule in `CONTRIBUTING.md`
+      and a test
 - [ ] A pre-commit check that every query in `apps/` starts with
       `for_workshop()`, unless the line says why not, from the first
       selector (ADR-0023); it also flags Django's shortcuts that query by

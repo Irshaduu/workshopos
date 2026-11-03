@@ -10,7 +10,7 @@ costs.
 | [0003](0003-one-codebase-tenant-ready.md) | One codebase, tenant-ready; dedicated or shared deployments | Accepted |
 | [0004](0004-saas-features-wait-for-a-second-workshop.md) | SaaS business features wait for a second workshop | Accepted |
 | [0005](0005-modular-monolith-layered-apps.md) | Modular monolith: layered apps, services and selectors | Accepted |
-| [0006](0006-branches-and-shared-vehicles.md) | Branches inside a workshop; customers and vehicles shared by its branches | Accepted |
+| [0006](0006-branches-and-shared-vehicles.md) | Branches inside a workshop; customers and vehicles shared by its branches | Accepted; its full service history line is replaced by 0028 |
 | [0007](0007-workshop-members-and-platform-staff.md) | Two kinds of account: workshop members and platform staff | Accepted; its Floor line is replaced by 0026 |
 | [0008](0008-ai-assistant-tools-over-tested-functions.md) | AI assistant: tools over tested read-only functions | Proposed |
 | [0009](0009-django-6-1-then-6-2-lts.md) | Django 6.1 now, then 6.2 LTS | Accepted |
@@ -32,6 +32,7 @@ costs.
 | [0025](0025-sign-in.md) | Sign-in: a code by email for owners, a password for Office and Floor | Accepted |
 | [0026](0026-roles.md) | Roles: each app lists its permissions, and every page asks has_perm | Accepted |
 | [0027](0027-linked-devices.md) | Linked devices: no passwords for workshop people | Proposed |
+| [0028](0028-several-places.md) | Several places: one workshop by default | Accepted |
 
 ## Rules
 
