@@ -1,6 +1,7 @@
 # 0006: Branches inside a workshop; customers and vehicles shared by its branches
 
-**Status:** Accepted (2026-10-15)
+**Status:** Accepted (2026-10-15). Its full service history line is replaced
+by ADR-0028.
 
 ## Context
 

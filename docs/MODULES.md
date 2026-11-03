@@ -140,6 +140,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | WhatsApp messages | Estimates, bills, "car ready" and service reminders | `notifications` | After |
 | Customer history page | A car's service history for its owner, opened from a branded NFC card | `vehicles` | After |
 | Mechanic guide | A help page for the floor team | `jobs` | After |
+| Branch screens | Switching branch, stock transfers, combined reports, members limited to some branches, and the history switch per branch, when a workshop's second place is real (ADR-0028) | `workshops`, each app | After |
 
 ## AI assistant (ADR-0008)
 
@@ -169,7 +170,6 @@ so adding them changes no existing table.
 | Support access | Logged, time-limited access to a workshop, with its consent | SaaS |
 | Sales and partner accounts | Leads, a demo workshop with fake data, referral tracking | SaaS |
 | Plans and limits | Which modules each plan includes; user and branch limits per plan (the switches are in Foundation) | SaaS |
-| Branch screens | Switching branch, stock transfers, combined reports, members limited to some branches, when a workshop with more than one branch joins | SaaS |
 | Several workshops per account | One sign-in for a person who works in more than one workshop, with a workshop picker | SaaS |
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |

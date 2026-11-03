@@ -32,6 +32,8 @@ the code (models, functions, files, URLs) and in the docs.
 | Device code | `DeviceCode` | pairing code, PIN | 8 letters a new device shows while it waits to be linked. It only names the waiting device, and ends after 10 minutes. Not built yet |
 | Approver | | | Someone signed in who may link devices: an owner, at first |
 | Remove | `remove_device()` | kick out, revoke | An owner ends a device's session from the list of devices. The device is out at its next request. Not built yet |
+| Branch Owner | `Role.BRANCH_OWNER` | branch partner | A login limited to one branch, for a partner in that place; read-only for a funder (ADR-0028). Not built yet |
+| History switch | | | One per branch: whether its visits show at the workshop's other branches (ADR-0028). Not built yet |
 | Fleet account | `FleetAccount` | bulk payer | A company that sends many cars and pays for them together |
 | Fleet payment | `FleetPayment` | bulk payment | One payment from a fleet account that settles many of its bills |
 | Staff member | `StaffMember` | mechanic, for everyone | A person who works at the workshop. Mechanic is one of the designations |
