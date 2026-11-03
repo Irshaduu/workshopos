@@ -98,6 +98,8 @@ Marks: `[x]` done, `[~]` in progress, `[ ]` to do
 - [ ] Agreement signed, before go-live (the checklist is kept privately,
       outside this repo)
 - [ ] Go-live marks in `docs/MODULES.md` confirmed
+- [ ] A lab picture of the owners' Overview shown with those marks: on day
+      one, or after go-live as planned
 - [ ] Keep / simplify / drop for each v1 section
 - [ ] GST: a valid registration and the accountant's details (moves GST
       before go-live if it is legally due first)
@@ -376,6 +378,10 @@ work gets its own pull request, just before the page that first uses it.
       a field a role may not change is left out of its form, never hidden
       (v1: a Floor post changed a price it could not see); the rule goes
       into `CONTRIBUTING.md` with the first role form
+- [ ] A page that only shows and a page that saves ask for different
+      permissions, from the first form, so a read-only role added later can
+      never save (ROLE-5); the rule goes into `CONTRIBUTING.md` with that
+      form
 - [ ] Linked devices, as ADR-0027 decides: one pull request before the
       browser tests, with the second design of the sign-in page through the
       lab, proved on real devices before it merges; the sign-in rules change
@@ -491,7 +497,7 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 ### Phase 9: After go-live
 
 - [ ] Every module marked After in `docs/MODULES.md`, through the loop, in
-      the order the client needs
+      the order the client needs; Overview is first in line
 - [ ] GST details from the client and their accountant: GSTIN (one per
       state, so a branch in another state has its own), HSN/SAC codes,
       rates, tax-invoice format, CGST + SGST or IGST, rounding, credit notes
