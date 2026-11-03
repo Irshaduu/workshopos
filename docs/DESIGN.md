@@ -17,6 +17,9 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
   (the mechanic, photos, dates), always with the same icon. Never on
   every form label.
 - See them all, in every state: `design/lab/system/`.
+- The tab bar and the menu: `static/css/app.css`. Every page of the app
+  builds on `templates/app.html`, which brings them; the sign-in steps,
+  the sign-out card and the state pages do not (`docs/rules/roles.md`).
 
 ---
 
@@ -102,8 +105,8 @@ The components, in `static/css/components.css`:
 - The sound (`static/js/sound.js`, from v1): a short tone for a notice
   that carries `data-sound-tag` (success, error or warning; info stays
   silent), one per page, and a quieter tone when a confirmation card
-  opens. It is on unless a device turns it off; that switch comes with
-  the app's menu.
+  opens. It is on unless a device turns it off, with the Sounds switch
+  in the app's menu.
 
 ## Help notes
 

@@ -19,7 +19,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 |---|---|---|---|
 | Phone, tablet and laptop | Laid out for each device; installs on a phone like an app | `core` | Go-live |
 | Sign-in | Owners with a code sent to their email; Office and Floor with a password, locked after repeated wrong tries | `accounts` | Go-live |
-| Roles | Owner, Office, Floor; each sees only what it needs (ADR-0007) | `accounts` | Go-live |
+| Roles | Owner, Office, Floor; each sees only what it needs, in its own tab bar and menu (ADR-0007, ADR-0026) | `accounts` | Go-live |
 | Staff logins and devices | Staff logins (one per person, or one shared, like the floor tablet's), signed-in devices, remote sign-out, and Unlock for a locked Office or Floor login. The last owner can never be removed; a leaving person's login is turned off, never deleted | `accounts` | Go-live |
 | Owner alerts | Push alerts to the owners' phones, and an alert feed | `notifications` | Go-live |
 | Change history | Every deleted, edited and back-dated entry, month by month | `audit` | Go-live |
