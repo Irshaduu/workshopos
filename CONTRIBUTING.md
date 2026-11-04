@@ -142,6 +142,15 @@ closes the issue.
   `permissions.py`, where each permission names its roles one by one, never
   through a shortcut for every role, so a role added later starts with
   none. A test scans every view, form and template.
+- **A page that only shows and a page that saves ask for different
+  permissions.** A showing permission starts with `see_` or `open_`, and its
+  page answers only a GET, so a read-only role added later can never save
+  (ROLE-5). What saves shows only to a role that may save. A test sends a POST
+  to every showing page.
+- **A form holds only what its role may change.** A field a role may not
+  change is left out of its form, never hidden. Roles that may change different
+  fields get different forms, chosen by a permission (ROLE-13). A test reads
+  every form.
 - **A page reached from the tab bar or the menu adds its line in
   `apps/accounts/menu.py`**, in the same pull request. A page that is not
   built has no line (ROLE-32).
@@ -203,8 +212,9 @@ closes the issue.
   its app's `tests/factories.py`.
 - **A permission matrix** (`tests/test_permissions.py`): every page, for
   every kind of visitor, with each answer typed by hand, never read from
-  the permission lists. A new page adds its row in the same pull request.
-  A record of another workshop is never found.
+  the permission lists. A new page adds its row in the same pull request. A
+  page with a key in its address also says what its key is, and a record of
+  another workshop or another branch is never found.
 - **A longer list never means more queries** (`tests/test_query_counts.py`):
   every page says whether it shows rows, and each page that does is opened
   with a few rows and with many. A new page says so in the same pull request.

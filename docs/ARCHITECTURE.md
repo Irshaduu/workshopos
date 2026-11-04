@@ -60,7 +60,7 @@ workshopos/
 | `photos` | photos of cars and parts: a real link to the job card or the part, and a database check that exactly one is set (v1's shape) |
 | `inventory` | products, categories, stock, costing, opening stock |
 | `vehicles` | customers, vehicles, brands and models, vehicle profile |
-| `staff` | staff roster, salary, advances |
+| `staff` | the staff list, salary, advances |
 | `suppliers` | spare shops, Supplies Shops, purchases, payments, discounts, opening balances |
 | `jobs` | job cards, concerns, work done, parts used, warranty, estimates |
 | `billing` | invoices, settling, GST, fleet accounts, old bills, printed documents |

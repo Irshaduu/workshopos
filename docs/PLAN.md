@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles and the base for
-the first pages are built; the Staff list is next.
+**Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
+first pages and the Staff list are built; the money base is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -293,10 +293,10 @@ work gets its own pull request, just before the page that first uses it.
       an open job card to the right car; a settled one never moves. The
       car's page (Car profiles, After) gets the same changes; no merge tool
       unless the staging trial shows a need
-- [~] A branch link on operational records (`BranchModel`), and every link
+- [x] A branch link on operational records (`BranchModel`), and every link
       kept inside its workshop by PostgreSQL (`SameWorkshop`, ADR-0023); a test
       walks every link, and a factory gives its linked records the same
-      workshop. The first real link comes with the staff list
+      workshop
 - [x] Pages branch-ready, with the base for the first pages (ADR-0028): a
       query on a record with a branch asks for the branch too
       (`for_branch()`), and every new model has a branch link or sits on a
@@ -362,27 +362,24 @@ work gets its own pull request, just before the page that first uses it.
       itself, so a page with no row fails; the expected answers are typed
       in the test, never read from the roles list; for each page, a visitor
       who is signed out is sent to sign in, and each role gets in or is
-      refused. That a record of another workshop is never found (ROLE-10)
-      comes with the first page that shows a record
-- [~] Query-count tests for every page that shows rows (a list page, a job
+      refused. A record of another workshop or another branch is never found
+      (ROLE-10)
+- [x] Query-count tests for every page that shows rows (a list page, a job
       card's lines): the page opened with a few rows and with many makes the
       same number of queries, so a longer list never means more queries. Every
-      page says whether it shows rows; the first with rows is the staff list
-- [~] A double tap or a slow network never saves a record twice. The server
+      page says whether it shows rows
+- [x] A double tap or a slow network never saves a record twice. The server
       is the guard; the button only shows it is busy. A new record's key comes
       in the form's address (UUID7 keys exist before saving, ADR-0022), so
       PostgreSQL refuses a second copy and the page shows the saved one
       (`save_once()`); a change runs in one locked transaction that refuses a
-      repeat (a settled bill is never settled twice). The first form is the
-      staff list's
-- [ ] A separate form for each role, on every form, not only the job card:
+      repeat (a settled bill is never settled twice)
+- [~] A separate form for each role, on every form, not only the job card:
       a field a role may not change is left out of its form, never hidden
-      (v1: a Floor post changed a price it could not see); the rule goes
-      into `CONTRIBUTING.md` with the first role form
-- [ ] A page that only shows and a page that saves ask for different
-      permissions, from the first form, so a read-only role added later can
-      never save (ROLE-5); the rule goes into `CONTRIBUTING.md` with that
-      form
+      (v1: a Floor post changed a price it could not see). The rule and its
+      test are in; the first second form comes with the job card
+- [x] A page that only shows and a page that saves ask for different
+      permissions, so a read-only role added later can never save (ROLE-5)
 - [ ] Linked devices, as ADR-0027 decides: one pull request before the
       browser tests, with the second design of the sign-in page through the
       lab, proved on real devices before it merges; the sign-in rules change
