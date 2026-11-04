@@ -1,7 +1,7 @@
 """A link stays inside its workshop (apps/workshops/constraints.py, ADR-0023).
 
 These tests run on a throwaway table, made inside the test's own transaction, so
-it is gone when the test ends. The first real link comes with the Staff list.
+it is gone when the test ends. tests/test_tenancy.py walks every real link.
 """
 
 import pytest

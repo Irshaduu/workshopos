@@ -12,8 +12,7 @@ def planted(db):
     """A record with a branch, on a throwaway table.
 
     The table is made inside the test's own transaction, so it is gone when the
-    test ends. The first real one comes with the Staff list; tests/test_tenancy.py
-    then covers every real one by itself.
+    test ends. tests/test_tenancy.py covers every real one by itself.
     """
     with isolate_apps("apps.workshops"):
 
