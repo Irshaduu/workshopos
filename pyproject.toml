@@ -52,7 +52,7 @@ layers = [
     "(billing) | (finance) | (photos)",
     "(jobs)",
     "(suppliers)",
-    "(inventory) | (vehicles) | (staff)",
+    "(inventory) | (vehicles) | staff",
     "(audit) | (notifications)",
     "accounts",
     "workshops",
