@@ -13,10 +13,11 @@ from django.contrib.auth.decorators import login_not_required
 from django.db import connection
 from django.http import HttpResponse
 from django.test.utils import CaptureQueriesContext
-from django.urls import path
+from django.urls import path, reverse
 from test_permissions import PAGES
 
 from apps.accounts.tests.factories import MembershipFactory
+from apps.staff.tests.factories import StaffMemberFactory
 from apps.workshops.models import Branch
 from apps.workshops.tests.factories import BranchFactory
 
@@ -30,11 +31,24 @@ NO_ROWS = {
     "accounts:sign_in_code",
     "accounts:sign_in_password",
     "accounts:sign_out",
+    # These four answer a GET by going to the list. A refused send shows the list
+    # through the same selector, and apps/staff/tests/test_pages.py opens it both ways.
+    "staff:new",
+    "staff:edit",
+    "staff:turn_off",
+    "staff:turn_on",
 }
+
+
+def staff_list_rows(member):
+    return reverse("staff:list"), lambda: StaffMemberFactory(workshop=member.workshop)
+
 
 #: Each page that shows rows. The function gets a signed-in owner's membership, and
 #: answers with the page's address and a function that adds one row to it.
-WITH_ROWS = {}
+WITH_ROWS = {
+    "staff:list": staff_list_rows,
+}
 
 
 def queries_of(client, address):

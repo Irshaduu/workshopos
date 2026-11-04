@@ -1,0 +1,116 @@
+{% extends "app.html" %}
+{% load i18n static %}
+{% comment %}
+The Staff list (docs/rules/staff-list.md): v1's Staff Registration. The add form, then
+one card for each designation. What saves shows only to a role that may save
+(STAFF-19). It has no back control: the menu opens it (STAFF-26).
+{% endcomment %}
+{% block title %}{% translate "Staff list" %}{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'staff/staff-list.css' %}">
+{% endblock %}
+{% block page_js %}
+  <script src="{% static 'js/info.js' %}" type="module"></script>
+  <script src="{% static 'staff/staff-list.js' %}" type="module"></script>
+{% endblock %}
+
+{% block content %}
+<div class="staff-head">
+  <h1>{% translate "Staff list" %}</h1>
+  <button class="info" type="button" aria-label="{% translate 'How this list works' %}" aria-expanded="false" aria-controls="staff-note">
+    <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#info"></use></svg>
+  </button>
+</div>
+<p class="info-note" id="staff-note" hidden>{% translate "The people who work here, not logins. A job card's lead mechanic is picked from the Mechanics and Assistant Mechanics." %}</p>
+
+{% if perms.staff.save_staff_member %}
+  <section class="card staff-add" aria-labelledby="staff-add-title">
+    <h2 class="staff-add__title" id="staff-add-title">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#user-plus"></use></svg>
+      {% translate "Add staff member" %}
+    </h2>
+    <form class="staff-add__form" action="{% url 'staff:new' add_key %}" method="post">
+      {% csrf_token %}
+      {% include "staff/_member_fields.html" with form=add_form start="add" choose=True %}
+      <button class="btn btn--primary staff-add__submit" type="submit">
+        <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#plus"></use></svg>
+        {% translate "Add" %}
+      </button>
+    </form>
+  </section>
+{% endif %}
+
+<div class="staff-grid">
+  {% for card in cards %}
+    <section class="staff-card" aria-labelledby="staff-card-{{ forloop.counter }}">
+      <div class="staff-card__head">
+        <h2 class="staff-card__title" id="staff-card-{{ forloop.counter }}">
+          <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#{{ card.icon }}"></use></svg>
+          {{ card.word }}
+        </h2>
+        <span class="staff-card__count num">{{ card.rows|length }}</span>
+      </div>
+      {% if card.rows %}
+        <ul class="staff-card__list">
+          {% for row in card.rows %}
+            {% with member=row.member %}
+              <li class="staff-row{% if not member.is_active %} staff-row--off{% endif %}">
+                <span class="staff-row__letter" aria-hidden="true">{{ member.name|slice:":1"|upper }}</span>
+                <span class="staff-row__who">
+                  <span class="staff-row__name">{{ member.name }}</span>
+                  {% if not member.is_active %}<span class="badge">{% translate "Turned off" %}</span>{% endif %}
+                </span>
+                {% if perms.staff.save_staff_member %}
+                  {% blocktranslate with name=member.name asvar more_for %}More for {{ name }}{% endblocktranslate %}
+                  <button class="staff-row__more" type="button" aria-label="{{ more_for }}" aria-expanded="false" aria-controls="staff-actions-{{ member.pk }}" data-row-more>
+                    <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#ellipsis-vertical"></use></svg>
+                  </button>
+                  <div class="staff-row__actions" id="staff-actions-{{ member.pk }}" hidden>
+                    <button class="btn" type="button" data-dialog-open="staff-edit-{{ member.pk }}">
+                      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#pencil"></use></svg>
+                      {% translate "Edit" %}
+                    </button>
+                    {% if member.is_active %}
+                      <form action="{% url 'staff:turn_off' member.pk %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn" type="submit">
+                          <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#power-off"></use></svg>
+                          {% translate "Turn off" %}
+                        </button>
+                      </form>
+                    {% else %}
+                      <form action="{% url 'staff:turn_on' member.pk %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn" type="submit">
+                          <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#power"></use></svg>
+                          {% translate "Turn on" %}
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                  <dialog class="form-dialog" id="staff-edit-{{ member.pk }}" aria-labelledby="staff-edit-{{ member.pk }}-title"{% if row.form.is_bound %} data-open-now{% endif %}>
+                    <div class="form-dialog__head">
+                      <h2 class="form-dialog__title" id="staff-edit-{{ member.pk }}-title">{% translate "Edit staff member" %}</h2>
+                      <button class="form-dialog__close" type="button" aria-label="{% translate 'Close' %}" data-dialog-close>
+                        <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#x"></use></svg>
+                      </button>
+                    </div>
+                    <form class="form-dialog__form" action="{% url 'staff:edit' member.pk %}" method="post">
+                      {% csrf_token %}
+                      {% include "staff/_member_fields.html" with form=row.form start=member.pk %}
+                      <button class="btn btn--primary" type="submit">{% translate "Save" %}</button>
+                    </form>
+                  </dialog>
+                {% endif %}
+              </li>
+            {% endwith %}
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="staff-card__empty">{% translate "No one yet." %}</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+</div>
+{% endblock %}

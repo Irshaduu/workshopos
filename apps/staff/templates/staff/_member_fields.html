@@ -1,0 +1,29 @@
+{% load i18n %}
+{% comment %}
+The two boxes of the add form and of each Edit card. "start" begins each box's id, so
+every box on the page has its own. A refused form brings back its errors and what was
+typed (STAFF-24), and the first box with an error takes the keyboard. The add form
+offers no designation by itself (STAFF-8): "choose" gives it an empty first choice.
+{% endcomment %}
+<div class="field">
+  <label class="field__label" for="{{ start }}-name">{% translate "Name" %}</label>
+  <input class="field__input" id="{{ start }}-name" name="name" type="text" maxlength="{{ form.name.field.max_length }}" autocomplete="off" autocapitalize="words" spellcheck="false" required value="{{ form.name.value|default_if_none:'' }}"{% if form.name.errors %} aria-invalid="true" aria-describedby="{{ start }}-name-error" autofocus{% endif %}>
+  {% if form.name.errors %}
+    <p class="field__error" id="{{ start }}-name-error" role="alert">{{ form.name.errors.0 }}</p>
+  {% endif %}
+  {% for error in form.non_field_errors %}
+    <p class="field__error" role="alert">{{ error }}</p>
+  {% endfor %}
+</div>
+<div class="field">
+  <label class="field__label" for="{{ start }}-designation">{% translate "Designation" %}</label>
+  <select class="field__input" id="{{ start }}-designation" name="designation" required{% if form.designation.errors %} aria-invalid="true" aria-describedby="{{ start }}-designation-error"{% if not form.name.errors %} autofocus{% endif %}{% endif %}>
+    {% if choose %}<option value="">{% translate "Choose" %}</option>{% endif %}
+    {% for value, word in designations %}
+      <option value="{{ value }}"{% if form.designation.value == value %} selected{% endif %}>{{ word }}</option>
+    {% endfor %}
+  </select>
+  {% if form.designation.errors %}
+    <p class="field__error" id="{{ start }}-designation-error" role="alert">{{ form.designation.errors.0 }}</p>
+  {% endif %}
+</div>
