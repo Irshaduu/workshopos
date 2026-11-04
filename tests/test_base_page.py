@@ -83,8 +83,24 @@ def test_a_page_says_it_is_indian_english(client):
 def test_a_message_shows_as_a_notice_of_its_level(client, level, look, role):
     html = client.get(f"/message/{level}/").content.decode()
 
-    assert f'<div class="{look}" role="{role}">' in html
+    assert f'<div class="{look}" role="{role}"' in html
     assert '<p class="notice__text">Saved, or not.</p>' in html
+
+
+@pytest.mark.parametrize(
+    ("level", "tag"),
+    [
+        (messages.ERROR, "error"),
+        (messages.WARNING, "warning"),
+        (messages.SUCCESS, "success"),
+    ],
+)
+def test_a_notice_carries_its_sound(client, level, tag):
+    assert f'data-sound-tag="{tag}"' in client.get(f"/message/{level}/").content.decode()
+
+
+def test_an_info_notice_stays_silent(client):
+    assert "data-sound-tag" not in client.get(f"/message/{messages.INFO}/").content.decode()
 
 
 def test_an_unknown_address_shows_our_page_not_found(client):
