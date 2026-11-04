@@ -25,7 +25,7 @@ apps/accounts/menu.py, and only those whose page lets this person in.
         <a class="menu-row" href="{% url 'accounts:sign_out' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#log-out"></use></svg>{% translate "Sign out" %}</a>
       </div>
     </details>
-    <button class="menu__close" type="button" aria-label="{% translate 'Close menu' %}" data-menu-close>
+    <button class="menu__close" type="button" aria-label="{% translate 'Close menu' %}" data-dialog-close>
       <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#x"></use></svg>
     </button>
   </div>
