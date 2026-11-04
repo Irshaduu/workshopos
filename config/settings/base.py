@@ -130,12 +130,16 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-in"
 
 # English only until a second language is wanted (ADR-0015).
 LANGUAGES = [("en", _("English"))]
 
 LOCALE_PATHS = [BASE_DIR / "locale"]
+
+# Indian dates and numbers on every screen: Django has no formats of its own for
+# Indian English (docs/DESIGN.md).
+FORMAT_MODULE_PATH = ["apps.core.formats"]
 
 # India time for every date the system shows or stores as "today".
 TIME_ZONE = "Asia/Kolkata"

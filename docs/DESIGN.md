@@ -108,6 +108,37 @@ The components, in `static/css/components.css`:
   opens. It is on unless a device turns it off, with the Sounds switch
   in the app's menu.
 
+## Numbers and dates
+
+Indian numbers and dates on every screen, from one file
+(`apps/core/formats/en/formats.py`), read by Django's own filters. The rupee
+sign is written in the template, before the number.
+
+| Money | In a template | Looks like | Where, and why (v1's reasons) |
+|---|---|---|---|
+| Whole rupees | `floatformat:"0g"` | 45,23,678 | A headline or a total on a report, read at a glance. Half a rupee rounds up |
+| Paise when there are any | `floatformat:"-2g"` | 1,200 or 499.50 | A ledger or list row: a row shown as 500 when 499.50 left the till cannot be matched to its bill |
+| Paise always | `floatformat:"2g"` | 17,800.00 | A printed bill or estimate: in a column a customer adds up by eye, 1,200 beside 1,919.00 reads as a different kind of number |
+
+- An empty amount shows nothing, so a part not yet costed never prints 0.00
+  as if it were free.
+- A number with no filter stays plain, so a year or a phone number is never
+  split. Money always takes one of the styles above.
+- The short figure for a big number on a phone (45.2L, 4.57Cr) comes with
+  Profit. The exact number always stays beside it.
+
+| Date | In a template | Looks like | Where |
+|---|---|---|---|
+| Date, the default | `{{ date }}` | 3 Oct 2026 | Every screen, unless a line below says otherwise |
+| Short date | `date:"SHORT_DATE_FORMAT"` | 03/10/2026 | The job card, and lists with little room |
+| Date and time | `{{ datetime }}` | 3 Oct 2026, 3:05 PM | Alerts and change history, in India time |
+| Month | `date:"YEAR_MONTH_FORMAT"` | October 2026 | Rent and salary |
+| Day and month | `date:"MONTH_DAY_FORMAT"` | 3 Oct | The job list and the live report |
+
+- A typed date is read day first: 10/11/2026 is 10 November. Month first is
+  refused.
+- The printed bill's date style is settled with the printed bill.
+
 ## Help notes
 
 A help note is a short line that explains how the system works, for

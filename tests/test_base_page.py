@@ -66,6 +66,11 @@ def test_a_page_on_the_base_layout_loads_the_shared_css_and_the_busy_button(clie
     assert "<title>A page | WorkshopOS</title>" in html
 
 
+def test_a_page_says_it_is_indian_english(client):
+    # A screen reader on a phone picks its voice from this.
+    assert '<html lang="en-in">' in client.get("/page/").content.decode()
+
+
 @pytest.mark.parametrize(
     ("level", "look", "role"),
     [
