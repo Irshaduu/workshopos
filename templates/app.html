@@ -11,6 +11,7 @@ CSS and JS go in page_css and page_js.
   {% block page_css %}{% endblock %}
 {% endblock %}
 {% block js %}
+  <script src="{% static 'js/dialog.js' %}" type="module"></script>
   <script src="{% static 'js/menu.js' %}" type="module"></script>
   {% block page_js %}{% endblock %}
 {% endblock %}

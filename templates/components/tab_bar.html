@@ -12,7 +12,7 @@ whose page lets this person in. The last tab opens the menu.
         <span class="tab__label">{{ tab.word }}</span>
       </a>
     {% endfor %}
-    <button class="tab" type="button" aria-haspopup="dialog" aria-controls="app-menu" aria-expanded="false"{% if menu_lit %} data-lit{% endif %}>
+    <button class="tab" type="button" aria-haspopup="dialog" aria-controls="app-menu" aria-expanded="false" data-dialog-open="app-menu"{% if menu_lit %} data-lit{% endif %}>
       <span class="tab__glyph"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#menu"></use></svg></span>
       <span class="tab__label">{{ menu_word }}</span>
     </button>
