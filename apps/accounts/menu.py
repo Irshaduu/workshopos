@@ -48,10 +48,20 @@ def _home(role):
     return Link("accounts:home", role.label, "house")
 
 
+#: The menu of Owner and Office, one shape as in v1 (ROLE-36). A row shows only to
+#: the roles its page lets in, and a section with no row does not show.
+OFFICE_SECTIONS = (
+    Section(_("Administration"), groups=((Link("staff:list", _("Staff list"), "users"),),)),
+)
+
 #: Every role's own tab bar and menu. A new role names its own here.
 ROLE_MENUS = {
-    Role.OWNER: RoleMenu(tabs=(_home(Role.OWNER),), menu_word=_("Manage")),
-    Role.OFFICE: RoleMenu(tabs=(_home(Role.OFFICE),), menu_word=_("Manage")),
+    Role.OWNER: RoleMenu(
+        tabs=(_home(Role.OWNER),), menu_word=_("Manage"), sections=OFFICE_SECTIONS
+    ),
+    Role.OFFICE: RoleMenu(
+        tabs=(_home(Role.OFFICE),), menu_word=_("Manage"), sections=OFFICE_SECTIONS
+    ),
     Role.FLOOR: RoleMenu(tabs=(_home(Role.FLOOR),), menu_word=_("Menu")),
 }
 

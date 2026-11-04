@@ -230,6 +230,24 @@ def test_role_36_a_section_with_no_row_for_this_role_does_not_show(client, sampl
 
 
 @pytest.mark.django_db
+def test_staff_26_owners_see_the_staff_list_in_administration(client):
+    html = menu_of(signed_in(client, Role.OWNER).get("/"))
+
+    assert '<h2 class="menu-label">Administration</h2>' in html
+    assert '<a class="menu-link" href="/staff/">' in html
+    assert html.index("Administration") < html.index("Staff list")
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("role", [Role.OFFICE, Role.FLOOR])
+def test_staff_26_other_roles_see_no_door_to_the_staff_list(client, role):
+    html = menu_of(signed_in(client, role).get("/"))
+
+    assert "/staff/" not in html
+    assert "Administration" not in html
+
+
+@pytest.mark.django_db
 def test_role_23_every_page_of_the_app_has_one_bar_and_one_menu(client):
     html = signed_in(client, Role.FLOOR).get("/").text
 
@@ -237,6 +255,8 @@ def test_role_23_every_page_of_the_app_has_one_bar_and_one_menu(client):
     assert html.count('<dialog class="menu"') == 1
     assert "css/app.css" in html
     assert "js/menu.js" in html
+    assert "js/dialog.js" in html
+    assert 'data-dialog-open="app-menu"' in html
 
 
 @pytest.mark.django_db

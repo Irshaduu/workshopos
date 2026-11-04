@@ -132,6 +132,13 @@
        52 pixels, well past the 44 minimum */
     --signin-max-width: 26.25rem;
     --signin-control-height: 3.25rem;
+    /* The Staff list (v1): a row's letter tile and three-dot button look 32
+       pixels, and an invisible band makes the button 46 to a finger; a long
+       card stops growing at about five rows and scrolls inside itself */
+    --staff-tile-size: 2rem;
+    --staff-more-band: 0.4375rem;
+    --staff-count-min-width: 1.75rem;
+    --staff-card-max-height: 20rem;
 
     /* Car paint: v1's paint list and values, exactly (CAR_COLOR_HEX in v1).
        A car's own colour, not a tone. */

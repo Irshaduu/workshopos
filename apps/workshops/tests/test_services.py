@@ -1,7 +1,7 @@
 """A double tap never saves a record twice (apps/workshops/services.py, docs/PLAN.md).
 
 The tests save branches, because a branch is a real record with a unique name. The
-page that uses this comes with the Staff list.
+Staff list is the first page that uses this.
 """
 
 import threading
