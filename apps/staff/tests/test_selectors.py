@@ -1,0 +1,119 @@
+"""What the Staff list reads (apps/staff/selectors.py)."""
+
+import uuid
+
+import pytest
+from django.db import connection
+from django.http import Http404
+from django.test.utils import CaptureQueriesContext
+
+from apps.staff.models import Designation
+from apps.staff.selectors import saved_staff_member, staff_by_designation, staff_member
+from apps.staff.tests.factories import StaffMemberFactory
+from apps.workshops.models import Branch
+from apps.workshops.tests.factories import BranchFactory, WorkshopFactory
+
+pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture
+def workshop():
+    return WorkshopFactory()
+
+
+@pytest.fixture
+def branch(workshop):
+    return Branch.objects.for_workshop(workshop).get()
+
+
+def names_in(groups, designation):
+    return [member.name for member in dict(groups)[designation]]
+
+
+def test_staff_20_every_designation_comes_in_order_even_with_no_one_in_it(workshop, branch):
+    groups = staff_by_designation(workshop, branch)
+
+    assert groups == [
+        (Designation.MECHANIC, []),
+        (Designation.ASSISTANT_MECHANIC, []),
+        (Designation.OFFICE_STAFF, []),
+        (Designation.GENERAL_HELPER, []),
+    ]
+
+
+def test_staff_20_each_person_is_under_their_own_designation(workshop, branch):
+    StaffMemberFactory(workshop=workshop, name="Suresh", designation=Designation.GENERAL_HELPER)
+    StaffMemberFactory(workshop=workshop, name="Nisha", designation=Designation.OFFICE_STAFF)
+
+    groups = staff_by_designation(workshop, branch)
+
+    assert names_in(groups, Designation.GENERAL_HELPER) == ["Suresh"]
+    assert names_in(groups, Designation.OFFICE_STAFF) == ["Nisha"]
+    assert names_in(groups, Designation.MECHANIC) == []
+
+
+def test_staff_20_and_12_turned_on_first_then_by_name_whatever_the_capitals(workshop, branch):
+    for name, is_active in [
+        ("Zubair", True),
+        ("biju", True),
+        ("Anil", False),
+        ("Arun", True),
+        ("Ravi", False),
+    ]:
+        StaffMemberFactory(workshop=workshop, name=name, is_active=is_active)
+
+    groups = staff_by_designation(workshop, branch)
+
+    assert names_in(groups, Designation.MECHANIC) == ["Arun", "biju", "Zubair", "Anil", "Ravi"]
+
+
+def test_staff_20_the_order_does_not_depend_on_the_servers_own_language_setting(workshop, branch):
+    # This server's setting already ignores capitals, so the test above passes either
+    # way. Another server's may not: there, "biju" would come after "Zubair". So the
+    # query itself must ask.
+    with CaptureQueriesContext(connection) as queries:
+        staff_by_designation(workshop, branch)
+
+    (sql,) = [query["sql"] for query in queries.captured_queries]
+    assert 'ORDER BY "staff_staffmember"."is_active" DESC, LOWER("staff_staffmember"."name")' in sql
+
+
+def test_staff_4_the_list_shows_only_this_branch(workshop, branch):
+    StaffMemberFactory(workshop=workshop, name="Here")
+    StaffMemberFactory(workshop=workshop, branch=BranchFactory(workshop=workshop), name="There")
+    StaffMemberFactory(name="Other workshop")
+
+    assert names_in(staff_by_designation(workshop, branch), Designation.MECHANIC) == ["Here"]
+
+
+def test_staff_4_a_person_is_found_in_their_own_branch(workshop, branch):
+    member = StaffMemberFactory(workshop=workshop)
+
+    assert staff_member(workshop, branch, member.pk) == member
+
+
+@pytest.mark.parametrize(
+    "make_other",
+    [
+        pytest.param(lambda workshop: StaffMemberFactory().pk, id="another workshop"),
+        pytest.param(
+            lambda workshop: (
+                StaffMemberFactory(workshop=workshop, branch=BranchFactory(workshop=workshop)).pk
+            ),
+            id="another branch",
+        ),
+        pytest.param(lambda workshop: uuid.uuid7(), id="no such person"),
+    ],
+)
+def test_staff_4_anyone_else_is_not_found(workshop, branch, make_other):
+    key = make_other(workshop)
+
+    with pytest.raises(Http404):
+        staff_member(workshop, branch, key)
+    assert saved_staff_member(workshop, branch, key) is None
+
+
+def test_staff_9_a_saved_person_is_found_by_their_key(workshop, branch):
+    member = StaffMemberFactory(workshop=workshop)
+
+    assert saved_staff_member(workshop, branch, member.pk) == member
