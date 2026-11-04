@@ -4,8 +4,8 @@ What we build, in what order, and where we are.
 How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
-**Now:** Phase 5, Slice 1, is in progress: Sign-in and Roles are built;
-the base for the first pages is next.
+**Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles and the base for
+the first pages are built; the Staff list is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -242,8 +242,8 @@ work gets its own pull request, just before the page that first uses it.
 2. Roles, with its ADR: the page mark, the module list, the permission
    matrix, and the app's tab bar and menu (v1's, through the lab), which
    takes over Sign out from the plain home page
-3. Base for the first pages: Indian formats, the `for_workshop()` check,
-   branch-ready pages (ADR-0028), the double-tap guard, the query-count test
+3. Base for the first pages: Indian formats, the query check, records with a
+   branch (ADR-0028), the double-tap guard, the query-count test
 4. Staff list: the first list page and form
 5. Money base, just before the first money column
 6. Job card: customers and cars, the number, the links, history, a form
@@ -293,19 +293,19 @@ work gets its own pull request, just before the page that first uses it.
       an open job card to the right car; a settled one never moves. The
       car's page (Car profiles, After) gets the same changes; no merge tool
       unless the staging trial shows a need
-- [ ] A branch link on operational records, and every link kept inside its
-      workshop by PostgreSQL (`SameWorkshop`, ADR-0023), from the first one,
-      the staff list; a factory gives its linked records the same workshop
-- [ ] Pages branch-ready, with the base for the first pages (ADR-0028): a
+- [~] A branch link on operational records (`BranchModel`), and every link
+      kept inside its workshop by PostgreSQL (`SameWorkshop`, ADR-0023); a test
+      walks every link, and a factory gives its linked records the same
+      workshop. The first real link comes with the staff list
+- [x] Pages branch-ready, with the base for the first pages (ADR-0028): a
       query on a record with a branch asks for the branch too
       (`for_branch()`), and every new model has a branch link or sits on a
       short workshop-wide list with the reason; a rule in `CONTRIBUTING.md`
       and a test
-- [ ] A pre-commit check that every query in `apps/` starts with
-      `for_workshop()`, unless the line says why not, from the first
-      selector (ADR-0023); it also flags Django's shortcuts that query by
-      themselves (`get_object_or_404(Model, ...)`, a class-based view's
-      `model =`, `_default_manager`)
+- [x] A test that every query in `apps/` starts with `for_workshop()`, unless
+      the line says why not (ADR-0023); it also flags Django's shortcuts that
+      query by themselves (`get_object_or_404(Model, ...)`, a class-based
+      view's `model =`, `_default_manager`) and raw SQL
 - [ ] History from day one, with the job card: kilometres as a whole
       number at every visit, or blank when the odometer does not work,
       never miles (settle warns when it is blank, as v1 does); the time of
@@ -329,12 +329,12 @@ work gets its own pull request, just before the page that first uses it.
       form field, no parser of our own; a zero or negative amount refused
       by the model and by PostgreSQL; the money date rules (no future date,
       how far back Office may go) with the first money page
-- [ ] Indian dates and numbers on screen, with the first page: one formats
-      file, read by Django's own filters (26 Oct 2026; 1,50,000, 1,50,000.50
-      or 1,50,000.00 through `floatformat`), so v1's own rupee filters are
-      not rebuilt; only the short figure for a big number on a phone
-      (45.2L) is our own code, in `core`; which style each screen uses, with
-      v1's reasons, written in `docs/DESIGN.md`
+- [x] Indian dates and numbers on screen: one formats file, read by Django's
+      own filters (26 Oct 2026; 1,50,000, 1,50,000.50 or 1,50,000.00 through
+      `floatformat`), so v1's own rupee filters are not rebuilt; which style
+      each screen uses, with v1's reasons, is in `docs/DESIGN.md`. The short
+      figure for a big number on a phone (45.2L) comes with Profit (After),
+      as our own code in `core`
 - [ ] The audit log, in the same pull request as the first service that
       changes, deletes or back-dates money: a frozen copy of what changed,
       with who, when and why (v1's shape, in one table), saved in the same
@@ -364,16 +364,17 @@ work gets its own pull request, just before the page that first uses it.
       who is signed out is sent to sign in, and each role gets in or is
       refused. That a record of another workshop is never found (ROLE-10)
       comes with the first page that shows a record
-- [ ] Query-count tests for every page that shows rows (a list page, a job
-      card's lines), from the first one: the page opened with a few rows
-      and with many makes the same number of queries, so a longer list
-      never means more queries
-- [ ] A double tap or a slow network never saves a record twice, from the
-      first form. The server is the guard; the button only shows it is
-      busy. A new record's key comes in the form's address (UUID7 keys exist
-      before saving, ADR-0022), so PostgreSQL refuses a second copy and the
-      page shows the saved one; a change runs in one locked transaction
-      that refuses a repeat (a settled bill is never settled twice)
+- [~] Query-count tests for every page that shows rows (a list page, a job
+      card's lines): the page opened with a few rows and with many makes the
+      same number of queries, so a longer list never means more queries. Every
+      page says whether it shows rows; the first with rows is the staff list
+- [~] A double tap or a slow network never saves a record twice. The server
+      is the guard; the button only shows it is busy. A new record's key comes
+      in the form's address (UUID7 keys exist before saving, ADR-0022), so
+      PostgreSQL refuses a second copy and the page shows the saved one
+      (`save_once()`); a change runs in one locked transaction that refuses a
+      repeat (a settled bill is never settled twice). The first form is the
+      staff list's
 - [ ] A separate form for each role, on every form, not only the job card:
       a field a role may not change is left out of its form, never hidden
       (v1: a Floor post changed a price it could not see); the rule goes
