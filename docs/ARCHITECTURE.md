@@ -38,7 +38,7 @@ workshopos/
 ├── templates/         base layouts (base.html, app.html), shared components, state pages
 ├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
-├── tests/             project-wide tests (settings, safe defaults, layers, keys, tenancy); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
+├── tests/             project-wide tests (settings, safe defaults, layers, keys, tenancy, queries, query counts); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
@@ -52,8 +52,8 @@ workshopos/
 
 | App | Holds |
 |---|---|
-| `core` | shared tools: the base model that gives every model its UUID7 key (ADR-0022), money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
-| `workshops` | the tenant: the workshop, its branches, the base of every business model (ADR-0023), profile, status, the module list and switches (ADR-0011) |
+| `core` | shared tools: the base model that gives every model its UUID7 key (ADR-0022), the Indian formats, money, dates, template helpers. No business rules. (Shared UI components live in `templates/components/` and `static/`.) |
+| `workshops` | the tenant: the workshop, its branches, the bases of every business model and the link check (ADR-0023, ADR-0028), saving a new record once, profile, status, the module list and switches (ADR-0011) |
 | `accounts` | users, memberships, roles, platform staff, login security |
 | `audit` | change history: deleted, edited, back-dated |
 | `notifications` | the bell, push alerts, email |
@@ -150,7 +150,10 @@ How each workshop's data stays its own: ADR-0023.
   branch is one of its locations (ADR-0006).
 - Every business model builds on `WorkshopModel` (`apps/workshops/models.py`):
   a required workshop link, and a unique (workshop, id) pair. Operational
-  records (job cards, invoices, stock, cash) also link to a branch.
+  records (job cards, invoices, stock, cash, staff) build on `BranchModel`,
+  which adds a required branch link, so a second place changes no real record
+  (ADR-0028). A model with no branch link sits on a short list in
+  `tests/test_tenancy.py`, with why.
 - Customers and vehicles belong to the workshop, so all its branches share them.
 - Unique rules include the workshop (e.g. a bill number is unique per branch
   of a workshop).
@@ -160,6 +163,11 @@ How each workshop's data stays its own: ADR-0023.
   Every selector and service takes the workshop as its first argument, and
   its queries start with `Model.objects.for_workshop(workshop)`. No hidden
   current workshop.
+- **The branch is passed by hand too.** A query on a record with a branch goes
+  on to `for_branch(branch)`, with the page's `request.branch`. The middleware
+  gets it from `branch_of()` (`apps/accounts/selectors.py`), only when a page
+  first asks. Today it is the workshop's first branch; Branch screens change it
+  there, and no page changes (ADR-0028).
 - **Every page needs a workshop that may work now**, unless it is public, in
   the Django admin, or marked `@workshop_not_required` (like signing out).
   Otherwise the answer is "not allowed" (403).
@@ -176,9 +184,10 @@ How each workshop's data stays its own: ADR-0023.
   a workshop (ADR-0007). The Django admin is not scoped: it is for
   emergencies only.
 - **Leak tests:** `tests/test_tenancy.py` checks that every business model
-  builds on `WorkshopModel`, and that each one shows a workshop only its own
-  records. The permission matrix checks every page: a record of another
-  workshop is never found.
+  builds on `WorkshopModel`, and that each one shows a workshop, and a branch,
+  only its own records. `tests/test_queries.py` reads every query in `apps/`.
+  The permission matrix checks every page: a record of another workshop is
+  never found.
 - PostgreSQL's row-level security is added as a second guard before a second
   workshop's data shares a database.
 
@@ -191,8 +200,12 @@ How each workshop's data stays its own: ADR-0023.
   column has one size, set with the first one.
 - **Dates:** India time, `timezone.localdate()`, never `date.today()`.
   Screens show Indian dates and numbers (26 Oct 2026, 1,50,000.00) from our
-  own formats file, made with the first page: Django has none for Indian
-  English.
+  own formats file (`apps/core/formats/en/formats.py`): Django has none for
+  Indian English. Which style goes where: `docs/DESIGN.md`.
+- **Saving once:** a form that makes a new record takes the record's key from
+  its address, and its service saves with `save_once()`
+  (`apps/workshops/services.py`), so a double tap or a slow network never
+  saves it twice.
 - **Audit:** services call `audit` whenever money is changed, deleted or
   back-dated. Each entry keeps a frozen copy of what changed, with who, when
   and why, and no link to the record, so it outlives the record. The log is

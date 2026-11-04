@@ -6,7 +6,7 @@ reports.
 
 ## Status
 
-**Phase 5 (Slice 1) is in progress: Sign-in and Roles are built; the base for the first pages is next.** The Django
+**Phase 5 (Slice 1) is in progress: Sign-in, Roles and the base for the first pages are built; the Staff list is next.** The Django
 project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); the first apps are `core` (the base model), `workshops` (the

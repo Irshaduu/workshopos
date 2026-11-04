@@ -11,6 +11,7 @@ the code (models, functions, files, URLs) and in the docs.
 |---|---|---|---|
 | Workshop | `Workshop` | | The business that uses the system, with all its branches |
 | Branch | `Branch` | | One place where a workshop works. A workshop has one or more |
+| Workshop-wide | `WORKSHOP_WIDE_MODELS` | | A record that belongs to the whole workshop, not to one branch, like a customer or a car |
 | Membership | `Membership` | | An account's place in a workshop, with its role |
 | Role | `Role` | group; Admin, for an owner | A member's part in the workshop: Owner, Office or Floor. What each role may do is its permissions |
 | Permission | `has_perm()`, `perms`, `permissions.py` | ability, right | One thing a role may do, like see prices or settle a bill. Each app lists its own, with the roles that have each |

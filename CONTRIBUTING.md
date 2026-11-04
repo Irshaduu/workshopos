@@ -94,7 +94,30 @@ closes the issue.
   `tests/test_tenancy.py`.
 - **No query without its workshop.** A selector or service takes the
   workshop as its first argument, and its queries start with
-  `Model.objects.for_workshop(workshop)`. Never a hidden current workshop.
+  `Model.objects.for_workshop(workshop)`. Never a hidden current workshop. A
+  query that truly cannot start there says why on the line above
+  (`# not for_workshop: ...`). A test reads every query in `apps/`, and
+  Django's shortcuts that query by themselves (`tests/test_queries.py`).
+- **A query on a record with a branch asks for the branch too:**
+  `.for_workshop(workshop).for_branch(branch)`, with the page's
+  `request.branch` (ADR-0028). One that truly spans branches says why
+  (`# not for_branch: ...`). The same test reads them.
+- **Every new business model has a branch link, or a reason.** It builds on
+  `BranchModel` (`apps/workshops/models.py`), or sits on the short list in
+  `tests/test_tenancy.py` with why (ADR-0028). A test checks every model.
+- **A link from one workshop record to another carries `SameWorkshop`**
+  (`apps/workshops/constraints.py`), so PostgreSQL refuses a link to another
+  workshop's record (ADR-0023). A test walks every link.
+- **A form that makes a new record never saves it twice.** The page makes the
+  record's key when it opens the form, and puts it in the form's address. On a
+  send, it first asks whether that key is saved, and shows the saved record if
+  it is, because the form's checks would refuse a repeat. Otherwise its service
+  saves with `save_once()` (`apps/workshops/services.py`). A change to a saved
+  record runs in one locked transaction that refuses a repeat.
+- **A form's link field to a workshop record starts empty:**
+  `ModelChoiceField(queryset=Model.objects.none())`, and the form's `__init__`
+  fills it from `for_workshop()`. A link field Django makes by itself would list
+  every workshop's records. A test reads every form (`tests/test_queries.py`).
 - **An app imports, and links its models, only to lower layers**
   (ADR-0005). A new app is placed on its floor in `pyproject.toml` in the
   same commit. No generic links (`GenericForeignKey`): PostgreSQL cannot
@@ -122,7 +145,10 @@ closes the issue.
 - **A page reached from the tab bar or the menu adds its line in
   `apps/accounts/menu.py`**, in the same pull request. A page that is not
   built has no line (ROLE-32).
-- **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`.
+- **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`;
+  ruff stops `date.today()` and `datetime.now()`.
+- **Every amount and date on a screen takes a style from `docs/DESIGN.md`**
+  (Numbers and dates). No formatting code of our own.
 - **A service that changes money or stock runs in one transaction** and
   locks the rows it reads to decide (`transaction.atomic`,
   `select_for_update`).
@@ -179,6 +205,9 @@ closes the issue.
   every kind of visitor, with each answer typed by hand, never read from
   the permission lists. A new page adds its row in the same pull request.
   A record of another workshop is never found.
+- **A longer list never means more queries** (`tests/test_query_counts.py`):
+  every page says whether it shows rows, and each page that does is opened
+  with a few rows and with many. A new page says so in the same pull request.
 - **Browser tests** for the key flows.
 - **A JavaScript module's plain functions are tested with Node's own test
   runner**, in `tests/js/` (ADR-0020). No npm and no test library.
