@@ -162,7 +162,7 @@ checks its own line again, and its pages' marks follow it.
   - Stock & Suppliers: Inventory; Supplies Shops, Spare Shops
   - Records: Car Profiles, Warranty; Estimates, Master Data, Legacy Data,
     Change History
-  - Administration: Control Hub
+  - Administration: Staff list (STAFF-26)
   - Insights: Analysis & Reports
   - Guide: About
 
