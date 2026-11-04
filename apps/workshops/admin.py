@@ -18,3 +18,7 @@ class WorkshopAdmin(admin.ModelAdmin):
 class BranchAdmin(admin.ModelAdmin):
     list_display = ["name", "workshop"]
     list_select_related = ["workshop"]
+
+    def has_delete_permission(self, request, obj=None):
+        # Every workshop keeps its branches: each page works in one (ADR-0006, ADR-0028).
+        return False

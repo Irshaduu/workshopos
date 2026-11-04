@@ -7,6 +7,7 @@ from django.db.models import Count, Max
 from django.utils import timezone
 
 from apps.accounts.models import Membership, Role, SignInCode, User
+from apps.workshops.models import Branch
 from apps.workshops.modules import MODULES
 
 # The lockout for a password, the same for every workshop, as in v1 (ADR-0025).
@@ -33,8 +34,18 @@ def membership_of(user):
     if not user.is_authenticated or user.is_platform_staff:
         return None
     if not hasattr(user, "_membership"):
+        # not for_workshop: this is how a request finds its workshop.
         user._membership = Membership.objects.select_related("workshop").filter(user=user).first()
     return user._membership
+
+
+def branch_of(membership):
+    """The branch this member's pages work in: today, the workshop's first branch (ADR-0028).
+
+    Every workshop has one, made with it. When a workshop's second place is real,
+    Branch screens decide here which branch a member works in, and no page changes.
+    """
+    return Branch.objects.for_workshop(membership.workshop).first()
 
 
 def may_open(user, view):

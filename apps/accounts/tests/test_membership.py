@@ -6,9 +6,9 @@ from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
 
 from apps.accounts.models import Membership, Role
-from apps.accounts.selectors import membership_of
+from apps.accounts.selectors import branch_of, membership_of
 from apps.accounts.tests.factories import MembershipFactory, UserFactory
-from apps.workshops.tests.factories import WorkshopFactory
+from apps.workshops.tests.factories import BranchFactory, WorkshopFactory
 
 
 @pytest.mark.django_db
@@ -46,6 +46,17 @@ def test_an_account_with_a_membership_is_never_deleted():
 
     with pytest.raises(ProtectedError):
         member.user.delete()
+
+
+@pytest.mark.django_db
+def test_a_member_works_in_their_workshops_first_branch():
+    workshop = WorkshopFactory(first_branch=None)
+    first = BranchFactory(workshop=workshop)
+    BranchFactory(workshop=workshop)
+    BranchFactory()
+    member = MembershipFactory(workshop=workshop)
+
+    assert branch_of(member) == first
 
 
 @pytest.mark.django_db

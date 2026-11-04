@@ -6,9 +6,10 @@ from django.contrib import messages
 from django.contrib.auth.middleware import LoginRequiredMiddleware
 from django.core.exceptions import PermissionDenied
 from django.utils.cache import add_never_cache_headers
+from django.utils.functional import SimpleLazyObject
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.selectors import may_open, membership_of
+from apps.accounts.selectors import branch_of, may_open, membership_of
 from apps.workshops.selectors import may_work
 
 
@@ -33,13 +34,16 @@ class SignInRequiredMiddleware(LoginRequiredMiddleware):
 
 
 class WorkshopMiddleware:
-    """Sets request.membership and request.workshop, once per request.
+    """Sets request.membership, request.workshop and request.branch, once per request.
 
-    Both are None for staff and superusers, for an account with no
+    All three are None for staff and superusers, for an account with no
     membership, and on pages that are public or in the Django admin, which
     never look one up. Every other page needs a workshop that may work now,
     unless its view is marked @workshop_not_required, and must let this
     account in by its page mark (may_open(), ADR-0026).
+
+    request.branch is read only when a page first asks for it, like request.user,
+    so a page that never asks costs no query for it.
 
     It runs after LoginRequiredMiddleware, so a visitor who is not signed in
     is sent to sign in first.
@@ -51,6 +55,7 @@ class WorkshopMiddleware:
     def __call__(self, request):
         request.membership = None
         request.workshop = None
+        request.branch = None
         return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -61,6 +66,8 @@ class WorkshopMiddleware:
 
         request.membership = membership_of(request.user)
         request.workshop = request.membership.workshop if request.membership else None
+        if request.membership:
+            request.branch = SimpleLazyObject(lambda: branch_of(request.membership))
 
         if getattr(view_func, "workshop_required", True):
             if request.workshop is None:
