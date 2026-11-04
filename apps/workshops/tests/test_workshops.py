@@ -48,6 +48,11 @@ def test_sign_8_the_admin_never_changes_a_short_code_once_the_workshop_is_made(r
     assert "short_code" in workshop_admin.get_readonly_fields(request, WorkshopFactory.build())
 
 
+def test_the_admin_never_deletes_a_branch(rf):
+    # Each page works in a branch, so a workshop that lost its only one would break.
+    assert not site._registry[Branch].has_delete_permission(rf.get("/"))
+
+
 @pytest.mark.django_db
 def test_a_new_workshop_may_work():
     assert may_work(WorkshopFactory())

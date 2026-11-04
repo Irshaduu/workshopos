@@ -5,6 +5,7 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseModel
+from apps.workshops.constraints import SameWorkshop
 
 
 class WorkshopStatus(models.TextChoices):
@@ -110,3 +111,38 @@ class Branch(WorkshopModel):
 
     def __str__(self):
         return self.name
+
+
+class BranchQuerySet(WorkshopQuerySet):
+    def for_branch(self, branch):
+        """Only this branch's records. A query on a record with a branch comes here right
+        after for_workshop() (ADR-0028)."""
+        if not isinstance(branch, Branch):
+            raise TypeError(f"for_branch() needs a Branch, not {branch!r}.")
+        return self.filter(branch=branch)
+
+
+class BranchModel(WorkshopModel):
+    """A record that belongs to one branch of its workshop: a job card, a bill, stock, cash
+    or staff (ADR-0006, ADR-0028).
+
+    Each record knows its branch from the day it is made, so a workshop's second
+    place never needs a change to real records. The branch stays inside the
+    workshop, by PostgreSQL (SameWorkshop).
+
+    A model with its own constraints keeps these, as on WorkshopModel: its Meta
+    builds on BranchModel.Meta and starts its list with *BranchModel.Meta.constraints.
+    """
+
+    branch = models.ForeignKey(
+        Branch, on_delete=models.PROTECT, related_name="+", verbose_name=_("branch")
+    )
+
+    objects = BranchQuerySet.as_manager()
+
+    class Meta(WorkshopModel.Meta):
+        abstract = True
+        constraints = [
+            *WorkshopModel.Meta.constraints,
+            SameWorkshop("branch", name="%(app_label)s_%(class)s_branch_same_workshop"),
+        ]

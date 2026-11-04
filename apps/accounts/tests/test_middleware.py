@@ -11,7 +11,7 @@ from apps.accounts.decorators import page, workshop_not_required
 from apps.accounts.models import Role
 from apps.accounts.roles import PERMISSIONS
 from apps.accounts.tests.factories import MembershipFactory, UserFactory
-from apps.workshops.models import WorkshopStatus
+from apps.workshops.models import Branch, WorkshopStatus
 
 
 @page("roles", "accounts.open_home")
@@ -49,9 +49,24 @@ def money_page(request):
     return HttpResponse("money")
 
 
+@page("roles", "accounts.open_home")
+def branch_page(request):
+    # It asks twice, as a page with a list and a total would.
+    names = [request.branch.name, request.branch.name]
+    return HttpResponse(names[0])
+
+
+@page("roles")
+@workshop_not_required  # Like signing out: it works without a workshop.
+def branch_or_none_page(request):
+    return HttpResponse(request.branch.name if request.branch else "none")
+
+
 urlpatterns = [
     path("workshop/", workshop_page),
     path("account/", account_page),
+    path("branch/", branch_page),
+    path("branch-or-none/", branch_or_none_page),
     path("public/", public_page),
     path("no-mark/", page_with_no_mark),
     path("no-permission/", workshop_page_with_no_permission),
@@ -132,6 +147,33 @@ def test_a_page_costs_one_query_for_its_workshop(client, django_assert_num_queri
     # one update, inside a savepoint and its release.
     with django_assert_num_queries(6):
         client.get("/workshop/")
+
+
+@pytest.mark.django_db
+def test_a_member_reaches_a_page_with_their_workshops_branch(client):
+    member = MembershipFactory()
+    client.force_login(member.user)
+
+    assert client.get("/branch/").text == Branch.objects.for_workshop(member.workshop).get().name
+
+
+@pytest.mark.django_db
+def test_a_page_that_asks_for_its_branch_costs_one_more_query_however_often_it_asks(
+    client, django_assert_num_queries
+):
+    client.force_login(MembershipFactory().user)
+
+    # The 6 of a page that never asks (test_a_page_costs_one_query_for_its_workshop),
+    # and the branch.
+    with django_assert_num_queries(7):
+        client.get("/branch/")
+
+
+@pytest.mark.django_db
+def test_platform_staff_get_no_branch(client):
+    client.force_login(UserFactory(is_staff=True))
+
+    assert client.get("/branch-or-none/").text == "none"
 
 
 @pytest.mark.django_db
