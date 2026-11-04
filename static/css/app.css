@@ -30,6 +30,11 @@
     padding: var(--space-6) var(--space-4) var(--space-12);
   }
 
+  /* The answer to what just happened, above the page's own title. */
+  .app-main > .notice {
+    margin-bottom: var(--space-4);
+  }
+
   /* ---------- The tab bar ---------- */
   /* One bar on every device: blue at the top on a tablet and a laptop; on a
      phone, the same bar floats at the bottom, white. */
