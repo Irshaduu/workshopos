@@ -9,8 +9,9 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
 - Tokens: `static/css/tokens.css`, the only home of every colour and size.
 - Components: `static/css/components.css`: card (with a status edge),
   button, field, status badge, chip, back control, payment row,
-  confirmation card, list search, info button, and the screen states
-  below. Each is v1's, fixed only where a rule breaks.
+  confirmation card, form card, list search, info button, and the screen
+  states below. Each is v1's, fixed only where a rule breaks. A card over the
+  page opens and closes with `static/js/dialog.js`.
 - Icons: Lucide, only the ones we use, in `static/icons/icons.svg`
   (ADR-0018). An icon never carries meaning alone. Icons go on section
   titles, on buttons, and on the few things that appear on many screens
