@@ -156,6 +156,16 @@ closes the issue.
   built has no line (ROLE-32).
 - **Money is `Decimal`, never `float`.** Dates use `timezone.localdate()`;
   ruff stops `date.today()` and `datetime.now()`.
+- **Every money column is a `MoneyField`** (`apps/core/money.py`, ADR-0029), with
+  its check in `Meta`: `Q(amount__gt=0)` for money that moved, and
+  `Q(labour__gte=0)` with `allow_zero=True` for a charge. A test walks every
+  column (`tests/test_money.py`).
+- **A calculation rounds on purpose before it saves.** PostgreSQL rounds a third
+  decimal with no error. Saving a plain amount refuses a float or a third decimal,
+  but an expression like `F("amount") * Decimal("1.18")` goes straight to PostgreSQL.
+- **A box for a number is a text box with `inputmode`, never `type="number"`:** the
+  mouse wheel can change a number box, and it sends an empty value for `2,950`
+  (ADR-0029). pre-commit reads every template, and a test reads every form.
 - **Every amount and date on a screen takes a style from `docs/DESIGN.md`**
   (Numbers and dates). No formatting code of our own.
 - **A service that changes money or stock runs in one transaction** and
