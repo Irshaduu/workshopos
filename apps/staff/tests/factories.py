@@ -4,14 +4,7 @@ import factory
 from factory.django import DjangoModelFactory
 
 from apps.staff.models import Designation, StaffMember
-from apps.workshops.models import Branch
-from apps.workshops.tests.factories import BranchFactory, WorkshopFactory
-
-
-def first_branch(member):
-    """The workshop's first branch, the one its pages work in today (branch_of())."""
-    workshop = member.workshop
-    return Branch.objects.for_workshop(workshop).first() or BranchFactory(workshop=workshop)
+from apps.workshops.tests.factories import WorkshopFactory, first_branch
 
 
 class StaffMemberFactory(DjangoModelFactory):

@@ -28,3 +28,9 @@ class BranchFactory(DjangoModelFactory):
     # With no workshop given, the branch being made is its workshop's first.
     workshop = factory.SubFactory(WorkshopFactory, first_branch=None)
     name = factory.Sequence(lambda n: f"Branch {n}")
+
+
+def first_branch(record):
+    """The workshop's first branch, the one its pages work in today (branch_of())."""
+    workshop = record.workshop
+    return Branch.objects.for_workshop(workshop).first() or BranchFactory(workshop=workshop)
