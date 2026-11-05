@@ -6,13 +6,13 @@ reports.
 
 ## Status
 
-**Phase 5 (Slice 1) is in progress: Sign-in, Roles, the base for the first pages, the Staff list and the money base are built; the job card is next.** The Django
+**Phase 5 (Slice 1) is in progress: Sign-in, Roles, the base for the first pages, the Staff list, the money base and the job card are built; Known plate is next.** The Django
 project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); the first apps are `core` (the base model and the money column), `workshops` (the
 workshop, its branches and the base of every business model),
 `accounts` (the user, memberships, sign-in, roles, and the tab bar and menu) and
-`staff` (the Staff list). Run every command through `uv run` (see `README.md`). Every new
+`staff` (the Staff list), `vehicles` (cars and customers) and `jobs` (the job card and the first live board). Run every command through `uv run` (see `README.md`). Every new
 dependency needs an ADR first.
 
 ## The documents: each fact has one home

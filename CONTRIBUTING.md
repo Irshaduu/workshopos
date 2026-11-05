@@ -151,6 +151,12 @@ closes the issue.
   change is left out of its form, never hidden. Roles that may change different
   fields get different forms, chosen by a permission (ROLE-13). A test reads
   every form.
+- **A save changes only what the person changed.** A form on a record people share keeps
+  each box's opening value (`show_hidden_initial`), and its service applies only
+  `changed_data`, in one locked transaction (ADR-0030).
+- **A row of a job card builds on `WorkshopModel`, with `SameWorkshop` on its link.** It
+  reaches its branch through its card, and sits on the short list in
+  `tests/test_tenancy.py` (ADR-0030).
 - **A page reached from the tab bar or the menu adds its line in
   `apps/accounts/menu.py`**, in the same pull request. A page that is not
   built has no line (ROLE-32).

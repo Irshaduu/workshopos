@@ -1,6 +1,6 @@
 # 0030: Cars and customers as records, and a job card that keeps its visit
 
-**Status:** Proposed (2026-11-05)
+**Status:** Accepted (2026-11-05)
 
 ## Context
 

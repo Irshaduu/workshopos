@@ -5,7 +5,7 @@ How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
 **Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
-first pages, the Staff list and the money base are built; the job card is next.
+first pages, the Staff list, the money base and the job card are built; Known plate is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -270,15 +270,17 @@ work gets its own pull request, just before the page that first uses it.
   - the bargaining discount (a bill of 43,000 settled at 40,000, for
     example) is saved as its own amount, before tax, and the bill shows
     it with its label; the total is called Net, never Paid
-  - one number per visit, as in v1 (JB-26-027): given when the job card
-    is made, it is the job card's number and its bill's number; a job
-    card that ends with no bill is cancelled with a reason, never
-    deleted, and keeps its number
+  - two numbers (ADR-0030): the job card's, like JC-0027, given when it is
+    made, and the bill's, like INV-26-27-0045, given when the bill is final
+    (not when it is paid: a fleet account pays weeks later); the printed bill
+    shows both; a job card that ends with no bill is cancelled with a
+    reason, never deleted, and keeps its number
   - the settled bill keeps a frozen copy of the customer and the car as
     printed, so fixing a name later, or a customer's request to delete
     their data, never changes an old bill
-- [ ] Customers and vehicles as real records (ADR-0006), built with the
-      job card. In a workshop, a car keeps one record and its whole
+- [~] Customers and vehicles as real records (ADR-0006, ADR-0030): built with
+      the job card; old plates, the chassis number and moving a card come with
+      Known plate. In a workshop, a car keeps one record and its whole
       history; each job card keeps the customer and the plate of that
       visit; a sale changes only the owner, and a new plate (a car from
       another state registered here, a temporary plate made permanent)
@@ -290,7 +292,7 @@ work gets its own pull request, just before the page that first uses it.
       workshop; when two cars claim one, the car in front of you, checked
       against its RC, keeps it, and the other car's is asked again at its
       next visit. A chassis number never decides alone: a match asks "same
-      car with a new number?", only when the make matches. Office can move
+      car with a new number?", only when the brand matches. Office can move
       an open job card to the right car; a settled one never moves. The
       car's page (Car profiles, After) gets the same changes; no merge tool
       unless the staging trial shows a need
@@ -307,24 +309,24 @@ work gets its own pull request, just before the page that first uses it.
       the line says why not (ADR-0023); it also flags Django's shortcuts that
       query by themselves (`get_object_or_404(Model, ...)`, a class-based
       view's `model =`, `_default_manager`) and raw SQL
-- [ ] History from day one, with the job card: kilometres as a whole
+- [~] History from day one, with the job card: kilometres as a whole
       number at every visit, or blank when the odometer does not work,
       never miles (settle warns when it is blank, as v1 does); the time of
-      every step the workflow has (car in, each concern started and fixed,
-      on hold and back, ready), kept as rows, one per change, because ready
-      can be undone; part ordered and received come with parts (Phase 6); a
-      delivered step only if the client asks (v1 had none)
+      every step the workflow has, kept as rows, one per change, because
+      ready can be undone: car in and each concern started and fixed are in;
+      on hold and back, and ready, come with their buttons on the live board,
+      and part ordered and received with parts (Phase 6); a delivered step
+      only if the client asks (v1 had none)
 - [ ] The first per-workshop settings (ADR-0024), with settle: how far
       back Office may date money (v1: 3 days), and how long Office may
       change a settled bill before only owners can (v1: 24 hours); the
       big-discount alert limit comes with the bell (Phase 6)
-- [ ] The number series per branch: a counter locked when a job card is
-      made, never a PostgreSQL sequence (it skips a number when a save
-      fails); the letters (JB) and the yearly restart are the branch's,
-      like v1's JB-26-097, or each financial year if the accountant asks
-      (GST: unique in a financial year, at most 16 characters); it starts
-      after the last Excel bill number, and a number is used once, old
-      bills included
+- [ ] The bill's number per branch, with Settle bill (ADR-0030): a counter
+      locked when the bill becomes final, never a PostgreSQL sequence (it
+      skips a number when a save fails), like INV-26-27-0045, restarting each
+      financial year (GST: unique in a financial year, at most 16 characters),
+      with the accountant's word before GST starts. Old Excel bills keep their
+      JB numbers as printed, so the two never clash
 - [x] Money, as ADR-0029 decides: one column and one box for every amount; a
       test walks every column
 - [ ] The money date rules, with settle: no future date, how far back
@@ -355,9 +357,8 @@ work gets its own pull request, just before the page that first uses it.
       built and tested: a list of what each role may do (each app adds its
       own, like the module list), no page checks a role by name, so a new
       role is added without changing pages, and the app's tab bar and menu
-      (v1's). ROLE-3 and ROLE-13 come with the job card, and ROLE-22 and
-      ROLE-30 with the bell; each later tab and menu row comes with its
-      page
+      (v1's). ROLE-22 and ROLE-30 come with the bell; each later tab and menu
+      row comes with its page
 - [x] Permission matrix test, from the first page: it finds every page by
       itself, so a page with no row fails; the expected answers are typed
       in the test, never read from the roles list; for each page, a visitor
@@ -374,10 +375,9 @@ work gets its own pull request, just before the page that first uses it.
       PostgreSQL refuses a second copy and the page shows the saved one
       (`save_once()`); a change runs in one locked transaction that refuses a
       repeat (a settled bill is never settled twice)
-- [~] A separate form for each role, on every form, not only the job card:
+- [x] A separate form for each role, on every form, not only the job card:
       a field a role may not change is left out of its form, never hidden
-      (v1: a Floor post changed a price it could not see). The rule and its
-      test are in; the first second form comes with the job card
+      (v1: a Floor post changed a price it could not see)
 - [x] A page that only shows and a page that saves ask for different
       permissions, so a read-only role added later can never save (ROLE-5)
 - [ ] Linked devices, as ADR-0027 decides: one pull request before the
