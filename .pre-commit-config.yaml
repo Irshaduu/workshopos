@@ -44,6 +44,12 @@ repos:
         args: [--ignore-case]
         entry: '\sstyle\s*=|<style\b|<script\b(?![^>]*\bsrc=)|\son[a-z]+\s*=\s*["'']'
         files: \.html$
+      - id: no-number-box
+        name: no number box in HTML (a text box with inputmode instead, ADR-0029)
+        language: pygrep
+        args: [--ignore-case]
+        entry: '\stype\s*=\s*["'']?number'
+        files: \.html$
       - id: plain-commit-message
         name: plain writing in the commit message
         language: pygrep
