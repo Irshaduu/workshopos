@@ -29,6 +29,10 @@ NOT_WORKSHOP_MODELS = {
 #: (ADR-0028).
 WORKSHOP_WIDE_MODELS = {
     "accounts.Membership": "a person belongs to the workshop; Branch screens limit what they see",
+    "vehicles.Car": "a car is shared by the workshop's branches (ADR-0006)",
+    "vehicles.CarBrand": "the workshop's list, shared by its branches (ADR-0028)",
+    "vehicles.CarModel": "the workshop's list, shared by its branches (ADR-0028)",
+    "vehicles.Customer": "a customer is shared by the workshop's branches (ADR-0006)",
     "workshops.Branch": "it is the branch itself",
 }
 
