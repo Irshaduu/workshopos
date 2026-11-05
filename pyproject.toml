@@ -51,7 +51,7 @@ containers = ["apps"]
 layers = [
     "(reports) | (onboarding) | (assistant)",
     "(billing) | (finance) | (photos)",
-    "(jobs)",
+    "jobs",
     "(suppliers)",
     "(inventory) | vehicles | staff",
     "(audit) | (notifications)",
