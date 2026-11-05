@@ -1,9 +1,10 @@
 """Reads for staff: rules that read data, never change it (ADR-0005)."""
 
+from django.db.models import Case, Q, Value, When
 from django.db.models.functions import Lower
 from django.shortcuts import get_object_or_404
 
-from apps.staff.models import Designation, StaffMember
+from apps.staff.models import LEAD_DESIGNATIONS, Designation, StaffMember
 
 
 def staff_by_designation(workshop, branch):
@@ -18,6 +19,24 @@ def staff_by_designation(workshop, branch):
     for member in members:
         groups[member.designation].append(member)
     return [(Designation(value), group) for value, group in groups.items()]
+
+
+def may_lead(workshop, branch, current_key=None):
+    """Who may be picked as a job card's lead mechanic: this branch's Mechanics, then its
+    Assistant Mechanics, each by name, and only people turned on (STAFF-15). A card's own
+    person comes last, whatever has changed since, so opening an old card never clears them."""
+    can_lead = Q(is_active=True, designation__in=LEAD_DESIGNATIONS)
+    order = Case(
+        When(can_lead & Q(designation=Designation.MECHANIC), then=Value(0)),
+        When(can_lead, then=Value(1)),
+        default=Value(2),
+    )
+    return (
+        StaffMember.objects.for_workshop(workshop)
+        .for_branch(branch)
+        .filter(can_lead | Q(pk=current_key))
+        .order_by(order, Lower("name"))
+    )
 
 
 def staff_member(workshop, branch, key):

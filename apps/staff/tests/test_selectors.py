@@ -8,7 +8,7 @@ from django.http import Http404
 from django.test.utils import CaptureQueriesContext
 
 from apps.staff.models import Designation
-from apps.staff.selectors import saved_staff_member, staff_by_designation, staff_member
+from apps.staff.selectors import may_lead, saved_staff_member, staff_by_designation, staff_member
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.workshops.models import Branch
 from apps.workshops.tests.factories import BranchFactory, WorkshopFactory
@@ -28,6 +28,53 @@ def branch(workshop):
 
 def names_in(groups, designation):
     return [member.name for member in dict(groups)[designation]]
+
+
+def test_staff_15_mechanics_then_assistants_each_by_name_and_only_people_turned_on(
+    workshop, branch
+):
+    made = {"workshop": workshop, "branch": branch}
+    StaffMemberFactory(name="zaid", **made)
+    StaffMemberFactory(name="Ajay", **made)
+    StaffMemberFactory(name="Biju", designation=Designation.ASSISTANT_MECHANIC, **made)
+    StaffMemberFactory(name="Aarav", designation=Designation.ASSISTANT_MECHANIC, **made)
+    StaffMemberFactory(name="Priya", designation=Designation.OFFICE_STAFF, **made)
+    StaffMemberFactory(name="Suresh", designation=Designation.GENERAL_HELPER, **made)
+    StaffMemberFactory(name="Gone", is_active=False, **made)
+
+    assert [member.name for member in may_lead(workshop, branch)] == [
+        "Ajay",
+        "zaid",
+        "Aarav",
+        "Biju",
+    ]
+
+
+def test_staff_15_a_cards_own_person_comes_last_whatever_has_changed(workshop, branch):
+    made = {"workshop": workshop, "branch": branch}
+    StaffMemberFactory(name="Zaid", **made)
+    gone = StaffMemberFactory(name="Anil", is_active=False, **made)
+    moved = StaffMemberFactory(name="Biju", designation=Designation.GENERAL_HELPER, **made)
+
+    assert [member.name for member in may_lead(workshop, branch, gone.pk)] == ["Zaid", "Anil"]
+    assert [member.name for member in may_lead(workshop, branch, moved.pk)] == ["Zaid", "Biju"]
+
+
+def test_staff_15_another_branchs_person_is_never_picked(workshop, branch):
+    there = BranchFactory(workshop=workshop)
+    theirs = StaffMemberFactory(workshop=workshop, branch=there)
+
+    assert not may_lead(workshop, branch).exists()
+    assert not may_lead(workshop, branch, theirs.pk).exists()
+
+
+def test_staff_15_a_person_says_whether_a_new_card_can_pick_them(workshop, branch):
+    made = {"workshop": workshop, "branch": branch}
+
+    assert StaffMemberFactory(**made).may_lead
+    assert StaffMemberFactory(designation=Designation.ASSISTANT_MECHANIC, **made).may_lead
+    assert not StaffMemberFactory(designation=Designation.OFFICE_STAFF, **made).may_lead
+    assert not StaffMemberFactory(is_active=False, **made).may_lead
 
 
 def test_staff_20_every_designation_comes_in_order_even_with_no_one_in_it(workshop, branch):
