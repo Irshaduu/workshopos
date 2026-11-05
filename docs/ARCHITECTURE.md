@@ -38,7 +38,7 @@ workshopos/
 ├── templates/         base layouts (base.html, app.html), shared components, state pages
 ├── static/            design system CSS (ADR-0017), icons (ADR-0018), shared JS modules, vendor/htmx (ADR-0016)
 ├── locale/            translations (Malayalam later, ADR-0015)
-├── tests/             project-wide tests (settings, safe defaults, layers, keys, tenancy, queries, query counts); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
+├── tests/             project-wide tests (settings, safe defaults, layers, keys, tenancy, queries, query counts, money); js/ JavaScript unit tests (ADR-0020); e2e/ browser tests (Playwright)
 ├── design/lab/        UI lab prototypes, never imported by the app
 ├── docs/
 ├── .github/workflows/ CI
@@ -193,11 +193,16 @@ How each workshop's data stays its own: ADR-0023.
 
 ## Shared rules
 
-- **Money:** `Decimal` only, never `float`. A typed amount goes through
-  Django's decimal form field, which takes its digits from the column and
-  refuses NaN, Infinity, extra decimals and commas. A zero or negative
-  amount is refused by the model and by a PostgreSQL check. Every money
-  column has one size, set with the first one.
+- **Money** (ADR-0029): `Decimal` only, never `float`. Every money column is a
+  `MoneyField` (`apps/core/money.py`), with one size: numeric(12, 2). Money that
+  moved, like a payment, is above zero. A charge, like labour
+  (`allow_zero=True`), may be zero. Nothing is negative. The model refuses a
+  wrong amount in plain words; every save of a plain amount runs the same rules,
+  even with no `full_clean()`, so PostgreSQL never rounds it silently; and a check
+  in the model's `Meta` makes PostgreSQL refuse it too. An amount is typed into its
+  column's box, `MoneyFormField`: Django's decimal form field in a text box, which
+  takes only digits, one point and a minus, and refuses extra decimals. A form that
+  never sent a box is refused, so a saved amount is never wiped.
 - **Dates:** India time, `timezone.localdate()`, never `date.today()`.
   Screens show Indian dates and numbers (26 Oct 2026, 1,50,000.00) from our
   own formats file (`apps/core/formats/en/formats.py`): Django has none for

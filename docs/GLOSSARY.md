@@ -48,3 +48,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Spare shop | `SpareShop` | | A shop we buy a part from for one job |
 | Supplies shop | `SuppliesShop` | supplier shop | A shop we buy stock from, for the shelf |
 | Product | `Product` | item | Something the workshop keeps in stock |
+| Money column | `MoneyField` | | A database column for an amount of rupees and paise. All have one size, and each says whether zero is allowed |
+| Money box | `MoneyFormField` | | The box a person types an amount into |
+| Money that moved | `MoneyField()` | | An amount that really changed hands, like a payment. Always above zero |
+| Charge | `MoneyField(allow_zero=True)` | | An amount the workshop asks for, like labour or a part's price. It may be zero |

@@ -5,7 +5,7 @@ How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
 **Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
-first pages and the Staff list are built; the money base is next.
+first pages, the Staff list and the money base are built; the job card is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -245,12 +245,13 @@ work gets its own pull request, just before the page that first uses it.
 3. Base for the first pages: Indian formats, the query check, records with a
    branch (ADR-0028), the double-tap guard, the query-count test
 4. Staff list: the first list page and form
-5. Money base, just before the first money column
-6. Job card: customers and cars, the number, the links, history, a form
-   per role
+5. Money base, just before the job card: its labour charge is the first
+   money column
+6. Job card: customers and cars, the number, the links, the labour charge,
+   history, a form per role
 7. Known plate: old plates, the chassis number, moving an open job card
-8. Settle bill: payments, the discount, the frozen copy, the first
-   settings, the audit log
+8. Settle bill: payments, the discount, the frozen copy, the money dates,
+   the first settings, the audit log
 9. Linked devices (ADR-0027), with the second design of the sign-in page
 10. Browser tests and limits, with the Playwright ADR
 11. Close: the hours sorted, the other modules sized, the delivery date
@@ -324,11 +325,10 @@ work gets its own pull request, just before the page that first uses it.
       (GST: unique in a financial year, at most 16 characters); it starts
       after the last Excel bill number, and a number is used once, old
       bills included
-- [ ] Money, with the first money column: one size for every money
-      column, v1's numeric(12, 2); typed amounts through Django's decimal
-      form field, no parser of our own; a zero or negative amount refused
-      by the model and by PostgreSQL; the money date rules (no future date,
-      how far back Office may go) with the first money page
+- [x] Money, as ADR-0029 decides: one column and one box for every amount; a
+      test walks every column
+- [ ] The money date rules, with settle: no future date, how far back
+      Office may go
 - [x] Indian dates and numbers on screen: one formats file, read by Django's
       own filters (26 Oct 2026; 1,50,000, 1,50,000.50 or 1,50,000.00 through
       `floatformat`), so v1's own rupee filters are not rebuilt; which style
@@ -412,6 +412,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 
 - [ ] The rest of the job card and the floor: live board, live report,
       completed list
+- [ ] The rule for rounding money, half up as in v1, with the first calculation
+      that needs one, like a rate times a quantity (ADR-0029)
 - [ ] The rest of billing: printed bill, pending and paid bills, discount audit
   - the workshop profile on the printed bill: its name and logo, the
     branch's address and phone, the UPI QR, with the file storage decision

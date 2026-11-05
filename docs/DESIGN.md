@@ -125,6 +125,9 @@ sign is written in the template, before the number.
   as if it were free.
 - A number with no filter stays plain, so a year or a phone number is never
   split. Money always takes one of the styles above.
+- A money box holds a plain number with no commas, like 147500 or 1250.50, ready
+  to type over. It is a text box with a number keypad (`inputmode="decimal"`),
+  never `type="number"` (ADR-0029).
 - The short figure for a big number on a phone (45.2L, 4.57Cr) comes with
   Profit. The exact number always stays beside it.
 
