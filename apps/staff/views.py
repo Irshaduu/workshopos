@@ -14,8 +14,9 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_http_methods
 
 from apps.accounts.decorators import page
+from apps.core.text import tidy_name
 from apps.staff.forms import StaffMemberForm
-from apps.staff.models import Designation, tidy_name
+from apps.staff.models import Designation
 from apps.staff.selectors import saved_staff_member, staff_by_designation, staff_member
 from apps.staff.services import add_staff_member, change_staff_member, turn_off, turn_on
 

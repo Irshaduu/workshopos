@@ -2,8 +2,9 @@
 
 import pytest
 
+from apps.core.text import tidy_name
 from apps.staff.forms import StaffMemberForm
-from apps.staff.models import Designation, tidy_name
+from apps.staff.models import Designation
 
 
 @pytest.mark.parametrize(

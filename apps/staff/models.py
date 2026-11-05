@@ -4,22 +4,10 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.text import tidy_name
 from apps.workshops.models import BranchModel
 
 NAME_TAKEN = _("This name is already on the staff list.")
-
-
-def tidy_name(typed):
-    """The name as it is saved (STAFF-6).
-
-    Spaces at the ends and double spaces go, so a second copy cannot hide behind them.
-    A name typed with no capitals gets one at the start of each word. A name typed with
-    its own capitals keeps them, and only its first letter is raised, so "anil KP" is
-    "Anil KP" and "Mohammed bin Salim" stays. No capital is ever made small, so whatever
-    is typed can be kept.
-    """
-    name = " ".join(typed.split())
-    return name.title() if name.islower() else name[:1].upper() + name[1:]
 
 
 class Designation(models.TextChoices):
@@ -32,6 +20,10 @@ class Designation(models.TextChoices):
     ASSISTANT_MECHANIC = "assistant_mechanic", _("Assistant Mechanic")
     OFFICE_STAFF = "office_staff", _("Office Staff")
     GENERAL_HELPER = "general_helper", _("General Helper")
+
+
+#: The designations a job card's lead mechanic can have (STAFF-15).
+LEAD_DESIGNATIONS = (Designation.MECHANIC, Designation.ASSISTANT_MECHANIC)
 
 
 class StaffMember(BranchModel):
@@ -77,3 +69,8 @@ class StaffMember(BranchModel):
         # Here, so every service that checks a record before saving tidies it, whoever
         # calls it, and before the check that the name is free.
         self.name = tidy_name(self.name)
+
+    @property
+    def may_lead(self):
+        """Whether a new job card can pick this person today (STAFF-15)."""
+        return self.is_active and self.designation in LEAD_DESIGNATIONS
