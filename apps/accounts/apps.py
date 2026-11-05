@@ -9,11 +9,10 @@ class AccountsConfig(AppConfig):
     verbose_name = _("Accounts")
 
     def ready(self):
-        # Hands accounts' own modules and permissions to the two lists, as
-        # every app does from its ready() (ADR-0026).
-        from apps.accounts import modules, permissions
-        from apps.accounts.roles import add_permissions
+        # Hands accounts' own modules to the list, as every app does from its
+        # ready() (ADR-0026). Its permissions come with its first page that asks
+        # for one, Staff logins (Phase 6).
+        from apps.accounts import modules
         from apps.workshops.modules import add_modules
 
         add_modules(*modules.MODULES)
-        add_permissions(self.label, permissions.PERMISSIONS)

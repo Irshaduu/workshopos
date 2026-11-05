@@ -1,0 +1,696 @@
+/* The job card (docs/design/job-card.jpg): v1's job card. Chosen in the lab; every size is
+   now a token.
+
+   Fixed to our rules, from v1: every box and button at least 44 pixels, status colours that
+   pass AA, a name for every box, no inline style. An empty box's hairline, a status box's
+   colour and the note's growing take no script. */
+
+@layer page {
+  /* A box that gets the keyboard focus is never left under the pinned head (WCAG 2.4.11). */
+  :root {
+    scroll-padding-top: calc(var(--bar-h) + var(--job-head-clear));
+  }
+
+  /* ---------- The pinned head ---------- */
+
+  .job-head {
+    position: sticky;
+    top: var(--bar-h);
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: var(--job-head-min-height);
+    margin-bottom: var(--space-4);
+    padding: var(--space-1) var(--space-4);
+    overflow: hidden;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    background: var(--color-primary-soft);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* It hangs from the tab bar, unless a notice sits above it. */
+  .job-head:first-child {
+    margin-top: calc(var(--space-6) * -1);
+  }
+
+  /* The car's colour as a rail down the head (v1). */
+  .job-head::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--edge-width);
+    background: var(--paint);
+  }
+
+  /* A white car's rail has an edge, and no colour is hatched, because plain grey would say
+     the car is grey (JOB-21). */
+  .job-head.paint-white::before {
+    box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  }
+
+  .job-head.paint-unset::before,
+  .job-dot.paint-unset,
+  .job-swatch.paint-unset,
+  .job-paint.paint-unset .job-paint__box {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--paint-unset) 0 var(--hatch-stripe),
+      var(--color-surface) var(--hatch-stripe) var(--hatch-size)
+    );
+  }
+
+  .job-head__id {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: normal;
+    white-space: nowrap;
+  }
+
+  .job-head__edit,
+  .job-head__plate {
+    color: var(--color-primary-text);
+  }
+
+  .job-head__car {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .job-head__plate {
+    flex: none;
+  }
+
+  .job-dot {
+    flex: none;
+    width: var(--job-dot-size);
+    height: var(--job-dot-size);
+    border: 1px solid var(--color-swatch-edge);
+    border-radius: 50%;
+    background: var(--paint);
+  }
+
+  .job-head__end {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  /* The number is never cut short (JOB-58). */
+  .job-head__number {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Unsaved work (JOB-47): the head's tint is the signal that carries on a phone, and the
+     word comes from 576 pixels wide, so a name is never cut to fit it. */
+  .job-head__unsaved {
+    display: none;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-save);
+    color: var(--color-on-save);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+  }
+
+  .job-head.is-dirty {
+    background: var(--color-warning-soft);
+  }
+
+  @media (min-width: 576px) {
+    .job-head.is-dirty .job-head__unsaved {
+      display: inline-block;
+    }
+  }
+
+  /* On a phone the head takes two short rows, and the bar is at the bottom. The car and the
+     plate take the room: the dot and the name already say which car is being edited. */
+  @media (max-width: 640px) {
+    :root {
+      scroll-padding-top: var(--job-head-clear);
+    }
+
+    .job-head {
+      top: 0;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .job-head {
+      row-gap: var(--space-1);
+      padding-top: var(--space-2);
+      padding-bottom: var(--space-2);
+    }
+
+    .job-head__id {
+      flex: 1 1 100%;
+    }
+
+    .job-head__edit {
+      display: none;
+    }
+  }
+
+  /* ---------- The sections ---------- */
+
+  .job-form {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* A name for screen readers: every box's section title says it on screen. */
+  .job-legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .job-state {
+    margin-bottom: var(--space-4);
+  }
+
+  .job-problems {
+    margin: var(--space-1) 0 0;
+    padding-left: var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .job-cancelled__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-danger-text);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    letter-spacing: normal;
+  }
+
+  .job-cancelled__who {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .job-card {
+    margin-bottom: var(--space-6);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .job-sec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--tap-min);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  .job-sec-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .job-sec-icon {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--job-tile-size);
+    height: var(--job-tile-size);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-neutral-soft);
+    color: var(--color-text-muted);
+  }
+
+  .job-sec-name {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-snug);
+  }
+
+  .job-fold > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .job-fold > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .job-fold:not([open]) > summary {
+    border-bottom: 0;
+  }
+
+  .job-fold[open] .job-chevron {
+    transform: rotate(180deg);
+  }
+
+  .job-chevron {
+    display: inline-grid;
+    color: var(--color-text-muted);
+  }
+
+  .job-body {
+    padding: var(--space-4);
+  }
+
+  .job-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 576px) {
+    .job-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .job-grid--customer {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .job-span-2 {
+      grid-column: span 2;
+    }
+
+    .job-span-all {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* On a laptop the customer's name, number and the note share one row (lab). */
+  @media (min-width: 992px) {
+    .job-grid--customer {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .job-grid--customer > .job-note-cell {
+      grid-column: auto;
+    }
+  }
+
+  /* ---------- The boxes ---------- */
+
+  .job-label {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .job-label .icon {
+    display: inline-block;
+    margin-right: var(--space-1);
+    vertical-align: -0.25em;
+  }
+
+  .job-label-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .job-label-row .job-label {
+    margin-bottom: 0;
+  }
+
+  .job-input {
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border-control);
+    border-radius: var(--radius-md);
+    background: var(--color-neutral-soft);
+    color: var(--color-text);
+    font-size: var(--text-base);
+  }
+
+  /* A plate, a chassis code and a VIN show in capitals as they are typed (v1). The server
+     saves them in capitals. */
+  .job-input[autocapitalize="characters"] {
+    text-transform: uppercase;
+  }
+
+  /* An empty box wears a red hairline until it is filled, in colour only, so nothing moves
+     (JOB-48). The mark is an empty placeholder, declared on the field in forms.py. */
+  .job-input:enabled:placeholder-shown,
+  select.job-input:enabled:has(option[value=""]:checked) {
+    border-color: var(--color-danger);
+    background: var(--color-surface);
+  }
+
+  /* A changed box: an edge painted inside the box, so nothing moves (JOB-47). */
+  .job-input.is-changed {
+    border-color: var(--color-save);
+    box-shadow: inset 0 0 0 1px var(--color-save);
+  }
+
+  /* An error is shown by its message and a thicker red edge, never by colour alone. */
+  .job-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    box-shadow: inset 0 0 0 1px var(--color-danger);
+  }
+
+  /* The note starts one row tall and grows with its words. Where a browser cannot grow it,
+     it can still be dragged taller (JOB-25). */
+  .job-note {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    field-sizing: content;
+    font-weight: var(--weight-normal);
+    resize: vertical;
+  }
+
+  /* A locked card has to look locked (JOB-51): a cooler fill, muted words, no hairline. */
+  .job-form:disabled .job-input,
+  .job-form:disabled .job-status {
+    border-color: var(--color-border);
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  .job-form:disabled .job-swatch {
+    cursor: not-allowed;
+  }
+
+  .job-open-card {
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+
+  /* The VIN's meter: one small bar per character, turning green as each is typed, and a
+     quiet count that turns green at 17 and red past it (JOB-19). The small gaps follow a
+     VIN's own three parts. */
+  .job-vin-meter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .job-vin-bars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .job-vin-bars i {
+    width: var(--vin-bar-width);
+    height: var(--vin-bar-height);
+    border-radius: 2px;
+    background: var(--color-border);
+    transition: background-color 0.15s ease;
+  }
+
+  .job-vin-bars i:nth-child(4),
+  .job-vin-bars i:nth-child(10) {
+    margin-left: var(--vin-part-gap);
+  }
+
+  .job-vin-bars i.is-on {
+    background: var(--color-success);
+  }
+
+  .job-vin-meter.is-over .job-vin-bars i {
+    background: var(--color-danger);
+  }
+
+  .job-vin-count {
+    min-width: 2.6em;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .job-vin-meter.is-done .job-vin-count {
+    color: var(--color-success-text);
+  }
+
+  .job-vin-meter.is-over .job-vin-count {
+    color: var(--color-danger-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .job-vin-bars i {
+      transition: none;
+    }
+  }
+
+  /* ---------- The colour ---------- */
+
+  .job-colour-row {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .job-colour-row > :last-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .job-swatch {
+    display: block;
+    width: var(--job-swatch-width);
+    height: var(--tap-min);
+    border: 1px solid var(--color-swatch-edge);
+    border-radius: var(--radius-sm);
+    background: var(--paint);
+    cursor: pointer;
+  }
+
+  /* The browser's own popover: a tap beside it closes it with no script, and no box can cut
+     it off. Each choice keeps its word, because a tablet has no tooltip, and Light Blue, Blue
+     and Dark Blue sit side by side. */
+  .job-colours {
+    width: min(var(--job-colours-width), calc(100vw - var(--space-8)));
+    margin: auto;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    color: var(--color-text);
+  }
+
+  .job-colours::backdrop {
+    background: var(--color-backdrop);
+  }
+
+  .job-colours__title {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  .job-colours__grid {
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .job-paint {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap-min);
+    padding: var(--space-1);
+    border-radius: var(--radius-md);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-tight);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .job-paint input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .job-paint__box {
+    display: block;
+    width: 100%;
+    height: var(--job-paint-height);
+    border: 1px solid var(--color-swatch-edge);
+    border-radius: var(--radius-sm);
+    background: var(--paint);
+  }
+
+  .job-paint.paint-other .job-paint__box {
+    background: conic-gradient(
+      var(--paint-red),
+      var(--paint-yellow),
+      var(--paint-green),
+      var(--paint-blue),
+      var(--paint-red)
+    );
+  }
+
+  .job-paint:has(:checked) {
+    outline: 2px solid var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-text);
+  }
+
+  .job-paint:has(:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .job-other {
+    display: none;
+    width: 100%;
+    min-height: var(--tap-min);
+    margin-top: var(--space-3);
+  }
+
+  .job-colours:has(input[value="other"]:checked) .job-other {
+    display: block;
+  }
+
+  /* ---------- The lists ---------- */
+
+  .job-row {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .job-row:last-child {
+    border-bottom: 0;
+  }
+
+  .job-row__text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Each status with its word and its colour, darkened so the words pass AA. It takes its
+     colour as soon as it changes, with no script (JOB-33). */
+  .job-status {
+    flex: none;
+    width: var(--job-status-width);
+    min-height: var(--tap-min);
+    padding: 0 var(--space-3);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  .job-status:enabled:has(option[value="pending"]:checked) {
+    background: var(--color-danger-strong);
+    color: var(--color-text-on-strong);
+  }
+
+  /* v1's amber is too light to show the box's edge on white, so the edge is darker. */
+  .job-status:enabled:has(option[value="working"]:checked) {
+    border-color: var(--color-warning-text);
+    background: var(--color-status-working);
+    color: var(--color-on-status-working);
+  }
+
+  .job-status:enabled:has(option[value="fixed"]:checked) {
+    background: var(--color-success);
+    color: var(--color-text-on-strong);
+  }
+
+  /* The open row's status stays grey until something is typed, so it never looks like a real
+     concern waiting (JOB-35). */
+  .job-row.is-open .job-status:has(option:checked) {
+    border-color: var(--color-border-control);
+    background: var(--color-neutral-soft);
+    color: var(--color-text-muted);
+  }
+
+  .job-labour {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    text-align: right;
+  }
+
+  .job-labour__box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+  }
+
+  .job-labour label {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .job-labour .job-input {
+    width: var(--job-labour-width);
+    font-weight: var(--weight-bold);
+    text-align: right;
+  }
+
+  /* ---------- The buttons ---------- */
+
+  .job-save {
+    width: 100%;
+    min-height: var(--job-save-height);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+  }
+
+  /* Update: amber, the colour of your changes in v1, with dark words (JOB-46). */
+  .job-save--update {
+    border-color: var(--color-save);
+    background: var(--color-save);
+    color: var(--color-on-save);
+  }
+
+  .job-save--update:hover {
+    border-color: var(--color-save);
+    background: var(--color-save);
+  }
+
+  /* Cancel: quiet, with the danger only in its words. */
+  .job-cancel {
+    width: 100%;
+    margin-bottom: var(--space-6);
+    color: var(--color-danger-text);
+  }
+}

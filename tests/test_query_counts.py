@@ -17,6 +17,7 @@ from django.urls import path, reverse
 from test_permissions import PAGES
 
 from apps.accounts.tests.factories import MembershipFactory
+from apps.jobs.tests.factories import ConcernFactory, JobCardFactory, JobLineFactory
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.workshops.models import Branch
 from apps.workshops.tests.factories import BranchFactory
@@ -26,7 +27,6 @@ MANY = 12
 
 #: Pages that show no rows.
 NO_ROWS = {
-    "accounts:home",
     "accounts:sign_in",
     "accounts:sign_in_code",
     "accounts:sign_in_password",
@@ -37,6 +37,12 @@ NO_ROWS = {
     "staff:edit",
     "staff:turn_off",
     "staff:turn_on",
+    # A new card has no rows yet. jobs:create answers a GET by going to another page, and a
+    # refused send shows the same page with what was typed.
+    "jobs:new",
+    "jobs:create",
+    # It shows the job card's page, through the same selector as jobs:edit.
+    "jobs:cancel",
 }
 
 
@@ -44,10 +50,26 @@ def staff_list_rows(member):
     return reverse("staff:list"), lambda: StaffMemberFactory(workshop=member.workshop)
 
 
+def live_board_rows(member):
+    return reverse("jobs:live_board"), lambda: JobCardFactory(workshop=member.workshop)
+
+
+def job_card_rows(member):
+    card = JobCardFactory(workshop=member.workshop)
+
+    def add_row():
+        ConcernFactory(workshop=member.workshop, job_card=card)
+        JobLineFactory(workshop=member.workshop, job_card=card)
+
+    return reverse("jobs:edit", kwargs={"key": card.pk}), add_row
+
+
 #: Each page that shows rows. The function gets a signed-in owner's membership, and
 #: answers with the page's address and a function that adds one row to it.
 WITH_ROWS = {
     "staff:list": staff_list_rows,
+    "jobs:live_board": live_board_rows,
+    "jobs:edit": job_card_rows,
 }
 
 

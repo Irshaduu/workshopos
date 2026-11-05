@@ -1,0 +1,49 @@
+{% extends "app.html" %}
+{% load i18n static %}
+{% comment %}
+The first, plain live board, so a card can be found (JOB-61). Its cards, chips, drawers and
+filters are built in Phase 6, from design/lab/live-board/. New shows here unless the tab bar
+already has it (JOB-62).
+{% endcomment %}
+{% block title %}{% translate "Live board" %}{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'jobs/live-board.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="board-head">
+  <h1>{% translate "Live board" %}</h1>
+  {% if perms.jobs.save_job_card and not new_on_the_bar %}
+    <a class="btn btn--primary" href="{% url 'jobs:new' %}">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#plus"></use></svg>
+      {% translate "New" %}
+    </a>
+  {% endif %}
+</div>
+
+{% if cards %}
+  <ul class="board-list">
+    {% for card in cards %}
+      <li>
+        <a class="board-row" href="{% url 'jobs:edit' card.pk %}">
+          <span class="board-row__car">{{ card.car.name }}</span>
+          <span class="board-row__plate">{{ card.plate }}</span>
+          <span class="board-row__number num">{{ card.number }}</span>
+          {% if card.lead_mechanic %}<span class="board-row__mechanic">{{ card.lead_mechanic.name }}</span>{% endif %}
+          <span class="board-row__date num">{{ card.admitted_date|date:"SHORT_DATE_FORMAT" }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="empty">
+    <svg class="icon empty__icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#car"></use></svg>
+    <p class="empty__title">{% translate "No cars in the workshop" %}</p>
+    <p class="empty__text">{% translate "Start a job card when a car comes in." %}</p>
+    {% if perms.jobs.save_job_card %}
+      <a class="btn btn--primary" href="{% url 'jobs:new' %}">{% translate "New job card" %}</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

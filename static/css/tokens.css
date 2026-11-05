@@ -139,6 +139,25 @@
     --staff-more-band: 0.4375rem;
     --staff-count-min-width: 1.75rem;
     --staff-card-max-height: 20rem;
+    /* The job card (v1): its pinned head and the room to keep clear under it, a section's
+       tile, the colour swatch, a status box, the labour box and the main button. The colour
+       choices' box, a choice's patch, and the stripes of no colour. The VIN's meter: one
+       small bar per character, with a gap between a VIN's three parts. */
+    --job-head-min-height: 2.5rem;
+    --job-head-clear: 5rem;
+    --job-dot-size: 0.75rem;
+    --job-tile-size: 2.125rem;
+    --job-swatch-width: 2.8125rem;
+    --job-status-width: 8.125rem;
+    --job-labour-width: 11.25rem;
+    --job-save-height: 3.5rem;
+    --job-colours-width: 26rem;
+    --job-paint-height: 2rem;
+    --hatch-stripe: 3px;
+    --hatch-size: 6px;
+    --vin-bar-width: 7px;
+    --vin-bar-height: 4px;
+    --vin-part-gap: 5px;
 
     /* Car paint: v1's paint list and values, exactly (CAR_COLOR_HEX in v1).
        A car's own colour, not a tone. */

@@ -21,7 +21,7 @@ from django.utils.translation import gettext as _
 from django.utils.translation import ngettext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_http_methods
 
 from apps.accounts.decorators import page, workshop_not_required
 from apps.accounts.forms import CodeForm, PasswordForm, WhoForm
@@ -56,7 +56,7 @@ def sign_in(request):
     """Step 1, for every role (SIGN-1): an email goes on to a code, a username to a
     password (SIGN-2)."""
     if request.user.is_authenticated:
-        return redirect("accounts:home")
+        return redirect("jobs:live_board")
     pending = request.session.get(PENDING, {})
     if request.method == "POST":
         form = WhoForm(request.POST)
@@ -81,7 +81,7 @@ def sign_in(request):
 def sign_in_code(request):
     """Step 2 for an owner: the 6-digit code from the email (SIGN-3, SIGN-22, SIGN-23)."""
     if request.user.is_authenticated:
-        return redirect("accounts:home")
+        return redirect("jobs:live_board")
     pending = request.session.get(PENDING, {})
     if pending.get("step") != "code":
         return redirect("accounts:sign_in")  # SIGN-26
@@ -129,7 +129,7 @@ def sign_in_code(request):
 def sign_in_password(request):
     """Step 2 for Office and Floor: the password (SIGN-6, SIGN-11, SIGN-33)."""
     if request.user.is_authenticated:
-        return redirect("accounts:home")
+        return redirect("jobs:live_board")
     pending = request.session.get(PENDING, {})
     if pending.get("step") != "password":
         return redirect("accounts:sign_in")
@@ -143,14 +143,6 @@ def sign_in_password(request):
         if not _said_locked(request, username):
             form.add_error("password", _("Wrong username or password."))
     return render(request, "accounts/sign_in_password.html", {"form": form, "username": username})
-
-
-@page("roles", "accounts.open_home")
-@require_GET
-def home(request):
-    """The page after signing in. For now it shows who is signed in, and where;
-    the live board takes this address in Phase 6."""
-    return render(request, "accounts/home.html")
 
 
 @page("sign_in")
@@ -299,4 +291,4 @@ def _signed_in(request, account):
     on_this_site = url_has_allowed_host_and_scheme(
         next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
     )
-    return redirect(next_url if on_this_site else "accounts:home")
+    return redirect(next_url if on_this_site else "jobs:live_board")

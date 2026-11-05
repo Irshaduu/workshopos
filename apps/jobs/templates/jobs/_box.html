@@ -1,0 +1,10 @@
+{% comment %}
+One box of the job card: its label, the box with the value the page opened with, and its
+error, next to it, with what was typed kept (docs/DESIGN.md, Form errors). "word" takes the
+place of the field's own label. "cell" is the box's place in the grid.
+{% endcomment %}
+<div{% if cell %} class="{{ cell }}"{% endif %}>
+  <label class="job-label" for="{{ field.id_for_label }}">{% if word %}{{ word }}{% else %}{{ field.label }}{% endif %}</label>
+  {{ field }}
+  {% include "jobs/_box_error.html" %}
+</div>
