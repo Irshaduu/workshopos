@@ -74,6 +74,26 @@
     display: none !important; /* stands in for "never sent", so nothing may show it */
   }
 
+  /* The lab's State switch. A part marked only-x shows in those states. In the app
+     the server sends only what the state has. */
+  :root:has(#state-new:checked) :is(.only-saved, .only-refused, .only-cancelled):not(.only-new),
+  :root:has(#state-saved:checked) :is(.only-new, .only-refused, .only-cancelled):not(.only-saved),
+  :root:has(#state-refused:checked) :is(.only-new, .only-cancelled):not(.only-refused),
+  :root:has(#state-cancelled:checked) :is(.only-new, .only-refused):not(.only-cancelled),
+  :root:has(#state-cancelled:checked) .jc1-actions {
+    display: none !important;
+  }
+
+  /* On a refused page the head still names the saved card. */
+  :root:has(#state-refused:checked) .only-saved {
+    display: revert;
+  }
+
+  /* What later steps bring, hidden until the switch shows it. */
+  :root:not(:has(#show-later:checked)) .later {
+    display: none !important;
+  }
+
   /* ================= Design 1: v1 ================= */
   /* v1's job card (jobcard_form.html) with fake data. Fixed only where a
      rule breaks: every box and button at least 44px, status colours that
@@ -100,6 +120,7 @@
     justify-content: space-between;
     gap: var(--space-2);
     margin-bottom: var(--space-4);
+    min-height: 2.5rem;
     padding: var(--space-1) var(--space-4) var(--space-1) 1.1rem;
     overflow: hidden;
     border-radius: 0 0 var(--radius-md) var(--radius-md);
@@ -146,6 +167,222 @@
     gap: var(--space-2);
   }
 
+  .jc1-head__end {
+    display: inline-flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
+  }
+
+  /* The number: one word for the job and its bill, never cut short. */
+  .jc1-head__number {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Unsaved work (v1): the head's tint is the signal that carries on a phone, and the
+     word comes from 576 pixels wide, so a name is never cut to fit it. */
+  .jc1-head__unsaved {
+    display: none;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-save);
+    color: var(--color-on-save);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+  }
+
+  .jc1-head.is-dirty {
+    background: var(--color-warning-soft);
+  }
+
+  @media (min-width: 576px) {
+    .jc1-head.is-dirty .jc1-head__unsaved {
+      display: inline-block;
+    }
+  }
+
+  /* A changed box: an edge painted inside the box, so nothing moves (v1). */
+  .jc1-input.is-changed {
+    box-shadow: inset 0 0 0 1px var(--color-save);
+    border-color: var(--color-save);
+  }
+
+  /* The car's rail: an edge for a white car, and hatched for no colour, because plain
+     grey would say the car is grey (v1). */
+  .jc1-head.paint-white::before {
+    box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  }
+
+  .jc1-head.paint-unset::before,
+  .jc1-dot.paint-unset,
+  .jc1-swatch.paint-unset,
+  .jc1-paint.paint-unset .jc1-paint__box {
+    background: repeating-linear-gradient(135deg, var(--paint-unset) 0 3px, var(--color-surface) 3px 6px);
+  }
+
+  /* The State switch's parts: the boxes sit in one fieldset, so a cancelled card locks
+     every box at once. */
+  .jc1-form {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .jc1-state {
+    margin-bottom: var(--space-4);
+  }
+
+  .jc1-problems {
+    margin: var(--space-1) 0 0;
+    padding-left: var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .jc1-cancelled__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-danger-text);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  .jc1-cancelled__who {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* A locked card has to look locked (v1): a cooler fill, muted words, no hairline. */
+  .jc1-form:disabled .jc1-input,
+  .jc1-form:disabled .jc1-status {
+    border-color: var(--color-border);
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  .jc1-form:disabled .jc1-swatch {
+    cursor: not-allowed;
+  }
+
+  .jc1-row__text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .jc1-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    box-shadow: inset 0 0 0 1px var(--color-danger);
+  }
+
+  /* The note starts one row tall and grows with its words. Where a browser cannot grow
+     it, it can still be dragged taller. */
+  .jc1-note {
+    field-sizing: content;
+    font-weight: var(--weight-normal);
+  }
+
+  /* The colour choices: the browser's own popover, so a tap beside it closes it with no
+     script, and no box can cut it off. Each choice keeps its word, because a tablet has
+     no tooltip and Light Blue, Blue and Dark Blue sit side by side. */
+  .jc1-colours {
+    width: min(26rem, calc(100vw - var(--space-8)));
+    margin: auto;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    color: var(--color-text);
+  }
+
+  .jc1-colours::backdrop {
+    background: var(--color-backdrop);
+  }
+
+  .jc1-colours__title {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  .jc1-colours__grid {
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .jc1-paint {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap-min);
+    padding: var(--space-1);
+    border-radius: var(--radius-md);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-tight);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .jc1-paint input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .jc1-paint__box {
+    display: block;
+    width: 100%;
+    height: 2rem;
+    border: 1px solid var(--color-swatch-edge);
+    border-radius: var(--radius-sm);
+    background: var(--paint);
+  }
+
+  .jc1-paint.paint-other .jc1-paint__box {
+    background: conic-gradient(var(--paint-red), var(--paint-yellow), var(--paint-green), var(--paint-blue), var(--paint-red));
+  }
+
+  .jc1-paint:has(:checked) {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-text);
+    outline: 2px solid var(--color-primary);
+  }
+
+  .jc1-paint:has(:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .jc1-other {
+    display: none;
+    width: 100%;
+    min-height: var(--tap-min);
+    margin-top: var(--space-3);
+  }
+
+  .jc1-colours:has(input[value="paint-other"]:checked) .jc1-other {
+    display: block;
+  }
+
+  /* Cancel: quiet, far from the main button, with the danger only in its words. */
+  .jc1-cancel {
+    display: flex;
+    width: 100%;
+    margin-bottom: var(--space-8);
+    color: var(--color-danger-text);
+  }
+
   .jc1-btn-sm {
     display: inline-flex;
     align-items: center;
@@ -174,6 +411,12 @@
 
     .jc1-head__id {
       flex: 1 1 100%;
+    }
+
+    /* The car and the plate take the room on a phone: the dot and the name already say
+       which car this is being edited. */
+    .jc1-head__edit {
+      display: none;
     }
 
     .jc1-head__car {
@@ -674,7 +917,7 @@
     gap: var(--space-2);
     width: 100%;
     min-height: 3.5rem;
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-4);
     border: 0;
     border-radius: var(--radius-md);
     background: var(--color-save);
@@ -683,6 +926,12 @@
     font-size: 1.25rem;
     font-weight: var(--weight-bold);
     cursor: pointer;
+  }
+
+  /* A new card's button: blue, because in v2 green means done or paid. */
+  .jc1-submit--new {
+    background: var(--color-primary);
+    color: var(--color-text-on-strong);
   }
 
   /* ---------- Editing the right part (v1, plus one tag) ---------- */

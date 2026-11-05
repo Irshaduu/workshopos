@@ -9,12 +9,13 @@
   <link rel="stylesheet" href="../../../static/css/components.css">
   <link rel="stylesheet" href="job-card.css">
   <script src="job-card.js" defer></script>
+  <script src="../../../static/js/dialog.js" type="module"></script>
 </head>
 <body>
 <main class="lab">
 
   <a class="back" href="../system/">Design system</a>
-  <p class="lab-intro">Job card: v1, the chosen design. Type in the last, empty row of a list and the next one opens; tap a box in a parts row to see its name tag. A prototype, never used by the app. All data is fake.</p>
+  <p class="lab-intro">Job card: v1, the chosen design. Type in the last, empty row of a list and the next one opens. A prototype, never used by the app. All data is fake.</p>
 
   <div class="lab-bar">
     <fieldset class="lab-switch">
@@ -22,47 +23,99 @@
       <label class="lab-switch__option"><input type="radio" name="role" id="as-office" checked> Office or owner</label>
       <label class="lab-switch__option"><input type="radio" name="role" id="as-floor"> Floor</label>
     </fieldset>
+    <fieldset class="lab-switch">
+      <legend>State</legend>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-saved" checked> Saved</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-new"> New</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-refused"> Refused</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-cancelled"> Cancelled</label>
+    </fieldset>
+    <fieldset class="lab-switch">
+      <legend>Later steps</legend>
+      <label class="lab-switch__option"><input type="checkbox" id="show-later"> Show parts and buttons</label>
+    </fieldset>
   </div>
 
   <!-- V1 START -->
   <section class="jc1" aria-label="Job card, v1">
     <h1 class="lab-sr">Job card</h1>
-    <div class="jc1-head paint-black">
-      <span class="jc1-head__id"><span class="jc1-head__edit">Editing:</span><span class="jc1-dot"></span><strong class="jc1-head__car">BMW 520d</strong><span class="jc1-head__plate">KL00AA0001</span></span>
-      <span class="jc1-head__actions office-only"><a class="jc1-btn-sm" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg><span class="jc1-btn-sm__label">Profile</span></a><a class="jc1-btn-sm" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#receipt"></use></svg><span class="jc1-btn-sm__label">Invoice</span></a></span>
+    <div class="jc1-head paint-black" id="jc1-head">
+      <span class="jc1-head__id only-saved"><span class="jc1-head__edit">Editing:</span><span class="jc1-dot"></span><strong class="jc1-head__car">BMW 520d</strong><span class="jc1-head__plate">KL00AA0001</span></span>
+      <span class="jc1-head__id only-new"><strong>New Job Card</strong></span>
+      <span class="jc1-head__end"><span class="jc1-head__unsaved">Unsaved</span><span class="jc1-head__number only-saved">JC-0027</span><span class="jc1-head__actions office-only later"><a class="jc1-btn-sm" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg><span class="jc1-btn-sm__label">Profile</span></a><a class="jc1-btn-sm" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#receipt"></use></svg><span class="jc1-btn-sm__label">Invoice</span></a></span></span>
     </div>
 
+    <div class="notice notice--danger jc1-state only-refused" role="alert">
+      <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-alert"></use></svg>
+      <div class="notice__text">Not saved: 2 things to fix. Nothing you typed was lost.
+        <ul class="jc1-problems">
+          <li>VIN: A VIN has 17 characters, and this one has 11.</li>
+          <li>Concern, Oil leak at the sump: this is already on the card.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card card--danger jc1-state only-cancelled">
+      <h2 class="jc1-cancelled__title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-alert"></use></svg>Cancelled</h2>
+      <p>The customer took the car away before any work.</p>
+      <p class="jc1-cancelled__who">Office, 3 Oct 2026, 3:05 PM. The number JC-0027 stays with this card.</p>
+    </div>
+
+    <fieldset class="jc1-form" id="jc1-form">
+    <legend class="lab-sr">Job card boxes</legend>
     <div class="jc1-card">
-      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg></span><h2 class="jc1-sec-name">Vehicle Details</h2></div></div>
+      <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg></span><h2 class="jc1-sec-name">Car Details</h2></div></div>
       <div class="jc1-body"><div class="jc1-grid">
-        <div class=""><label class="jc1-label" for="jc1-reg">Registration Number</label><input class="jc1-input" id="jc1-reg" value="KL00AA0001"></div>
+        <div class=""><label class="jc1-label" for="jc1-reg">Plate Number</label><input class="jc1-input" id="jc1-reg" value="KL00AA0001" autocapitalize="characters" spellcheck="false"></div>
         <div class=""><label class="jc1-label" for="jc1-brand">Car Brand</label><input class="jc1-input" id="jc1-brand" value="BMW"></div>
         <div class=""><label class="jc1-label" for="jc1-model">Car Model</label><input class="jc1-input" id="jc1-model" value="520d"></div>
-        <div class=""><label class="jc1-label" for="jc1-chassis">Chassis Code</label><input class="jc1-input is-empty" id="jc1-chassis" value=""></div>
-        <div class="jc1-span-2"><div class="jc1-label-row"><label class="jc1-label" for="jc1-vin">VIN</label><span class="jc1-vin-meter" aria-hidden="true"><span class="jc1-vin-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="jc1-vin-count">0/17</span></span></div><input class="jc1-input is-empty" id="jc1-vin" value="" autocapitalize="characters" spellcheck="false" aria-describedby="jc1-vin-help"><span class="lab-sr" id="jc1-vin-help">A VIN has 17 characters.</span></div>
+        <div class=""><label class="jc1-label" for="jc1-chassis">Chassis Code</label><input class="jc1-input is-empty" id="jc1-chassis" value="" autocapitalize="characters" spellcheck="false"></div>
+        <div class="jc1-span-2"><div class="jc1-label-row"><label class="jc1-label" for="jc1-vin">VIN</label><span class="jc1-vin-meter" aria-hidden="true"><span class="jc1-vin-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="jc1-vin-count">0/17</span></span></div><input class="jc1-input is-empty" id="jc1-vin" value="" autocapitalize="characters" spellcheck="false" aria-describedby="jc1-vin-help"><span class="lab-sr" id="jc1-vin-help">A VIN has 17 characters.</span><p class="field__error only-refused">A VIN has 17 characters, and this one has 11.</p></div>
         <div class="jc1-colour-row">
-          <div><span class="jc1-label">Color</span><button class="jc1-swatch paint-black" type="button" aria-label="Car colour: Black"></button></div>
+          <div><span class="jc1-label">Colour</span><button class="jc1-swatch paint-black" id="jc1-swatch" type="button" popovertarget="jc1-colours" aria-label="Car colour: Black"></button>
+            <div class="jc1-colours" id="jc1-colours" popover>
+              <p class="jc1-colours__title">Car colour</p>
+              <div class="jc1-colours__grid">
+                <label class="jc1-paint paint-black"><input type="radio" name="colour" value="paint-black" checked><span class="jc1-paint__box"></span>Black</label>
+                <label class="jc1-paint paint-white"><input type="radio" name="colour" value="paint-white"><span class="jc1-paint__box"></span>White</label>
+                <label class="jc1-paint paint-silver"><input type="radio" name="colour" value="paint-silver"><span class="jc1-paint__box"></span>Silver</label>
+                <label class="jc1-paint paint-grey"><input type="radio" name="colour" value="paint-grey"><span class="jc1-paint__box"></span>Grey</label>
+                <label class="jc1-paint paint-red"><input type="radio" name="colour" value="paint-red"><span class="jc1-paint__box"></span>Red</label>
+                <label class="jc1-paint paint-light-blue"><input type="radio" name="colour" value="paint-light-blue"><span class="jc1-paint__box"></span>Light Blue</label>
+                <label class="jc1-paint paint-blue"><input type="radio" name="colour" value="paint-blue"><span class="jc1-paint__box"></span>Blue</label>
+                <label class="jc1-paint paint-dark-blue"><input type="radio" name="colour" value="paint-dark-blue"><span class="jc1-paint__box"></span>Dark Blue</label>
+                <label class="jc1-paint paint-yellow"><input type="radio" name="colour" value="paint-yellow"><span class="jc1-paint__box"></span>Yellow</label>
+                <label class="jc1-paint paint-light-green"><input type="radio" name="colour" value="paint-light-green"><span class="jc1-paint__box"></span>Light Green</label>
+                <label class="jc1-paint paint-green"><input type="radio" name="colour" value="paint-green"><span class="jc1-paint__box"></span>Green</label>
+                <label class="jc1-paint paint-dark-green"><input type="radio" name="colour" value="paint-dark-green"><span class="jc1-paint__box"></span>Dark Green</label>
+                <label class="jc1-paint paint-brown"><input type="radio" name="colour" value="paint-brown"><span class="jc1-paint__box"></span>Brown</label>
+                <label class="jc1-paint paint-dark-brown"><input type="radio" name="colour" value="paint-dark-brown"><span class="jc1-paint__box"></span>Dark Brown</label>
+                <label class="jc1-paint paint-other"><input type="radio" name="colour" value="paint-other"><span class="jc1-paint__box"></span>Other</label>
+                <label class="jc1-paint paint-unset"><input type="radio" name="colour" value="paint-unset"><span class="jc1-paint__box"></span>Not set</label>
+              </div>
+              <input class="jc1-other" id="jc1-other" type="color" value="#7f1d1d" aria-label="Other colour">
+            </div>
+          </div>
           <div class=""><label class="jc1-label" for="jc1-km">Mileage (Km)</label><input class="jc1-input" id="jc1-km" value="132022" inputmode="numeric"></div>
         </div>
-        <div><label class="jc1-label" for="jc1-mech"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#user-cog"></use></svg>Mechanic (Staff)</label><select class="jc1-input" id="jc1-mech"><option value="">---------</option><option selected>Ajay</option><option>Biju</option><option>Faisal</option></select></div>
+        <div><label class="jc1-label" for="jc1-mech"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#user-cog"></use></svg>Lead Mechanic</label><select class="jc1-input" id="jc1-mech"><option value=""></option><option selected>Ajay</option><option>Biju</option><option>Faisal</option></select></div>
         <div class=""><label class="jc1-label" for="jc1-admitted">Admitted Date</label><input class="jc1-input" id="jc1-admitted" value="2026-10-19" type="date"></div>
       </div></div>
     </div>
 
     <details class="jc1-card jc1-fold office-only" open>
-      <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#users"></use></svg></span><h2 class="jc1-sec-name">Customer, Notes &amp; Photos</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
+      <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#users"></use></svg></span><h2 class="jc1-sec-name">Customer &amp; Notes</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
       <div class="jc1-body"><div class="jc1-grid jc1-grid--2 jc1-grid--cust">
         <div class=""><label class="jc1-label" for="jc1-cust">Customer Name</label><input class="jc1-input" id="jc1-cust" value="Arun K."></div>
         <div class=""><label class="jc1-label" for="jc1-contact">Contact Number</label><input class="jc1-input" id="jc1-contact" value="00000 00000" inputmode="tel"></div>
-        <div class="jc1-span-all jc1-note-cell"><label class="jc1-label" for="jc1-note">Internal note</label><textarea class="jc1-input" id="jc1-note" rows="1">Brake noise only when cold.</textarea></div>
-        <div class="jc1-span-all"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>
+        <div class="jc1-span-all jc1-note-cell"><label class="jc1-label" for="jc1-note">Internal Note</label><textarea class="jc1-input jc1-note" id="jc1-note" rows="1">Brake noise only when cold.</textarea></div>
+        <div class="jc1-span-all later"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>
       </div></div>
     </details>
     <details class="jc1-card jc1-fold floor-only" open>
-      <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></span><h2 class="jc1-sec-name">Workshop Note &amp; Photos</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
+      <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg></span><h2 class="jc1-sec-name">Workshop Note</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
       <div class="jc1-body"><div class="jc1-grid jc1-grid--2">
-        <div class="jc1-span-all"><label class="jc1-label" for="jc1-note-f">Anything worth recording about this car</label><textarea class="jc1-input" id="jc1-note-f" rows="1">Brake noise only when cold.</textarea></div>
-        <div class="jc1-span-all"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>
+        <div class="jc1-span-all"><label class="jc1-label" for="jc1-note-f">Anything worth recording about this car</label><textarea class="jc1-input jc1-note" id="jc1-note-f" rows="1">Brake noise only when cold.</textarea></div>
+        <div class="jc1-span-all later"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>
       </div></div>
     </details>
 
@@ -74,6 +127,7 @@
         <div class="jc1-row"><input class="jc1-input" aria-label="Concern 3" value="Oil leak at the sump"><select class="jc1-status is-fixed" id="jc1-cs3" aria-label="Status of concern 3"><option>Pending</option><option>Working</option><option selected>Fixed</option></select></div>
         <div class="jc1-row"><input class="jc1-input" aria-label="Concern 4" value="Steering vibration"><select class="jc1-status is-working" id="jc1-cs4" aria-label="Status of concern 4"><option>Pending</option><option selected>Working</option><option>Fixed</option></select></div>
         <div class="jc1-row"><input class="jc1-input" aria-label="Concern 5" value="Service due"><select class="jc1-status is-pending" id="jc1-cs5" aria-label="Status of concern 5"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div>
+        <div class="jc1-row only-refused jc1-row--refused"><div class="jc1-row__text"><input class="jc1-input" aria-label="Concern 6" value="Oil leak at the sump" aria-invalid="true" aria-describedby="jc1-new-concern-error"><p class="field__error" id="jc1-new-concern-error">This is already on the card.</p></div><select class="jc1-status is-pending" aria-label="Status of concern 6"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div>
         <div class="jc1-row is-open"><input class="jc1-input" aria-label="New concern"><select class="jc1-status is-pending" aria-label="Status of the new concern"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div>
       </div>
       <template id="jc1-tpl-concern"><div class="jc1-row is-open"><input class="jc1-input" aria-label="New concern"><select class="jc1-status is-pending" aria-label="Status of the new concern"><option selected>Pending</option><option>Working</option><option>Fixed</option></select></div></template>
@@ -87,10 +141,10 @@
         <div class="jc1-row is-open"><input class="jc1-input" aria-label="New job"></div>
       </div>
       <template id="jc1-tpl-job"><div class="jc1-row is-open"><input class="jc1-input" aria-label="New job"></div></template>
-      <div class="jc1-labour office-only"><label for="jc1-labour">Total Labour (₹)</label><input class="jc1-input" id="jc1-labour" inputmode="decimal" value="2950"></div>
+      <div class="jc1-labour office-only"><label for="jc1-labour">Labour Charge (₹)</label><input class="jc1-input" id="jc1-labour" inputmode="decimal" value="2950"></div>
     </div>
 
-    <div class="jc1-card">
+    <div class="jc1-card later">
       <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#package"></use></svg></span><h2 class="jc1-sec-name">Products</h2></div></div>
       <div class="jc1-scroll"><table class="jc1-table">
         <thead><tr><th class="jc1-idx" aria-label="Row number">#</th><th class="jc1-w-part">Product</th><th class="jc1-w-qty">Qty</th><th class="jc1-w-cost office-only">Cost / Unit (₹)</th><th class="jc1-w-price office-only">Unit Price (₹)</th><th class="jc1-w-total office-only">Total Price (₹)</th></tr></thead>
@@ -102,7 +156,7 @@
       <template id="jc1-tpl-product"><tr class="is-open"><td class="jc1-idx"><span class="jc1-rowtag" aria-hidden="true">. New product</span></td><td><input class="jc1-input" aria-label="New product" placeholder="Search by product or type (e.g. Engine Oil)"><div class="jc1-hint"></div></td><td><input class="jc1-input" aria-label="Quantity of the new product" inputmode="decimal"></td><td class="office-only"><div class="jc1-cost"></div></td><td class="office-only"><input class="jc1-input" aria-label="Unit price of the new product" inputmode="decimal"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Total price of the new product" inputmode="decimal"><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr></template>
     </div>
 
-    <div class="jc1-card">
+    <div class="jc1-card later">
       <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#cog"></use></svg></span><h2 class="jc1-sec-name">Spare Parts</h2></div></div>
       <div class="jc1-scroll"><table class="jc1-table">
         <thead><tr><th class="jc1-idx" aria-label="Row number">#</th><th class="jc1-w-part">Part Name</th><th class="jc1-w-qty">Qty</th><th aria-label="Photos"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></th><th class="jc1-w-shop office-only">Shop</th><th class="jc1-w-status">Status</th><th class="jc1-w-dates">Dates</th><th class="jc1-w-price office-only">Shop Price (₹)</th><th class="jc1-w-price office-only">Transport (₹)</th><th class="jc1-w-price-mk office-only">Customer Price (₹)</th></tr></thead>
@@ -116,7 +170,25 @@
       <template id="jc1-tpl-spare"><tr class="is-open"><td class="jc1-idx"><span class="jc1-rowtag" aria-hidden="true">. New spare part</span></td><td><div class="jc1-part"><input class="jc1-input" aria-label="New spare part"></div></td><td><input class="jc1-input" aria-label="Quantity of the new spare part" inputmode="decimal"></td><td></td><td class="office-only"><select class="jc1-input" aria-label="Shop for the new spare part"><option value="">-- Shop --</option><option>Main Road Spares</option><option>City Parts Centre</option></select></td><td><select class="jc1-status is-pending" aria-label="Status of the new spare part"><option selected>Pending</option><option>Ordered</option><option>Received</option></select></td><td><button class="jc1-date-chip" type="button" aria-label="Add dates for the new spare part"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg>Add dates</button></td><td class="office-only"><input class="jc1-input" aria-label="Shop price of the new spare part" inputmode="decimal"></td><td class="office-only"><input class="jc1-input" aria-label="Transport for the new spare part" inputmode="decimal"></td><td class="office-only"><div class="jc1-money"><input class="jc1-input" aria-label="Customer price of the new spare part" inputmode="decimal"><span class="jc1-mk is-empty" aria-hidden="true"></span></div></td></tr></template>
     </div>
 
-    <button class="jc1-submit" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#check"></use></svg>Update Job Card</button>
+    </fieldset>
+
+    <button class="jc1-submit only-saved only-refused jc1-actions" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#check"></use></svg>Update Job Card</button>
+    <button class="jc1-submit jc1-submit--new only-new jc1-actions" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#plus"></use></svg>Save Job Card</button>
+    <button class="btn jc1-cancel office-only only-saved only-refused jc1-actions" type="button" data-dialog-open="jc1-cancel-card"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg>Cancel job card</button>
+
+    <dialog class="confirm confirm--danger" id="jc1-cancel-card" aria-labelledby="jc1-cancel-title">
+      <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg></div>
+      <h2 class="confirm__title" id="jc1-cancel-title">Cancel JC-0027?</h2>
+      <p class="confirm__text">BMW 520d, KL00AA0001. The card and its number stay, with the reason. It cannot be brought back.</p>
+      <div class="field confirm__reason">
+        <label class="field__label" for="jc1-cancel-reason">Reason</label>
+        <input class="field__input" id="jc1-cancel-reason" maxlength="255">
+      </div>
+      <div class="confirm__actions">
+        <button class="btn" type="button" data-dialog-close>Keep job card</button>
+        <button class="btn btn--danger" type="button" data-dialog-close>Cancel job card</button>
+      </div>
+    </dialog>
   </section>
   <!-- V1 END -->
 

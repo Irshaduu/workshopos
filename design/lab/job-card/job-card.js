@@ -78,6 +78,64 @@
     showVin();
   }
 
+  // Unsaved work: the head turns amber and the changed box gets its edge (v1's jc-dirty).
+  var head = document.getElementById("jc1-head");
+  var form = document.getElementById("jc1-form");
+  form.addEventListener("input", function (event) {
+    head.classList.add("is-dirty");
+    if (event.target.matches(".jc1-input")) {
+      event.target.classList.add("is-changed");
+    }
+  });
+
+  // The State switch: a cancelled card locks every box at once. In the app the server
+  // writes the lock. The note also takes its one-row start here.
+  function showState() {
+    var isNew = document.getElementById("state-new").checked;
+    form.disabled = document.getElementById("state-cancelled").checked;
+    head.classList.toggle("paint-unset", isNew);
+    head.classList.toggle("paint-black", !isNew);
+  }
+  document.querySelectorAll('input[name="state"]').forEach(function (box) {
+    box.addEventListener("change", showState);
+  });
+  showState();
+
+  // The colour choices: a pick paints the swatch, the head's rail and its dot, and closes
+  // the choices, except Other, which waits for its own colour box.
+  var swatch = document.getElementById("jc1-swatch");
+  var dot = document.querySelector(".jc1-dot");
+  var choices = document.getElementById("jc1-colours");
+  var other = document.getElementById("jc1-other");
+  function paint(name, custom) {
+    [swatch, head, dot].forEach(function (el) {
+      Array.from(el.classList).forEach(function (word) {
+        if (word.startsWith("paint-")) { el.classList.remove(word); }
+      });
+      el.classList.add(name);
+      if (custom) {
+        el.style.setProperty("--paint", custom);
+      } else {
+        el.style.removeProperty("--paint");
+      }
+    });
+  }
+  choices.addEventListener("change", function (event) {
+    if (event.target.name === "colour") {
+      swatch.setAttribute("aria-label", "Car colour: " + event.target.closest("label").textContent.trim());
+      head.classList.add("is-dirty");
+      if (event.target.value === "paint-other") {
+        paint("paint-other", other.value);
+      } else {
+        paint(event.target.value);
+        choices.hidePopover();
+      }
+    }
+  });
+  other.addEventListener("input", function () {
+    paint("paint-other", other.value);
+  });
+
   document.querySelectorAll("[data-autorows]").forEach(function (list) {
     var template = document.getElementById(list.dataset.autorows);
     list.addEventListener("input", function (event) {
