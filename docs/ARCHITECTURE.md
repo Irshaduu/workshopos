@@ -153,7 +153,8 @@ How each workshop's data stays its own: ADR-0023.
   records (job cards, invoices, stock, cash, staff) build on `BranchModel`,
   which adds a required branch link, so a second place changes no real record
   (ADR-0028). A model with no branch link sits on a short list in
-  `tests/test_tenancy.py`, with why.
+  `tests/test_tenancy.py`, with why. A row of a job card is one: it reaches its
+  branch through its card (ADR-0030).
 - Customers and vehicles belong to the workshop, so all its branches share them.
 - Unique rules include the workshop (e.g. a bill number is unique per branch
   of a workshop).
@@ -211,6 +212,9 @@ How each workshop's data stays its own: ADR-0023.
   its address, and its service saves with `save_once()`
   (`apps/workshops/services.py`), so a double tap or a slow network never
   saves it twice.
+- **Saving what changed:** a form on a record people share keeps each box's opening
+  value, and its service applies only what this person changed, in one locked
+  transaction, so nobody undoes another person's save by accident (ADR-0030).
 - **Audit:** services call `audit` whenever money is changed, deleted or
   back-dated. Each entry keeps a frozen copy of what changed, with who, when
   and why, and no link to the record, so it outlives the record. The log is

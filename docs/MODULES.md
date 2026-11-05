@@ -42,7 +42,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 |---|---|---|---|
 | Job card | Car, concerns, jobs and one labour charge; locked once settled | `jobs` | Go-live |
 | Parts on the job card | Shop parts and shelf stock kept apart; ordered, received, expected | `jobs` | Go-live |
-| Known plate | A known number plate fills make, model, chassis code and VIN | `vehicles` | Go-live |
+| Known plate | A known number plate fills brand, model, chassis code and VIN | `vehicles` | Go-live |
 | Suggestions as you type | Car, part and concern names; jobs suggested from the card's parts | `jobs` | Go-live |
 | Suggested price and markup | Customer price suggested from cost, with a markup badge | `jobs` | Go-live |
 | Parts transport | Courier and parcel costs, counted in profit | `jobs` | Go-live |
@@ -156,7 +156,7 @@ is logged, with a limit per question and a monthly limit per workshop.
 | Bill from a photo | A photo of a supplier's bill fills a draft restock bill; Office checks it and saves | `assistant` | After |
 | Daily summary | A short daily message for the owners: cars waiting for parts, cash, big discounts | `assistant` | After |
 | Voice input | Speak a concern in Malayalam; it fills the line on the job card | `assistant` | After |
-| Copy car details for AI | A car's make, model, chassis code, kilometres, concerns, work done and parts, as text to paste into a person's own AI app, so it costs no AI fee. A fixed list of fields, never name, phone, plate, VIN, price or typed notes; a box shows the text before Copy. Legal advice confirms it is not personal data | `jobs` | After (client confirms) |
+| Copy car details for AI | A car's brand, model, chassis code, kilometres, concerns, work done and parts, as text to paste into a person's own AI app, so it costs no AI fee. A fixed list of fields, never name, phone, plate, VIN, price or typed notes; a box shows the text before Copy. Legal advice confirms it is not personal data | `jobs` | After (client confirms) |
 
 ---
 

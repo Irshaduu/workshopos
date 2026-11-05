@@ -34,7 +34,7 @@ costs.
 | [0027](0027-linked-devices.md) | Linked devices: no passwords for workshop people | Proposed |
 | [0028](0028-several-places.md) | Several places: one workshop by default | Accepted |
 | [0029](0029-money.md) | Money: one column and one box for every amount | Accepted |
-| [0030](0030-cars-customers-and-the-job-card.md) | Cars and customers as records, and a job card that keeps its visit | Proposed |
+| [0030](0030-cars-customers-and-the-job-card.md) | Cars and customers as records, and a job card that keeps its visit | Accepted |
 
 ## Rules
 
