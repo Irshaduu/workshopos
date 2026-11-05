@@ -14,7 +14,7 @@ from apps.accounts.tests.factories import MembershipFactory, UserFactory
 from apps.workshops.models import Branch, WorkshopStatus
 
 
-@page("roles", "accounts.open_home")
+@page("roles", "jobs.see_live_board")
 def workshop_page(request):
     return HttpResponse(request.workshop.name)
 
@@ -39,7 +39,7 @@ def workshop_page_with_no_permission(request):
     return HttpResponse("nobody should see this")
 
 
-@page("no_such_module", "accounts.open_home")
+@page("no_such_module", "jobs.see_live_board")
 def page_of_an_unknown_module(request):
     return HttpResponse("nobody should see this")
 
@@ -49,7 +49,7 @@ def money_page(request):
     return HttpResponse("money")
 
 
-@page("roles", "accounts.open_home")
+@page("roles", "jobs.see_live_board")
 def branch_page(request):
     # It asks twice, as a page with a list and a total would.
     names = [request.branch.name, request.branch.name]

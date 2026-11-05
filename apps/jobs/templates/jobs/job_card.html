@@ -1,0 +1,219 @@
+{% extends "app.html" %}
+{% load i18n static %}
+{% comment %}
+A job card's one page, new, saved, refused or cancelled (docs/rules/job-card.md): v1's job
+card, in its order. What a role may not see is left out of its form, so it is nowhere in its
+page (JOB-54). Parts come in their place in Phase 6.
+{% endcomment %}
+{% block title %}{% if card %}{{ card.number }}{% else %}{% translate "New Job Card" %}{% endif %}{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'jobs/job-card.css' %}">
+{% endblock %}
+{% block page_js %}
+  <script src="{% static 'jobs/job-card.js' %}" type="module"></script>
+{% endblock %}
+
+{% block content %}
+<div class="job-head paint-{{ form.paint }}{% if form.is_bound %} is-dirty{% endif %}" id="job-head"{% if form.own_colour %} data-paint="{{ form.own_colour }}"{% endif %}>
+  <h1 class="job-head__id">
+    {% if card %}
+      <span class="job-head__edit">{% translate "Editing:" %}</span>
+      <span class="job-dot paint-{{ form.paint }}"{% if form.own_colour %} data-paint="{{ form.own_colour }}"{% endif %}></span>
+      <span class="job-head__car">{{ card.car.name }}</span>
+      <span class="job-head__plate">{{ card.plate }}</span>
+    {% else %}
+      {% translate "New Job Card" %}
+    {% endif %}
+  </h1>
+  <span class="job-head__end">
+    <span class="job-head__unsaved">{% translate "Unsaved" %}</span>
+    {% if card %}<span class="job-head__number">{{ card.number }}</span>{% endif %}
+  </span>
+</div>
+
+{% if problems %}
+  <div class="notice notice--danger job-state" role="alert" data-sound-tag="error">
+    <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-alert"></use></svg>
+    <div class="notice__text">
+      {{ problems_word }}
+      <ul class="job-problems">
+        {% for where, what in problems %}<li>{{ where }}: {{ what }}</li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
+{% if locked %}
+  <div class="card card--danger job-state">
+    <h2 class="job-cancelled__title">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-alert"></use></svg>
+      {% translate "Cancelled" %}
+    </h2>
+    <p>{{ card.cancel_reason }}</p>
+    <p class="job-cancelled__who">{% blocktranslate with who=cancelled.by.get_full_name|default:cancelled.by.get_username when=cancelled.at number=card.number %}{{ who }}, {{ when }}. The number {{ number }} stays with this card.{% endblocktranslate %}</p>
+  </div>
+{% endif %}
+
+<form id="job-form" method="post" autocomplete="off"{% if new_key %} action="{% url 'jobs:create' new_key %}"{% elif card %} action="{% url 'jobs:edit' card.pk %}"{% endif %}>
+  {% csrf_token %}
+  <fieldset class="job-form"{% if locked %} disabled{% endif %}>
+    <legend class="job-legend">{% translate "Job card boxes" %}</legend>
+
+    <div class="job-card">
+      <div class="job-sec-head">
+        <div class="job-sec-title">
+          <span class="job-sec-icon"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#car"></use></svg></span>
+          <h2 class="job-sec-name">{% translate "Car Details" %}</h2>
+        </div>
+      </div>
+      <div class="job-body"><div class="job-grid">
+        <div>
+          <label class="job-label" for="{{ form.plate.id_for_label }}">{{ form.plate.label }}</label>
+          {{ form.plate }}
+          {% include "jobs/_box_error.html" with field=form.plate %}
+          {% if open_card %}
+            <a class="btn job-open-card" href="{% url 'jobs:edit' open_card.pk %}">{% blocktranslate with number=open_card.number %}Open {{ number }}{% endblocktranslate %}</a>
+          {% endif %}
+        </div>
+        {% include "jobs/_box.html" with field=form.brand %}
+        {% include "jobs/_box.html" with field=form.car_model %}
+        {% include "jobs/_box.html" with field=form.chassis_code %}
+        <div class="job-span-2">
+          <div class="job-label-row">
+            <label class="job-label" for="{{ form.vin.id_for_label }}">{{ form.vin.label }}</label>
+            <span class="job-vin-meter" data-vin-meter aria-hidden="true">
+              <span class="job-vin-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+              <span class="job-vin-count"></span>
+            </span>
+          </div>
+          {{ form.vin }}
+          {% include "jobs/_box_error.html" with field=form.vin %}
+        </div>
+        <div class="job-colour-row">
+          <div>
+            <span class="job-label" id="job-colour-word">{{ form.colour.label }}</span>
+            <button class="job-swatch paint-{{ form.paint }}" id="job-swatch" type="button" popovertarget="job-colours" aria-label="{% blocktranslate with colour=form.colour_word %}Car colour: {{ colour }}{% endblocktranslate %}" data-word="{% translate 'Car colour:' %}"{% if form.own_colour %} data-paint="{{ form.own_colour }}"{% endif %}></button>
+            <div class="job-colours" id="job-colours" popover>
+              <p class="job-colours__title">{% translate "Car colour" %}</p>
+              {{ form.opening_colour }}
+              <div class="job-colours__grid" role="radiogroup" aria-labelledby="job-colour-word">
+                {% for radio in form.colour %}
+                  <label class="job-paint paint-{{ radio.data.value|default:'unset' }}">{{ radio.tag }}<span class="job-paint__box"></span>{{ radio.choice_label }}</label>
+                {% endfor %}
+              </div>
+              {{ form.colour_other }}
+            </div>
+            {% include "jobs/_box_error.html" with field=form.colour_other %}
+          </div>
+          {% include "jobs/_box.html" with field=form.mileage %}
+        </div>
+        <div>
+          <label class="job-label" for="{{ form.lead_mechanic.id_for_label }}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#user-cog"></use></svg>{{ form.lead_mechanic.label }}</label>
+          {{ form.lead_mechanic }}
+          {% include "jobs/_box_error.html" with field=form.lead_mechanic %}
+        </div>
+        {% include "jobs/_box.html" with field=form.admitted_date %}
+      </div></div>
+    </div>
+
+    {% if perms.jobs.save_customer_and_labour %}
+      <details class="job-card job-fold"{% if form.customer_name.value or form.contact_number.value or form.note.value %} open{% endif %}>
+        <summary class="job-sec-head">
+          <div class="job-sec-title">
+            <span class="job-sec-icon"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#users"></use></svg></span>
+            <h2 class="job-sec-name">{% translate "Customer &amp; Notes" %}</h2>
+          </div>
+          <span class="job-chevron"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#chevron-down"></use></svg></span>
+        </summary>
+        <div class="job-body"><div class="job-grid job-grid--customer">
+          {% include "jobs/_box.html" with field=form.customer_name %}
+          {% include "jobs/_box.html" with field=form.contact_number %}
+          {% include "jobs/_box.html" with field=form.note cell="job-span-all job-note-cell" %}
+        </div></div>
+      </details>
+    {% else %}
+      <details class="job-card job-fold"{% if form.note.value %} open{% endif %}>
+        <summary class="job-sec-head">
+          <div class="job-sec-title">
+            <span class="job-sec-icon"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#info"></use></svg></span>
+            <h2 class="job-sec-name">{% translate "Workshop Note" %}</h2>
+          </div>
+          <span class="job-chevron"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#chevron-down"></use></svg></span>
+        </summary>
+        <div class="job-body">
+          {% translate "Anything worth recording about this car" as word %}
+          {% include "jobs/_box.html" with field=form.note word=word %}
+        </div>
+      </details>
+    {% endif %}
+
+    <div class="job-card">
+      <div class="job-sec-head">
+        <div class="job-sec-title">
+          <span class="job-sec-icon"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-alert"></use></svg></span>
+          <h2 class="job-sec-name">{% translate "Customer Concerns" %}</h2>
+        </div>
+      </div>
+      {% include "jobs/_rows.html" with list=forms.concerns %}
+    </div>
+
+    <div class="job-card">
+      <div class="job-sec-head">
+        <div class="job-sec-title">
+          <span class="job-sec-icon"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#wrench"></use></svg></span>
+          <h2 class="job-sec-name">{% translate "Job Performed" %}</h2>
+        </div>
+      </div>
+      {% include "jobs/_rows.html" with list=forms.job_lines %}
+      {% if perms.jobs.save_customer_and_labour %}
+        <div class="job-labour">
+          <div class="job-labour__box">
+            <label for="{{ form.labour.id_for_label }}">{{ form.labour.label }}</label>
+            {{ form.labour }}
+          </div>
+          {% include "jobs/_box_error.html" with field=form.labour %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if not locked %}
+      {% if card %}
+        <button class="btn job-save job-save--update" type="submit">
+          <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#check"></use></svg>
+          {% translate "Update Job Card" %}
+        </button>
+      {% else %}
+        <button class="btn btn--primary job-save" type="submit">
+          <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#plus"></use></svg>
+          {% translate "Save Job Card" %}
+        </button>
+      {% endif %}
+    {% endif %}
+  </fieldset>
+</form>
+
+{% if card and not locked and perms.jobs.cancel_job_card %}
+  <button class="btn job-cancel" type="button" data-dialog-open="job-cancel-card">
+    <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#x"></use></svg>
+    {% translate "Cancel job card" %}
+  </button>
+  <dialog class="confirm confirm--danger" id="job-cancel-card" aria-labelledby="job-cancel-title"{% if cancel_form.is_bound %} data-open-now{% endif %}>
+    <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg></div>
+    <h2 class="confirm__title" id="job-cancel-title">{% blocktranslate with number=card.number %}Cancel {{ number }}?{% endblocktranslate %}</h2>
+    <p class="confirm__text">{% blocktranslate with car=card.car.name plate=card.plate %}{{ car }}, {{ plate }}. The card and its number stay, with the reason. It cannot be brought back.{% endblocktranslate %}</p>
+    <form action="{% url 'jobs:cancel' card.pk %}" method="post">
+      {% csrf_token %}
+      <div class="field confirm__reason">
+        <label class="field__label" for="{{ cancel_form.reason.id_for_label }}">{{ cancel_form.reason.label }}</label>
+        {{ cancel_form.reason }}
+        {% if cancel_form.reason.errors %}<p class="field__error" id="{{ cancel_form.reason.auto_id }}_error">{{ cancel_form.reason.errors.0 }}</p>{% endif %}
+      </div>
+      <div class="confirm__actions">
+        <button class="btn" type="button" data-dialog-close>{% translate "Keep job card" %}</button>
+        <button class="btn btn--danger" type="submit">{% translate "Cancel job card" %}</button>
+      </div>
+    </form>
+  </dialog>
+{% endif %}
+{% endblock %}

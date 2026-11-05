@@ -1,0 +1,11 @@
+{% comment %}
+One row of a list. A new row with no words is the open row: its status stays grey, and typing
+into it opens the next (JOB-35). A job line has no status.
+{% endcomment %}
+<div class="job-row{% if new and not row.text.value %} is-open{% endif %}">
+  <div class="job-row__text">
+    {{ row.text }}
+    {% include "jobs/_box_error.html" with field=row.text %}
+  </div>
+  {% if row.status %}{{ row.status }}{% endif %}
+</div>

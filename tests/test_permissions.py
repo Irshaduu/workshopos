@@ -25,6 +25,7 @@ from test_queries import form_classes
 from apps.accounts.models import Role
 from apps.accounts.selectors import membership_of
 from apps.accounts.tests.factories import MembershipFactory, UserFactory
+from apps.jobs.tests.factories import JobCardFactory
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.workshops.models import Branch
 from apps.workshops.modules import MODULES
@@ -48,6 +49,7 @@ VISITORS = (SIGNED_OUT, OWNER, OFFICE, FLOOR, STAFF, SUPERUSER)
 TO_SIGN_IN = "/sign-in/"
 TO_HOME = "/"
 TO_STAFF_LIST = "/staff/"
+TO_NEW_JOB_CARD = "/job-cards/new/"
 
 #: A page's answer when only owners may in, and a GET goes on to this page.
 ONLY_OWNERS_GO_TO_STAFF_LIST = {
@@ -59,14 +61,40 @@ ONLY_OWNERS_GO_TO_STAFF_LIST = {
     SUPERUSER: 403,
 }
 
+#: A page's answer when every role of a workshop may in.
+EVERY_ROLE_OPENS = {
+    SIGNED_OUT: TO_SIGN_IN,
+    OWNER: 200,
+    OFFICE: 200,
+    FLOOR: 200,
+    STAFF: 403,
+    SUPERUSER: 403,
+}
+
 #: Each page's answer for each visitor: a status code, or the page it sends
 #: them to. Typed by hand.
 MATRIX = {
-    "accounts:home": {
+    # The home page, and a job card's pages: every role makes and changes job cards
+    # (JOB-53).
+    "jobs:live_board": EVERY_ROLE_OPENS,
+    "jobs:new": EVERY_ROLE_OPENS,
+    "jobs:edit": EVERY_ROLE_OPENS,
+    # A GET on a new key that is not saved goes back to the form, so a session that ended
+    # while someone saved comes back to a real page (SIGN-38).
+    "jobs:create": {
+        SIGNED_OUT: TO_SIGN_IN,
+        OWNER: TO_NEW_JOB_CARD,
+        OFFICE: TO_NEW_JOB_CARD,
+        FLOOR: TO_NEW_JOB_CARD,
+        STAFF: 403,
+        SUPERUSER: 403,
+    },
+    # Only Office and owners cancel (JOB-50).
+    "jobs:cancel": {
         SIGNED_OUT: TO_SIGN_IN,
         OWNER: 200,
         OFFICE: 200,
-        FLOOR: 200,
+        FLOOR: 403,
         STAFF: 403,
         SUPERUSER: 403,
     },
@@ -125,20 +153,22 @@ MATRIX = {
 #: Each page that finds a record by the key in its address, and how to make such a
 #: record, in the state the page would change. A new one adds its line here.
 RECORD_PAGES = {
+    "jobs:edit": JobCardFactory,
+    "jobs:cancel": JobCardFactory,
     "staff:edit": StaffMemberFactory,
     "staff:turn_off": StaffMemberFactory,
     "staff:turn_on": partial(StaffMemberFactory, is_active=False),
 }
 
 #: Each page whose key is a new record's, not yet saved (ADR-0022).
-NEW_KEY_PAGES = {"staff:new"}
+NEW_KEY_PAGES = {"staff:new", "jobs:create"}
 
 #: A permission that starts with one of these only shows (ROLE-5).
 SHOWING_WORDS = ("see_", "open_")
 
 
 def found_pages(resolver=None, prefix=""):
-    """Every address in the project, by name, like "accounts:home", with its view."""
+    """Every address in the project, by name, like "staff:list", with its view."""
     for item in (resolver or get_resolver()).url_patterns:
         if isinstance(item, URLResolver):
             if item.namespace in NOT_PAGES:

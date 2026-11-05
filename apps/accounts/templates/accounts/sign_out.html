@@ -22,7 +22,7 @@ asks how the account signs in, never its role (ROLE-7).
     </p>
     <form class="confirm__actions" action="{% url 'accounts:sign_out' %}" method="post">
       {% csrf_token %}
-      <a class="btn" href="{% url 'accounts:home' %}">{% translate "Stay signed in" %}</a>
+      <a class="btn" href="{% url 'jobs:live_board' %}">{% translate "Stay signed in" %}</a>
       <button class="btn btn--primary" type="submit">{% translate "Sign out" %}</button>
     </form>
   </div>

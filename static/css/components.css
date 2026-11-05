@@ -1024,4 +1024,6 @@
   .paint-brown { --paint: var(--paint-brown); }
   .paint-dark-brown { --paint: var(--paint-dark-brown); }
   .paint-unset { --paint: var(--paint-unset); }
+  /* A script sets Other's own colour, because a page has no inline style. */
+  .paint-other { --paint: var(--paint-unset); }
 }

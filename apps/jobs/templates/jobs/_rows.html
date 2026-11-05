@@ -1,0 +1,14 @@
+{% comment %}
+A list: the saved rows, then the new rows. A cancelled card has no new rows. The management
+form tells the server how many new rows were sent, and the script keeps it true (JOB-35).
+{% endcomment %}
+{% if list.new %}{{ list.new.management_form }}{% endif %}
+<div class="job-rows" data-rows>
+  {% for row in list.saved %}{% include "jobs/_row.html" %}{% endfor %}
+  {% if list.new %}
+    {% for row in list.new %}{% include "jobs/_row.html" with new=True %}{% endfor %}
+  {% endif %}
+</div>
+{% if list.new %}
+  <template data-row-template>{% include "jobs/_row.html" with row=list.blank new=True %}</template>
+{% endif %}

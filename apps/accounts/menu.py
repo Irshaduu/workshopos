@@ -24,6 +24,8 @@ class Link:
     page: str
     word: str
     icon: str
+    #: The start of the addresses this tab also lights for, when no other tab is lit.
+    under: str = ""
 
 
 @dataclass(frozen=True)
@@ -44,8 +46,9 @@ class RoleMenu:
 
 
 def _home(role):
-    # The home tab is named after the role (ROLE-25).
-    return Link("accounts:home", role.label, "house")
+    # The home tab is named after the role (ROLE-25). A job card's page has no tab of its
+    # own, so it lights this one (JOB-63).
+    return Link("jobs:live_board", role.label, "house", under="/job-cards/")
 
 
 #: The menu of Owner and Office, one shape as in v1 (ROLE-36). A row shows only to
@@ -62,7 +65,10 @@ ROLE_MENUS = {
     Role.OFFICE: RoleMenu(
         tabs=(_home(Role.OFFICE),), menu_word=_("Manage"), sections=OFFICE_SECTIONS
     ),
-    Role.FLOOR: RoleMenu(tabs=(_home(Role.FLOOR),), menu_word=_("Menu")),
+    # Floor makes most job cards, so its New is on the bar (ROLE-26).
+    Role.FLOOR: RoleMenu(
+        tabs=(_home(Role.FLOOR), Link("jobs:new", _("New"), "plus")), menu_word=_("Menu")
+    ),
 }
 
 
@@ -75,7 +81,15 @@ def _shown(links, request):
         address = reverse(link.page)
         if may_open(request.user, resolve(address).func):
             lit = request.path == address or (address != "/" and request.path.startswith(address))
-            found.append({"address": address, "word": link.word, "icon": link.icon, "lit": lit})
+            found.append(
+                {
+                    "address": address,
+                    "word": link.word,
+                    "icon": link.icon,
+                    "lit": lit,
+                    "under": link.under,
+                }
+            )
     return found
 
 
@@ -100,10 +114,21 @@ def tab_bar(request):
     role_menu = ROLE_MENUS[request.membership.role]
     tabs = _shown(role_menu.tabs, request)
     tab_lit = any(tab["lit"] for tab in tabs)
+    if not tab_lit:
+        for tab in tabs:
+            if tab["under"] and request.path.startswith(tab["under"]):
+                tab["lit"] = tab_lit = True
+                break
     row_lit = any(
         row["lit"] for section in _sections(role_menu, request) for row in section["rows"]
     )
     return {"tabs": tabs, "menu_word": role_menu.menu_word, "menu_lit": row_lit and not tab_lit}
+
+
+def on_the_tab_bar(request, page):
+    """Whether this person's tab bar already has this page, so another page need not offer
+    it too (ROLE-26)."""
+    return any(link.page == page for link in ROLE_MENUS[request.membership.role].tabs)
 
 
 def menu(request):

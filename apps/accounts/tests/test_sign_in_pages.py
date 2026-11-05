@@ -292,12 +292,3 @@ def test_sign_38_a_visitor_who_only_opened_a_page_is_told_nothing_was_lost(clien
 @pytest.mark.django_db
 def test_the_sign_in_pages_are_never_kept_by_the_browser(client):
     assert "no-store" in client.get(STEP_1)["Cache-Control"]
-
-
-@pytest.mark.django_db
-def test_the_home_page_says_who_is_signed_in_and_where(client, floor):
-    client.force_login(floor)
-
-    html = page(client.get(HOME))
-
-    assert "Signed in as ab.floor (Floor)." in html

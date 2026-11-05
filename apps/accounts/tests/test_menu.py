@@ -40,8 +40,14 @@ def stock_page(request):
     return render_app_page(request)
 
 
+@page("roles", "tests.see_stock")
+def home_page(request):
+    return render_app_page(request)
+
+
 urlpatterns = [
     path("", include("apps.accounts.urls")),
+    path("", home_page, name="home"),
     path("money/", money_page, name="money"),
     path("profit/", profit_page, name="profit"),
     path("stock/", stock_page, name="stock"),
@@ -49,7 +55,7 @@ urlpatterns = [
     path("shops/", stock_page, name="shops"),
 ]
 
-HOME = Link("accounts:home", "Home", "house")
+HOME = Link("home", "Home", "house")
 MONEY = Link("money", "Money", "wallet")
 STOCK = Link("stock", "Stock", "package")
 LOW_STOCK = Link("low_stock", "Low stock", "triangle-alert")
@@ -315,10 +321,20 @@ def test_role_35_a_page_of_the_app_has_one_link_to_sign_out(client):
 
 
 @pytest.mark.django_db
-def test_role_11_the_bar_and_the_menu_cost_no_query(client, django_assert_num_queries):
+def test_role_11_the_bar_and_the_menu_cost_no_query(client, sample_app, django_assert_num_queries):
     client = signed_in(client, Role.OWNER)
 
     # The same 6 as a page with no bar (test_middleware.py): the session, the
     # account, the membership, and saving the session.
     with django_assert_num_queries(6):
         client.get("/")
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("role", "has_new"), [(Role.OWNER, False), (Role.OFFICE, False), (Role.FLOOR, True)]
+)
+def test_role_26_only_floor_has_new_on_the_bar(client, role, has_new):
+    bar = bar_of(signed_in(client, role).get("/"))
+
+    assert ('href="/job-cards/new/"' in bar) is has_new
