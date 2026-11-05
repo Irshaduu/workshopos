@@ -33,6 +33,7 @@ costs.
 | [0026](0026-roles.md) | Roles: each app lists its permissions, and every page asks has_perm | Accepted |
 | [0027](0027-linked-devices.md) | Linked devices: no passwords for workshop people | Proposed |
 | [0028](0028-several-places.md) | Several places: one workshop by default | Accepted |
+| [0029](0029-money.md) | Money: one column and one box for every amount | Accepted |
 
 ## Rules
 
