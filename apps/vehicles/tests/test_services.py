@@ -4,15 +4,18 @@ import threading
 
 import pytest
 from django.core.exceptions import ValidationError
-from django.db import connection
+from django.db import connection, models
 
 from apps.vehicles.models import Car, CarBrand, CarModel, Colour, Customer
 from apps.vehicles.services import (
     car_brand_for,
     car_model_for,
-    car_on_a_new_card,
     change_car,
     customer_for,
+    empty_plate,
+    empty_vin,
+    new_car,
+    remove_if_unused,
 )
 from apps.vehicles.tests.factories import (
     CarBrandFactory,
@@ -94,59 +97,79 @@ def test_job_17_two_sends_at_one_moment_make_one_entry():
     assert CarBrand.objects.for_workshop(workshop).count() == 1
 
 
-# A new card's car.
+# A new car, and what another car gives up for the car in front of you.
 
 
-def typed_car(**more):
-    return {"plate": "KL10AA1000", "brand": "BMW", "car_model": "520d", **more}
+def test_job_14_a_new_car_finds_its_brand_and_model_on_their_lists():
+    brand = CarBrandFactory(name="BMW")
+    workshop = brand.workshop
 
+    car = new_car(workshop, "kl-10 aa 1000", "bmw", "520d")
+    change_car(workshop, car, {"chassis_code": "f 30", "vin": GOOD_VIN, "colour": Colour.RED})
 
-def test_job_14_a_plate_never_seen_makes_a_new_car():
-    workshop = WorkshopFactory()
-
-    car = car_on_a_new_card(
-        workshop,
-        **typed_car(plate="kl-10 aa 1000", chassis_code="f 30", vin=GOOD_VIN, colour=Colour.RED),
-    )
-
+    car = Car.objects.get(pk=car.pk)
     assert car.plate == "KL10AA1000"
+    assert car.car_model.brand == brand
     assert car.name == "BMW 520d"
     assert (car.chassis_code, car.vin, car.colour) == ("F30", GOOD_VIN, Colour.RED)
-    assert Car.objects.for_workshop(workshop).count() == 1
 
 
-def test_job_14_a_known_plate_finds_its_car():
-    known = CarFactory(plate="KL10AA1000")
+def test_known_3_a_car_that_gave_up_its_plate_keeps_everything_else():
+    car = CarFactory(plate="KL10AA1000", vin=GOOD_VIN)
 
-    assert car_on_a_new_card(known.workshop, **typed_car(plate="kl 10 aa 1000")) == known
-    assert Car.objects.for_workshop(known.workshop).count() == 1
+    empty_plate(car.workshop, car)
 
-
-def test_job_14_what_was_typed_replaces_what_the_record_says():
-    known = CarFactory(plate="KL10AA1000", chassis_code="F30")
-
-    car = car_on_a_new_card(known.workshop, **typed_car(chassis_code="G20"))
-
-    assert car.name == "BMW 520d"
-    assert Car.objects.get(pk=known.pk).chassis_code == "G20"
+    car.refresh_from_db()
+    assert (car.plate, car.vin) == ("", GOOD_VIN)
 
 
-def test_job_14_a_box_left_empty_changes_nothing():
-    known = CarFactory(
-        plate="KL10AA1000",
-        chassis_code="F30",
-        vin=GOOD_VIN,
-        colour=Colour.OTHER,
-        colour_other="#7f1d1d",
+def test_known_11_a_car_that_gave_up_its_vin_keeps_everything_else():
+    car = CarFactory(plate="KL10AA1000", vin=GOOD_VIN)
+
+    empty_vin(car.workshop, car)
+
+    car.refresh_from_db()
+    assert (car.plate, car.vin) == ("KL10AA1000", "")
+
+
+def test_known_16_a_car_nothing_holds_is_removed():
+    car = CarFactory()
+
+    remove_if_unused(car.workshop, car)
+
+    assert not Car.objects.filter(pk=car.pk).exists()
+
+
+def test_known_16_another_workshop_never_removes_or_empties_a_car():
+    car = CarFactory(plate="KL10AA1000", vin=GOOD_VIN)
+    other = WorkshopFactory()
+
+    remove_if_unused(other, car)
+    empty_plate(other, Car.objects.get(pk=car.pk))
+    empty_vin(other, Car.objects.get(pk=car.pk))
+
+    assert (Car.objects.get(pk=car.pk).plate, Car.objects.get(pk=car.pk).vin) == (
+        "KL10AA1000",
+        GOOD_VIN,
     )
 
-    car_on_a_new_card(
-        known.workshop, **typed_car(chassis_code="", vin="", colour="", colour_other="")
-    )
 
-    known.refresh_from_db()
-    assert (known.chassis_code, known.vin) == ("F30", GOOD_VIN)
-    assert (known.colour, known.colour_other) == (Colour.OTHER, "#7f1d1d")
+def test_known_16_every_link_to_a_car_refuses_its_delete():
+    # remove_if_unused trusts this: a link that lets a car go would lose its rows with no error.
+    links = [link for link in Car._meta.related_objects if link.on_delete is not None]
+
+    assert links
+    assert {link.on_delete for link in links} == {models.PROTECT}
+
+
+def test_job_16_a_car_is_never_saved_with_no_plate():
+    workshop = WorkshopFactory()
+
+    with pytest.raises(ValidationError) as refused:
+        change_car(workshop, new_car(workshop, "", "BMW", "520d"), {})
+
+    assert "plate" in errors_of(refused)
+    assert not Car.objects.for_workshop(workshop).exists()
 
 
 # Changing a car.
@@ -186,7 +209,8 @@ def test_job_15_a_free_plate_becomes_the_cars_plate():
     assert Car.objects.get(pk=car.pk).plate == "KL10AB2000"
 
 
-def test_job_15_a_plate_on_another_car_is_refused_naming_that_car():
+def test_job_16_a_plate_is_never_put_on_two_cars_and_the_refusal_names_the_other():
+    # The last guard, under the questions that come first (KNOWN-14).
     other = CarFactory(plate="KL10AA1000", car_model__brand__name="BMW", car_model__name="520d")
     car = CarFactory(workshop=other.workshop, plate="KL10AB2000")
 
@@ -197,7 +221,8 @@ def test_job_15_a_plate_on_another_car_is_refused_naming_that_car():
     assert Car.objects.get(pk=car.pk).plate == "KL10AB2000"
 
 
-def test_job_20_a_vin_on_another_car_is_refused_naming_that_car():
+def test_job_20_a_vin_is_never_put_on_two_cars_and_the_refusal_names_the_other():
+    # The last guard, under the questions that come first (KNOWN-11).
     other = CarFactory(
         plate="KL10AA1000", vin=GOOD_VIN, car_model__brand__name="BMW", car_model__name="520d"
     )

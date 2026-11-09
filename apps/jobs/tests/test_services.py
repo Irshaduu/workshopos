@@ -13,58 +13,19 @@ from apps.jobs.models import ConcernStatus, JobCard, JobCardStatus, StepKind
 from apps.jobs.selectors import cancelled_step, job_card, open_card_of, open_job_cards
 from apps.jobs.services import (
     CarHasOpenCard,
+    Question,
     RowRefused,
     cancel_job_card,
-    change_job_card,
     make_job_card,
 )
+from apps.jobs.tests.cards import change, fresh, make, said, typed
 from apps.jobs.tests.factories import ConcernFactory, JobCardFactory, JobLineFactory
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.vehicles.models import Car, Colour, Customer
 from apps.vehicles.tests.factories import CarFactory, CustomerFactory
-from apps.workshops.models import Branch
-from apps.workshops.tests.factories import BranchFactory, WorkshopFactory
+from apps.workshops.tests.factories import BranchFactory
 
 pytestmark = pytest.mark.django_db
-
-
-def typed(plate="KL10AA1000", **more):
-    return {
-        "plate": plate,
-        "brand": "BMW",
-        "car_model": "520d",
-        "admitted_date": timezone.localdate(),
-        **more,
-    }
-
-
-@pytest.fixture
-def place():
-    """A workshop, its first branch, and who acts."""
-    workshop = WorkshopFactory()
-    return workshop, Branch.objects.for_workshop(workshop).first(), UserFactory()
-
-
-def make(place, key=None, concerns=(), job_lines=(), **more):
-    workshop, branch, by = place
-    return make_job_card(
-        workshop,
-        branch,
-        key or uuid.uuid7(),
-        by,
-        typed=typed(**more),
-        concerns=concerns,
-        job_lines=job_lines,
-    )
-
-
-def change(place, card, **more):
-    workshop, branch, by = place
-    return change_job_card(workshop, branch, card.pk, by, changes=more.pop("changes", {}), **more)
-
-
-def fresh(card):
-    return JobCard.objects.get(pk=card.pk)
 
 
 def kinds(card):
@@ -132,7 +93,9 @@ def test_job_26_a_card_may_have_no_customer_and_makes_no_record(place):
 
 def test_job_14_a_known_plate_joins_its_car(place):
     workshop, branch, by = place
-    car = CarFactory(workshop=workshop, plate="KL10AA1000")
+    car = CarFactory(
+        workshop=workshop, plate="KL10AA1000", car_model__brand__name="BMW", car_model__name="520d"
+    )
 
     card = make(place, plate="kl-10 aa 1000")
 
@@ -278,7 +241,8 @@ def test_job_13_a_new_plate_changes_the_car_from_that_day_and_an_old_card_keeps_
     cancel_job_card(workshop, branch, old.pk, by, "Finished for this test")
     new = make(place, plate="KL10AA1000")
 
-    change(place, new, changes={"plate": "TN01AB2000"})
+    # The car has another visit, so the save asks first (KNOWN-15).
+    change(place, new, changes={"plate": "TN01AB2000"}, answers={said("plate", "new", new.car)})
 
     assert fresh(new).plate == "TN01AB2000"
     assert fresh(new).car.plate == "TN01AB2000"
@@ -286,17 +250,17 @@ def test_job_13_a_new_plate_changes_the_car_from_that_day_and_an_old_card_keeps_
     assert fresh(old).car == fresh(new).car
 
 
-def test_job_15_a_plate_on_another_car_is_refused_and_nothing_changes(place):
+def test_job_15_a_plate_on_another_car_asks_first_and_changes_nothing(place):
     workshop, _branch, _by = place
     other = CarFactory(
         workshop=workshop, plate="KL10AB2000", car_model__brand__name="Audi", car_model__name="A4"
     )
     card = make(place, plate="KL10AA1000")
 
-    with pytest.raises(ValidationError) as refused:
+    with pytest.raises(Question) as asked:
         change(place, card, changes={"plate": other.plate, "mileage": 5000})
 
-    assert refused.value.message_dict == {"plate": ["This plate is on another car, Audi A4."]}
+    assert (asked.value.kind, asked.value.car) == ("move", other)
     assert fresh(card).plate == "KL10AA1000"
     assert fresh(card).mileage is None
 

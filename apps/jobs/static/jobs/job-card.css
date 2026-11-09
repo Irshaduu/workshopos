@@ -174,7 +174,14 @@
   }
 
   /* A name for screen readers: every box's section title says it on screen. */
-  .job-legend {
+  /* The plain button that takes Enter on a page with a question (KNOWN-13). */
+  .job-enter {
+    padding: 0;
+    border: 0;
+  }
+
+  .job-legend,
+  .job-enter {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -343,6 +350,94 @@
     margin-bottom: 0;
   }
 
+  /* Use last visit sits right after the name's label, not at the far edge, where v1 found it
+     read as the next label's (KNOWN-7). */
+  .job-label-row--start {
+    justify-content: flex-start;
+  }
+
+  .job-use-last {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-primary-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* A finger gets the full tap height, and the label line keeps its own. */
+  .job-use-last::after {
+    content: "";
+    position: absolute;
+    inset: calc((100% - var(--tap-min)) / 2) calc(-1 * var(--space-3));
+  }
+
+  .job-use-last:hover {
+    text-decoration: underline;
+  }
+
+  /* What the plate found, under its box, only when it matters (KNOWN-9). */
+  .job-known__line {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0;
+    color: var(--color-primary-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-tight);
+  }
+
+  .job-known__line .icon {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.1em;
+  }
+
+  /* A question before a save (KNOWN-13): a card at the top of the form, amber because
+     nothing is wrong yet and a person must decide. Its answers send the form again. */
+  .job-question {
+    margin-bottom: var(--space-4);
+  }
+
+  .job-question__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    color: var(--color-warning-text);
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+  }
+
+  .job-question__text {
+    margin: var(--space-2) 0 0;
+  }
+
+  .job-question__answers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  /* The answers weigh the same, so neither is the easy tap. They stack on a phone, and sit
+     side by side, never wider than a thumb needs, on a wider screen. */
+  .job-question__answers .btn {
+    flex: 1 1 var(--job-answer-min-width);
+    max-width: var(--job-answer-max-width);
+  }
+
+  .job-question__more {
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
   .job-input {
     width: 100%;
     min-height: var(--tap-min);
@@ -361,17 +456,28 @@
   }
 
   /* An empty box wears a red hairline until it is filled, in colour only, so nothing moves
-     (JOB-48). The mark is an empty placeholder, declared on the field in forms.py. */
-  .job-input:enabled:placeholder-shown,
+     (JOB-48). The mark is an empty placeholder, declared on the field in forms.py. A box
+     showing the last customer has words of its own, and no hairline (KNOWN-7). */
+  .job-input:enabled:placeholder-shown:not(.is-offered),
   select.job-input:enabled:has(option[value=""]:checked) {
     border-color: var(--color-danger);
     background: var(--color-surface);
   }
 
-  /* A changed box: an edge painted inside the box, so nothing moves (JOB-47). */
+  /* A changed box: an edge painted inside the box, so nothing moves (JOB-47). v1's amber is
+     2.15 to 1 on white, under the 3 to 1 a box's edge needs (WCAG 1.4.11), so the outer line
+     is the dark amber and v1's amber stays inside it. */
   .job-input.is-changed {
-    border-color: var(--color-save);
+    border-color: var(--color-warning-text);
     box-shadow: inset 0 0 0 1px var(--color-save);
+  }
+
+  /* The last customer, offered, never filled (KNOWN-7): italic words inside the empty box,
+     so they never pass for typing. */
+  .job-input.is-offered::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+    opacity: 1;
   }
 
   /* An error is shown by its message and a thicker red edge, never by colour alone. */

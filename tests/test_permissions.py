@@ -79,6 +79,8 @@ MATRIX = {
     "jobs:live_board": EVERY_ROLE_OPENS,
     "jobs:new": EVERY_ROLE_OPENS,
     "jobs:edit": EVERY_ROLE_OPENS,
+    # A known plate fills a new card for every role (KNOWN-18).
+    "jobs:known_plate": EVERY_ROLE_OPENS,
     # A GET on a new key that is not saved goes back to the form, so a session that ended
     # while someone saved comes back to a real page (SIGN-38).
     "jobs:create": {

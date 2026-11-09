@@ -1,1 +1,2 @@
 {% if field.errors %}<p class="field__error" id="{{ field.auto_id }}_error">{{ field.errors.0 }}</p>{% endif %}
+{% if open_card and open_card_box == field.name %}{% include "jobs/_open_card.html" with open=open_card %}{% endif %}

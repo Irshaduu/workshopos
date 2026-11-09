@@ -1,0 +1,74 @@
+{% load i18n static %}
+{% comment %}
+What a save asks before it uses one car's record for another (docs/rules/known-plate.md,
+KNOWN-13): a card at the top of the form, with everything typed kept below it. Each answer
+is a button that sends the form again, naming the car the question is about. Fixing a box
+and saving again is always a way out. It works with no script. One block for each question,
+so each can be read, and translated, whole.
+{% endcomment %}
+{% partialdef last_in %}{% if question.last_in %}{% blocktranslate with day=question.last_in %}Last in on {{ day }}.{% endblocktranslate %}{% endif %}{% endpartialdef %}
+{% partialdef plate_now %}{% if question.car.plate %}{% blocktranslate with today=question.car.plate %}Its plate now is {{ today }}.{% endblocktranslate %}{% else %}{% translate "It has no plate now." %}{% endif %}{% endpartialdef %}
+{% with key=question.car.pk name=question.car.name typed=question.plate today=question.car.plate|default:_("no plate now") %}
+<div class="card card--warning job-question" role="alert" data-sound-tag="warning">
+  {% if question.kind == "brand" %}
+    <h2 class="job-question__title"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg>{% translate "Is this the same car?" %}</h2>
+    {% if card %}
+      <p class="job-question__text">{% blocktranslate %}{{ name }}, {{ today }}, has earlier visits.{% endblocktranslate %} {% partial last_in %} {% translate "Is the car in front of you that car?" %}</p>
+    {% elif question.old %}
+      <p class="job-question__text">{% blocktranslate %}{{ typed }} was a plate of {{ name }}.{% endblocktranslate %} {% partial plate_now %} {% partial last_in %} {% translate "Is the car in front of you that car?" %}</p>
+    {% else %}
+      <p class="job-question__text">{% blocktranslate %}{{ typed }} is the plate of {{ name }}.{% endblocktranslate %} {% partial last_in %} {% translate "Is the car in front of you that car?" %}</p>
+    {% endif %}
+    <div class="job-question__answers">
+      <button class="btn" type="submit" name="answers" value="brand:same:{{ key }}">{% translate "Yes, same car" %}</button>
+      <button class="btn" type="submit" name="answers" value="brand:another:{{ key }}">{% translate "No, another car" %}</button>
+    </div>
+    {% if card %}
+      <p class="job-question__more">{% blocktranslate %}If it is another car, this job card moves to a new car with {{ typed }}, and {{ name }} keeps its visits. Or fix the plate or the brand below and save again.{% endblocktranslate %}</p>
+    {% elif question.old %}
+      <p class="job-question__more">{% blocktranslate %}If it is another car, this car takes {{ typed }}, and nothing changes on {{ name }}. Or fix the plate below and save again.{% endblocktranslate %}</p>
+    {% else %}
+      <p class="job-question__more">{% blocktranslate %}If it is another car, this car takes {{ typed }}, and {{ name }} keeps its visits. Or fix the plate or the brand below and save again.{% endblocktranslate %}</p>
+    {% endif %}
+  {% elif question.kind == "vin" and question.same %}
+    <h2 class="job-question__title"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg>{% translate "Is this the same car?" %}</h2>
+    <p class="job-question__text">{% blocktranslate %}This VIN is on {{ name }}, {{ today }}.{% endblocktranslate %} {% partial last_in %} {% blocktranslate %}Is it the same car, now with {{ typed }}?{% endblocktranslate %}</p>
+    <div class="job-question__answers">
+      <button class="btn" type="submit" name="answers" value="vin:same:{{ key }}">{% translate "Yes, same car" %}</button>
+      <button class="btn" type="submit" name="answers" value="vin:keep:{{ key }}">{% translate "No, another car" %}</button>
+    </div>
+    <p class="job-question__more">{% blocktranslate %}If it is another car, this car keeps the VIN, and the VIN of {{ name }} is asked again at its next visit. Or fix the VIN below and save again.{% endblocktranslate %}</p>
+  {% elif question.kind == "vin" %}
+    <h2 class="job-question__title"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg>{% translate "Check the VIN" %}</h2>
+    <p class="job-question__text">{% blocktranslate %}This VIN is on {{ name }}, {{ today }}.{% endblocktranslate %} {% partial last_in %} {% translate "Check it on this car's RC." %}</p>
+    <div class="job-question__answers">
+      <button class="btn" type="submit" name="answers" value="vin:keep:{{ key }}">{% translate "The VIN is right" %}</button>
+    </div>
+    <p class="job-question__more">{% blocktranslate %}Then the VIN of {{ name }} is asked again at its next visit. Or fix the VIN below and save again.{% endblocktranslate %}</p>
+  {% elif question.kind == "move" %}
+    <h2 class="job-question__title"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg>{% translate "Move this job card?" %}</h2>
+    {% if question.old %}
+      <p class="job-question__text">{% blocktranslate %}{{ typed }} was a plate of {{ name }}.{% endblocktranslate %} {% partial plate_now %} {% partial last_in %} {% translate "Is the car in front of you that car?" %}</p>
+    {% else %}
+      <p class="job-question__text">{% blocktranslate %}{{ typed }} is the plate of {{ name }}.{% endblocktranslate %} {% partial last_in %}</p>
+    {% endif %}
+    <div class="job-question__answers">
+      <button class="btn" type="submit" name="answers" value="move:move:{{ key }}">{% translate "Move job card" %}</button>
+      {% if question.old %}<button class="btn" type="submit" name="answers" value="move:another:{{ key }}">{% translate "No, another car" %}</button>{% endif %}
+    </div>
+    <p class="job-question__more">
+      {% blocktranslate with number=card.number %}{{ number }} keeps its number and everything on it, and the car's boxes then show that car's own.{% endblocktranslate %}
+      {% if question.old %}{% blocktranslate %}If it is another car, this car takes {{ typed }}, and nothing changes on {{ name }}.{% endblocktranslate %}{% endif %}
+      {% translate "Or fix the plate below and save again." %}
+    </p>
+  {% else %}
+    <h2 class="job-question__title"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg>{% translate "Is this a new plate?" %}</h2>
+    <p class="job-question__text">{% blocktranslate %}{{ name }} has the plate {{ today }}, with earlier visits. Did it get a new plate, {{ typed }}?{% endblocktranslate %}</p>
+    <div class="job-question__answers">
+      <button class="btn" type="submit" name="answers" value="plate:new:{{ key }}">{% translate "Yes, a new plate" %}</button>
+      <button class="btn" type="submit" name="answers" value="plate:another:{{ key }}">{% translate "No, another car" %}</button>
+    </div>
+    <p class="job-question__more">{% blocktranslate %}A new plate is the car's from today, and its earlier job cards keep theirs. If it is another car, this job card moves to a new car with {{ typed }}, and {{ name }} keeps {{ today }}.{% endblocktranslate %}</p>
+  {% endif %}
+</div>
+{% endwith %}

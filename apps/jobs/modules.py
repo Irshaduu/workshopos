@@ -7,4 +7,6 @@ from apps.workshops.modules import Module
 MODULES = (
     Module("live_board", _("Live board")),
     Module("job_card", _("Job card")),
+    # Here, not in vehicles: it reads job cards, for old plates and the last customer.
+    Module("known_plate", _("Known plate")),
 )

@@ -16,15 +16,22 @@ from django.views.decorators.http import require_GET, require_http_methods
 from apps.accounts.decorators import page
 from apps.accounts.menu import on_the_tab_bar
 from apps.jobs.forms import CancelForm, CardForms
-from apps.jobs.selectors import cancelled_step, job_card, open_job_cards, saved_job_card
+from apps.jobs.selectors import (
+    cancelled_step,
+    job_card,
+    known_car,
+    open_job_cards,
+    saved_job_card,
+)
 from apps.jobs.services import (
     CarHasOpenCard,
+    Question,
     RowRefused,
     cancel_job_card,
     change_job_card,
     make_job_card,
 )
-from apps.vehicles.models import tidy_plate
+from apps.vehicles.models import plate_problem, tidy_plate
 
 
 @page("live_board", "jobs.see_live_board")
@@ -50,10 +57,19 @@ def job_card_new(request):
     return _card_page(request, forms, new_key=uuid.uuid7())
 
 
+@page("known_plate", "jobs.see_known_plate")
+@require_GET
+def known_plate(request):
+    """What the workshop knows about a typed plate, as a part of the job card's page (KNOWN-4,
+    KNOWN-19). The customer comes only for a role whose form has the customer (KNOWN-8)."""
+    known = _known_for(request, request.GET.get("plate", ""))
+    return render(request, "jobs/job_card.html#known_plate", {"known": known})
+
+
 @page("job_card", "jobs.save_job_card")
 @require_http_methods(["GET", "POST"])
 def job_card_create(request, key):
-    """Makes a job card, once (JOB-42)."""
+    """Makes a job card, once (JOB-42). A save that asks first shows its question (KNOWN-13)."""
     # First, because the form's checks would refuse a repeat as a second open card.
     saved = saved_job_card(request.workshop, request.branch, key)
     if saved is not None:
@@ -61,7 +77,8 @@ def job_card_create(request, key):
     if request.method == "GET":
         return redirect("jobs:new")
     forms = CardForms.of(request.user, request.workshop, request.branch, data=request.POST)
-    open_card = None
+    answers = request.POST.getlist("answers")
+    stopped = {}
     if forms.is_valid():
         try:
             card = make_job_card(
@@ -72,15 +89,18 @@ def job_card_create(request, key):
                 typed=forms.main.cleaned_data,
                 concerns=forms.concerns.new_rows(),
                 job_lines=forms.job_lines.new_rows(),
+                answers=answers,
             )
+        except Question as asked:
+            stopped = {"question": asked}
         except CarHasOpenCard as refused:
-            open_card = refused.card
+            stopped = {"open_card": refused.card, "open_card_box": refused.box}
             forms.refuse(refused)
         except ValidationError as refused:
             forms.refuse(refused)
         else:
             return _made(request, card)
-    return _card_page(request, forms, new_key=key, open_card=open_card)
+    return _card_page(request, forms, new_key=key, answers=answers, **stopped)
 
 
 @page("job_card", "jobs.save_job_card")
@@ -95,6 +115,8 @@ def job_card_edit(request, key):
     if not card.is_open:
         messages.error(request, _("This job card is cancelled, so nothing was saved."))
         return _open(card)
+    answers = request.POST.getlist("answers")
+    stopped = {}
     if forms.is_valid():
         try:
             saved = change_job_card(
@@ -107,7 +129,13 @@ def job_card_edit(request, key):
                 new_concerns=forms.concerns.new_rows(),
                 saved_lines=forms.job_lines.saved_changes(),
                 new_lines=forms.job_lines.new_rows(),
+                answers=answers,
             )
+        except Question as asked:
+            stopped = {"question": asked}
+        except CarHasOpenCard as refused:
+            stopped = {"open_card": refused.card, "open_card_box": refused.box}
+            forms.refuse(refused)
         except RowRefused as refused:
             forms.refuse_row(refused)
         except ValidationError as refused:
@@ -115,7 +143,7 @@ def job_card_edit(request, key):
         else:
             messages.success(request, _("%(plate)s updated.") % {"plate": saved.plate})
             return _open(card)
-    return _card_page(request, forms, card=card)
+    return _card_page(request, forms, card=card, answers=answers, **stopped)
 
 
 @page("job_card", "jobs.cancel_job_card")
@@ -167,8 +195,33 @@ def _repeat(request, saved):
     return _open(saved)
 
 
-def _card_page(request, forms, *, card=None, new_key=None, open_card=None, cancel_form=None):
-    """The one page of a job card, new, saved, refused or cancelled."""
+def _known_for(request, typed):
+    """What the workshop knows about a typed plate (KNOWN-1): nothing for what cannot be a plate,
+    and the customer only for a role whose form has the customer (KNOWN-8). A form sent with no
+    plate box at all has None here."""
+    plate = tidy_plate(typed or "")
+    if plate_problem(plate):
+        return None
+    return known_car(
+        request.workshop,
+        plate,
+        with_customer=request.user.has_perm("jobs.save_customer_and_labour"),
+    )
+
+
+def _card_page(
+    request,
+    forms,
+    *,
+    card=None,
+    new_key=None,
+    open_card=None,
+    open_card_box=None,
+    question=None,
+    answers=(),
+    cancel_form=None,
+):
+    """The one page of a job card, new, saved, refused, asking or cancelled."""
     bound = forms.main.is_bound
     problems = forms.problems() if bound else []
     context = {
@@ -183,9 +236,14 @@ def _card_page(request, forms, *, card=None, new_key=None, open_card=None, cance
             len(problems),
         )
         % {"count": len(problems)},
-        # A link to the open card only when it is in this branch: another branch's is
-        # never found (JOB-4).
-        "open_card": open_card if open_card and open_card.branch_id == request.branch.pk else None,
+        "question": question,
+        # The answers given come back only with the next question. A refused save forgets them,
+        # so each can be given again, differently (KNOWN-13).
+        "kept_answers": answers if question is not None else (),
+        # A page that comes back keeps what the plate found (KNOWN-5, KNOWN-7, KNOWN-9).
+        "known": _known_for(request, forms.main["plate"].value()) if new_key and bound else None,
+        "open_card": open_card,
+        "open_card_box": open_card_box,
         "cancel_form": cancel_form or CancelForm(),
         "cancelled": (
             cancelled_step(request.workshop, card)

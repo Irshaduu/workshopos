@@ -1,0 +1,4 @@
+{% load i18n %}{% comment %}
+A link to an open job card, only when it is in this branch: another branch's is never found
+(JOB-4).
+{% endcomment %}{% if open.branch_id == request.branch.pk %}<a class="btn job-open-card" href="{% url 'jobs:edit' open.pk %}">{% blocktranslate with number=open.number %}Open {{ number }}{% endblocktranslate %}</a>{% endif %}

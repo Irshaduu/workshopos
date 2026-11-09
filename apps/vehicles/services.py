@@ -1,7 +1,10 @@
 """Changes in vehicles: rules that change data (ADR-0005)."""
 
+from contextlib import suppress
+
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
+from django.db.models import ProtectedError
 from django.utils.translation import gettext as _
 
 from apps.core.text import tidy_name, tidy_spaces
@@ -10,10 +13,11 @@ from apps.vehicles.models import (
     CarBrand,
     CarModel,
     Customer,
+    plate_problem,
     tidy_contact_number,
     tidy_plate,
 )
-from apps.vehicles.selectors import car_with_plate
+from apps.vehicles.selectors import car_brand_named, car_with_plate, car_with_vin
 
 
 def _saved_or_found(record, found):
@@ -38,7 +42,7 @@ def car_brand_for(workshop, typed):
     name = tidy_name(typed)
 
     def found():
-        return CarBrand.objects.for_workshop(workshop).filter(name__iexact=name).first()
+        return car_brand_named(workshop, name)
 
     return found() or _saved_or_found(CarBrand(workshop=workshop, name=name), found)
 
@@ -57,28 +61,28 @@ def car_model_for(workshop, brand, typed):
 
 
 def _refuse_a_taken_plate_or_vin(car):
-    """A plate or a VIN on another car is refused next to its box, naming that car
-    (JOB-15, JOB-20)."""
-    words = {
-        "plate": _("This plate is on another car, %(car)s."),
-        "vin": _("This VIN is on another car, %(car)s (%(plate)s)."),
-    }
-    for box, taken in words.items():
-        if value := getattr(car, box):
-            other = (
-                Car.objects.for_workshop(car.workshop)
-                .filter(**{box: value})
-                .exclude(pk=car.pk)
-                .select_related("car_model__brand")
-                .first()
-            )
-            if other is not None:
-                raise ValidationError({box: taken % {"car": other.name, "plate": other.plate}})
+    """A plate or a VIN is never put on two cars, and the refusal names the other car (JOB-16,
+    JOB-20). The last guard, under the questions a job card's save asks first (KNOWN-11,
+    KNOWN-14)."""
+    other = car_with_plate(car.workshop, car.plate, besides=car)
+    if other is not None:
+        words = _("This plate is on another car, %(car)s.") % {"car": other.name}
+        raise ValidationError({"plate": words})
+    other = car_with_vin(car.workshop, car.vin, besides=car)
+    if other is not None:
+        words = _("This VIN is on another car, %(car)s (%(plate)s).") % {
+            "car": other.name,
+            "plate": other.plate or _("no plate now"),
+        }
+        raise ValidationError({"vin": words})
 
 
 def _save(car):
-    """Checks a car and saves it, new or not."""
+    """Checks a car and saves it, new or not. A car saved here always has a plate: only
+    empty_plate() leaves one without (KNOWN-3)."""
     car.clean()
+    if problem := plate_problem(car.plate):
+        raise ValidationError({"plate": problem})
     _refuse_a_taken_plate_or_vin(car)
     try:
         car.full_clean()
@@ -111,21 +115,37 @@ def change_car(workshop, car, changes):
     return car
 
 
-def car_on_a_new_card(workshop, *, plate, brand, car_model, **changes):
-    """The car a new job card is for (JOB-14).
+def new_car(workshop, plate, brand, car_model):
+    """A car the workshop has never seen, not saved yet: `change_car()` saves it. Its brand
+    and model are found on their lists, or join them (JOB-14, JOB-17)."""
+    car = Car(workshop=workshop, plate=tidy_plate(plate))
+    car.car_model = car_model_for(workshop, car_brand_for(workshop, brand), car_model)
+    return car
 
-    A plate the workshop knows finds its car, and a plate it has never seen makes a new
-    one. What was typed is the car in front of you, so it replaces what the record says,
-    and a box left empty changes nothing.
+
+def empty_plate(workshop, car):
+    """The car in front of you took this car's plate. It keeps its visits, and its VIN finds
+    it again (KNOWN-3, KNOWN-10)."""
+    Car.objects.for_workshop(workshop).filter(pk=car.pk).update(plate="")
+    car.plate = ""
+
+
+def empty_vin(workshop, car):
+    """The car in front of you keeps this VIN, checked against its RC, so this car's empty
+    box asks for it again at its next visit (KNOWN-11)."""
+    Car.objects.for_workshop(workshop).filter(pk=car.pk).update(vin="")
+    car.vin = ""
+
+
+def remove_if_unused(workshop, car):
+    """Removes a car that a move left with no job card: it was made by mistake (KNOWN-16).
+
+    It asks no job card: Django's PROTECT refuses to delete a car that anything still points
+    to, so a car with any job card is never removed. A test holds every link to a car to
+    PROTECT.
     """
-    plate = tidy_plate(plate)
-    filled = {box: value for box, value in changes.items() if value}
-    car = car_with_plate(workshop, plate)
-    if car is None:
-        car = Car(workshop=workshop, plate=plate)
-        car.car_model = car_model_for(workshop, car_brand_for(workshop, brand), car_model)
-        return change_car(workshop, car, filled)
-    return change_car(workshop, car, {"brand": brand, "car_model": car_model, **filled})
+    with suppress(ProtectedError):
+        Car.objects.for_workshop(workshop).filter(pk=car.pk).delete()
 
 
 def customer_for(workshop, name, contact_number):
