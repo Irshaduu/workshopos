@@ -1,4 +1,7 @@
-"""Safe defaults from the first app: sign-in, a strict CSP, one language, and a small admin."""
+"""Safe defaults from the first app: sign-in, a strict CSP, one language, a small admin, and
+the htmx file as it was checked."""
+
+import hashlib
 
 from django.contrib import admin
 from django.http import HttpResponse
@@ -22,6 +25,11 @@ ADMIN_MODELS = {
     "workshops.Workshop": "suspend or rename a workshop",
     "workshops.Branch": "rename a branch",
 }
+
+#: The htmx file kept in the repo (ADR-0016): `dist/htmx.min.js` of htmx.org 4.0.1, from the
+#: npm registry, whose own checksums matched it on 2026-11-06. A new version changes this line
+#: in the same commit, so a file changed by anything else fails here.
+HTMX_SHA256 = "a0abb04f2f45a1f89d1d4844023245537e5e6014c87b144553e0607b4cc32130"
 
 
 def test_a_page_needs_sign_in_unless_it_is_marked_public(client, settings):
@@ -52,3 +60,9 @@ def test_english_is_the_only_language_until_a_second_is_wanted(settings):
 
 def test_business_records_are_never_in_the_admin():
     assert {model._meta.label for model in admin.site._registry} == ADMIN_MODELS.keys()
+
+
+def test_the_htmx_file_is_the_one_checked(settings):
+    htmx = settings.BASE_DIR / "static" / "vendor" / "htmx" / "htmx.min.js"
+
+    assert hashlib.sha256(htmx.read_bytes()).hexdigest() == HTMX_SHA256

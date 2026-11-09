@@ -5,6 +5,7 @@ from datetime import timedelta
 
 from django.db.models import Count, Max
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from apps.accounts.models import Membership, Role, SignInCode, User
 from apps.workshops.models import Branch
@@ -21,6 +22,14 @@ CODE_TIME = timedelta(minutes=10)
 WRONG_CODES = 5
 CODE_GAP = timedelta(minutes=1)
 CODES_PER_HOUR = 3
+
+
+def on_this_site(request, url):
+    """Whether this address is on this site, so going there can never send someone to
+    another site (SIGN-13, SIGN-39)."""
+    return url_has_allowed_host_and_scheme(
+        url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    )
 
 
 def membership_of(user):

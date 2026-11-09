@@ -290,5 +290,34 @@ def test_sign_38_a_visitor_who_only_opened_a_page_is_told_nothing_was_lost(clien
 
 
 @pytest.mark.django_db
+def test_sign_39_a_request_from_inside_a_page_sends_the_whole_page_to_sign_in(client):
+    inside = {"HX-Request": "true", "HX-Current-URL": "http://testserver/job-cards/new/"}
+
+    response = client.get(HOME, headers=inside)
+
+    # A 204 carries no part of a page, and htmx's docs ask for a 2xx with HX-Redirect.
+    assert response.status_code == 204
+    assert response.content == b""
+    assert response["HX-Redirect"] == f"{STEP_1}?next=/job-cards/new/"
+
+
+@pytest.mark.django_db
+def test_sign_39_the_page_to_go_back_to_is_always_on_this_site(client):
+    elsewhere = {"HX-Request": "true", "HX-Current-URL": "https://elsewhere.example/job-cards/"}
+
+    response = client.get(HOME, headers=elsewhere)
+
+    assert response["HX-Redirect"] == f"{STEP_1}?next=/"
+
+
+@pytest.mark.django_db
+def test_sign_39_a_page_with_no_htmx_header_still_goes_to_sign_in_itself(client):
+    response = client.get(HOME, headers={"HX-Current-URL": "http://testserver/job-cards/new/"})
+
+    assert response.status_code == 302
+    assert response.url == f"{STEP_1}?next={HOME}"
+
+
+@pytest.mark.django_db
 def test_the_sign_in_pages_are_never_kept_by_the_browser(client):
     assert "no-store" in client.get(STEP_1)["Cache-Control"]
