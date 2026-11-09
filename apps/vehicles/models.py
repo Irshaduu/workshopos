@@ -171,11 +171,13 @@ class Car(WorkshopModel):
     """One car in a workshop, with its whole history (JOB-11).
 
     It keeps its plate today. Each job card keeps the plate it came with, so a new plate
-    changes the car from that day on (JOB-13). It has no owner: a car's customer is the
-    one on its newest job card that has one, so a sale is only the next card (JOB-29).
+    changes the car from that day on (JOB-13). It can be left with no plate for a while,
+    when the car in front of you takes it, and its VIN finds it again (KNOWN-3). It has no
+    owner: a car's customer is the one on its newest job card that has one, so a sale is
+    only the next card (JOB-29).
     """
 
-    plate = models.CharField(_("plate number"), max_length=PLATE_MAX_LENGTH)
+    plate = models.CharField(_("plate number"), max_length=PLATE_MAX_LENGTH, blank=True)
     car_model = models.ForeignKey(
         CarModel, on_delete=models.PROTECT, related_name="cars", verbose_name=_("car model")
     )
@@ -194,6 +196,7 @@ class Car(WorkshopModel):
             SameWorkshop("car_model", name="vehicles_car_car_model_same_workshop"),
             models.UniqueConstraint(
                 fields=["workshop", "plate"],
+                condition=~Q(plate=""),
                 name="vehicles_car_plate_once",
                 violation_error_message=_("This plate is on another car."),
             ),
@@ -203,8 +206,9 @@ class Car(WorkshopModel):
                 name="vehicles_car_vin_once",
                 violation_error_message=_("This VIN is on another car."),
             ),
+            # Empty only when another car took the plate (KNOWN-3).
             models.CheckConstraint(
-                condition=Q(plate__regex=r"^[A-Z0-9]+$"),
+                condition=Q(plate__regex=r"^[A-Z0-9]*$"),
                 name="vehicles_car_plate_form",
                 violation_error_message=PLATE_FORM,
             ),
@@ -231,7 +235,7 @@ class Car(WorkshopModel):
         ]
 
     def __str__(self):
-        return self.plate
+        return self.plate or self.name
 
     def clean(self):
         # Here, so every service that checks a car before saving tidies it.
