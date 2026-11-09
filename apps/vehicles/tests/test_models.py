@@ -65,7 +65,7 @@ def test_job_16_a_vin_fits_in_the_plate_box_for_a_car_with_no_plate_yet():
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("plate", ["KL 10", "kl10", "", "KL-10"])
+@pytest.mark.parametrize("plate", ["KL 10", "kl10", "KL-10"])
 def test_job_16_postgresql_holds_the_plates_form(plate):
     refused_by_postgresql(lambda: CarFactory(plate=plate))
 
@@ -76,6 +76,16 @@ def test_job_16_a_plate_belongs_to_one_car_in_a_workshop():
     CarFactory(workshop=workshop, plate="KL10AA1000")
 
     refused_by_postgresql(lambda: CarFactory(workshop=workshop, plate="KL10AA1000"))
+
+
+@pytest.mark.django_db
+def test_known_3_a_car_can_be_left_with_no_plate_and_many_cars_can():
+    workshop = WorkshopFactory()
+
+    one = CarFactory(workshop=workshop, plate="")
+    CarFactory(workshop=workshop, plate="")
+
+    assert str(one) == one.name
 
 
 @pytest.mark.django_db
