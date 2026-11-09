@@ -207,10 +207,12 @@
     }
   }
 
-  /* A changed box: an edge painted inside the box, so nothing moves (v1). */
+  /* A changed box: an edge painted inside the box, so nothing moves (v1). v1's amber
+     is 2.15 to 1 on white, under the 3 to 1 a box's edge needs, so the outer line is
+     the dark amber and v1's amber stays inside it. */
   .jc1-input.is-changed {
     box-shadow: inset 0 0 0 1px var(--color-save);
-    border-color: var(--color-save);
+    border-color: var(--color-warning-text);
   }
 
   /* The car's rail: an edge for a white car, and hatched for no colour, because plain
@@ -988,5 +990,111 @@
 
   .jc1-table tbody tr:focus-within .jc1-rowtag {
     display: block;
+  }
+
+  /* ================= Known plate ================= */
+  /* docs/rules/known-plate.md. Two lab states, each a new card. */
+  :root:has(#state-known:checked) :is(.only-saved, .only-refused, .only-cancelled, .only-question):not(.only-new, .only-known),
+  :root:has(#state-question:checked) :is(.only-saved, .only-refused, .only-cancelled, .only-known):not(.only-new, .only-question),
+  :root:not(:has(#state-known:checked)) .only-known,
+  :root:not(:has(#state-question:checked)) .only-question {
+    display: none !important;
+  }
+
+  /* What the plate found, under its box, only when it matters: an old plate,
+     or a car with an open job card (KNOWN-9). */
+  .jc1-known {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0;
+    color: var(--color-primary-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-tight);
+  }
+
+  .jc1-known .icon {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.1em;
+  }
+
+  /* A question before a save (KNOWN-13): a card at the top of the form, with
+     what was typed kept below it. Its answers send the form again. Amber,
+     because nothing is wrong yet: a person must decide. */
+  .jc1-question {
+    margin-bottom: var(--space-4);
+  }
+
+  .jc1-question__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    color: var(--color-warning-text);
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+  }
+
+  .jc1-question__text {
+    margin: var(--space-2) 0 0;
+  }
+
+  .jc1-question__answers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  /* The two answers weigh the same, so neither one is the easy tap. On a phone they
+     stack; on a wider screen they sit side by side, never wider than a thumb needs. */
+  .jc1-question__answers .btn {
+    flex: 1 1 10rem;
+    max-width: 16rem;
+  }
+
+  .jc1-question__more {
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* The last customer, offered, never filled (KNOWN-7, v1): greyed and in
+     italics inside the two boxes, with one text button right after the name's
+     label. Right after it, not at the far edge, where v1 found it read as the
+     next label's. */
+  .jc1-label-row--start {
+    justify-content: flex-start;
+  }
+
+  .jc1-use-last {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-primary-text);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* A finger gets 44 pixels, and the label line keeps its height. */
+  .jc1-use-last::after {
+    content: "";
+    position: absolute;
+    inset: -14px -12px;
+  }
+
+  .jc1-use-last:hover {
+    text-decoration: underline;
+  }
+
+  .jc1-input.is-offered::placeholder {
+    font-style: italic;
   }
 }

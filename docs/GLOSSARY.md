@@ -51,6 +51,9 @@ the code (models, functions, files, URLs) and in the docs.
 | Admitted date | `admitted_date` | check-in date | The day the car came in |
 | Car | `Car` | vehicle, except in the app's name `vehicles` | One car in a workshop, with its whole history |
 | Plate | `plate` | registration number, reg no | The letters and digits on a car's number plate. The box is called Plate Number |
+| Known plate | `known_plate`, `known_car()`, `KnownCar`, the page `job-cards/known-plate/` | autofill | A plate the workshop has seen. On a new job card it fills the car's boxes from its record. Asking the server about a plate is the lookup |
+| Old plate | | previous plate, old registration | A plate a car came with on an earlier job card, before it got a new one. It still finds the car |
+| RC | | registration certificate | The car's registration paper. It shows the plate, and the VIN as Chassis No. |
 | Car brand | `CarBrand` | make, marque | A maker, like BMW, on the workshop's list of brands |
 | Car model | `CarModel` | | A model of one brand, like 520d, on that brand's list |
 | Chassis code | `chassis_code` | platform code | A car's generation, like F30. Many cars share one |
@@ -60,10 +63,13 @@ the code (models, functions, files, URLs) and in the docs.
 | Internal note | `note` | notes, remarks | A line about this visit for the workshop only, never printed |
 | Customer | `Customer` | owner, client (for a car's owner) | A name and a contact number, as one record in a workshop |
 | Contact number | `contact_number` | phone, mobile (as a name) | The number a customer is reached on |
+| Last customer | `last_customer()` | owner, for a car | The customer on a car's newest job card that has one. A new job card offers them to Office and owners |
 | Concern | `Concern` | complaint | One thing the customer reported, with its status: Pending, Working or Fixed |
 | Job line | `JobLine` | labour item, labour line | One job that was done, in words, with no price. The list is called Job Performed |
 | Labour charge | `labour` | labour amount, subtotal, total labour | One amount for all the work on a job card |
 | Step | `JobCardStep` | event, log | One change in a job card's life, with its time, like Car in or a concern Fixed |
+| Move | `move` | transfer, reassign | Putting an open job card on another car, when it was made on the wrong one. It keeps its number and everything on it |
+| Question | `Question` | conflict, clash | What a save asks before it uses one car's record for another, with a button for each answer |
 | Live board | `live_board` | dashboard, floor board | The home page: every car open in this branch |
 | Turned off | `is_active`, `turn_off()`, `turn_on()` | retired, archived, deactivated | A staff member or an account kept on record but no longer in use. Never deleted; Turn on brings them back |
 | Supplier | `suppliers` (the app) | | Any shop we buy from: a spare shop or a supplies shop |
