@@ -43,6 +43,8 @@ NO_ROWS = {
     "jobs:create",
     # It shows the job card's page, through the same selector as jobs:edit.
     "jobs:cancel",
+    # What one plate names: one car, never a list (KNOWN-4).
+    "jobs:known_plate",
 }
 
 

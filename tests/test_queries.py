@@ -154,6 +154,45 @@ def model_names(labels):
     return {label.split(".")[1] for label in labels}
 
 
+def locks_and_joins(source):
+    """The lines of the queries that lock their rows and join others too. A save that waited for
+    the lock would get the row as it is now beside the linked row as it was, or no row at all
+    when the link changed, because PostgreSQL checks the join again with the old linked row."""
+    lock_or_join = {"select_for_update", "select_related"}
+    lines = []
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Attribute) and node.attr in lock_or_join:
+            below = node.value
+            while isinstance(below, ast.Call | ast.Attribute):
+                if isinstance(below, ast.Attribute) and below.attr in lock_or_join - {node.attr}:
+                    lines.append(node.lineno)
+                below = below.func if isinstance(below, ast.Call) else below.value
+    return lines
+
+
+def test_a_locking_query_joins_nothing():
+    found = {str(path): locks_and_joins(path.read_text()) for path in scanned_files()}
+
+    assert {name: lines for name, lines in found.items() if lines} == {}
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        'Car.objects.select_for_update().select_related("car_model")',
+        'Car.objects.select_related("car_model").select_for_update(of=("self",))',
+        'Car.objects.select_related("car_model").filter(pk=1).select_for_update()',
+    ],
+)
+def test_a_query_that_locks_and_joins_is_caught(source):
+    assert locks_and_joins(source) == [1]
+
+
+def test_a_lock_alone_and_a_join_alone_pass():
+    assert locks_and_joins("Car.objects.select_for_update().get(pk=1)") == []
+    assert locks_and_joins('Car.objects.select_related("car_model").get(pk=1)') == []
+
+
 def test_every_query_in_the_apps_asks_for_its_workshop_and_its_branch():
     files = scanned_files()
     # A floor, so a scan that read nothing cannot pass for being clean.

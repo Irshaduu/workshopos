@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import formset_factory
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -456,6 +457,18 @@ def initial_of_a_new_card():
     }
 
 
+def asks_what_it_names():
+    """What makes a new card's plate box ask the server what the plate names, when the box
+    is left (KNOWN-4, ADR-0016). A newer ask replaces an older one (KNOWN-5)."""
+    return {
+        "hx-get": reverse("jobs:known_plate"),
+        "hx-trigger": "change",
+        "hx-target": "#known-plate",
+        "hx-swap": "innerHTML",
+        "hx-sync": "this:replace",
+    }
+
+
 @dataclass
 class CardForms:
     """Everything a job card's page holds: its boxes and its two lists."""
@@ -477,6 +490,9 @@ class CardForms:
             # Only this form's boxes: what a role may not see never reaches its form.
             initial={box: value for box, value in opening.items() if box in form_class.base_fields},
         )
+        if card is None:
+            # Only a new card is filled from a known plate (KNOWN-4).
+            main.fields["plate"].widget.attrs.update(asks_what_it_names())
         concerns = list(card.concerns.all()) if card else []
         lines = list(card.job_lines.all()) if card else []
         return cls(

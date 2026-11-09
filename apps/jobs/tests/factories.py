@@ -26,7 +26,8 @@ class JobCardFactory(DjangoModelFactory):
 
     workshop = factory.SubFactory(WorkshopFactory)
     branch = factory.LazyAttribute(first_branch)
-    number = factory.Sequence(lambda n: f"JC-{n:04d}")
+    # Never a number the service gives, like JC-0001, so the two never clash in one branch.
+    number = factory.Sequence(lambda n: f"F-{n:05d}")
     car = factory.SubFactory(CarFactory, workshop=factory.SelfAttribute("..workshop"))
     plate = factory.LazyAttribute(lambda card: card.car.plate)
     admitted_date = factory.LazyFunction(timezone.localdate)

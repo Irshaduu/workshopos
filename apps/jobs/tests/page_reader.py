@@ -59,7 +59,14 @@ class FormReader(HTMLParser):
             return
         if kind in ("radio", "checkbox") and "checked" not in attrs:
             return
-        self.sent[name] = attrs.get("value", "")
+        value = attrs.get("value", "")
+        if name in self.sent:
+            # A name the page holds more than once, like the answers already given, is sent
+            # once for each, as a browser sends it.
+            before = self.sent[name]
+            self.sent[name] = [*before, value] if isinstance(before, list) else [before, value]
+        else:
+            self.sent[name] = value
 
     def handle_data(self, data):
         if self.textarea:

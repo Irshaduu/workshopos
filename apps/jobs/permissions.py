@@ -8,6 +8,8 @@ from apps.accounts.models import Role
 
 PERMISSIONS = {
     "see_live_board": {Role.OWNER, Role.OFFICE, Role.FLOOR},
+    # A known plate fills a new card for every role (ROLE-15, KNOWN-18).
+    "see_known_plate": {Role.OWNER, Role.OFFICE, Role.FLOOR},
     "save_job_card": {Role.OWNER, Role.OFFICE, Role.FLOOR},
     # Who the customer is, and the price of the work (ROLE-16, ROLE-17). It chooses the form.
     "save_customer_and_labour": {Role.OWNER, Role.OFFICE},

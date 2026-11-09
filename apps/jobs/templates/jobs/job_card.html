@@ -11,10 +11,34 @@ page (JOB-54). Parts come in their place in Phase 6.
   <link rel="stylesheet" href="{% static 'jobs/job-card.css' %}">
 {% endblock %}
 {% block page_js %}
+  {% if new_key %}<script src="{% static 'vendor/htmx/htmx.min.js' %}" defer></script>{% endif %}
   <script src="{% static 'jobs/job-card.js' %}" type="module"></script>
 {% endblock %}
 
 {% block content %}
+{% comment %}
+What the workshop knows about a typed plate (docs/rules/known-plate.md): the server's answer
+to the plate box, put inside the holder under it (ADR-0016). The page's script fills the
+boxes from its data; the line says what the plate found, only when it matters (KNOWN-9).
+The customer is in it only for a role whose form has the customer (KNOWN-8).
+{% endcomment %}
+{% partialdef known_plate %}{% if known %}
+  <div class="job-known__answer" data-known data-brand="{{ known.car.car_model.brand.name }}" data-car_model="{{ known.car.car_model.name }}" data-chassis_code="{{ known.car.chassis_code }}" data-vin="{{ known.car.vin }}" data-colour="{{ known.car.colour }}" data-colour_other="{{ known.car.colour_other }}"{% if known.customer %} data-customer_name="{{ known.customer.name }}" data-contact_number="{{ known.customer.contact_number }}"{% endif %}>
+    {% if known.old %}
+      <p class="job-known__line">
+        <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#info"></use></svg>
+        {% if known.car.plate %}{% blocktranslate with plate=known.car.plate %}An old plate of this car. Its plate now is {{ plate }}.{% endblocktranslate %}{% else %}{% translate "An old plate of this car. It has no plate now." %}{% endif %}
+      </p>
+    {% endif %}
+    {% if known.open_card and not form.plate.errors %}
+      <p class="job-known__line">
+        <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-alert"></use></svg>
+        {% blocktranslate with number=known.open_card.number %}This car has an open job card, {{ number }}.{% endblocktranslate %}
+      </p>
+      {% include "jobs/_open_card.html" with open=known.open_card %}
+    {% endif %}
+  </div>
+{% endif %}{% endpartialdef %}
 <div class="job-head paint-{{ form.paint }}{% if form.is_bound %} is-dirty{% endif %}" id="job-head"{% if form.own_colour %} data-paint="{{ form.own_colour }}"{% endif %}>
   <h1 class="job-head__id">
     {% if card %}
@@ -59,6 +83,12 @@ page (JOB-54). Parts come in their place in Phase 6.
   {% csrf_token %}
   <fieldset class="job-form"{% if locked %} disabled{% endif %}>
     <legend class="job-legend">{% translate "Job card boxes" %}</legend>
+    {% for answer in kept_answers %}<input type="hidden" name="answers" value="{{ answer }}">{% endfor %}
+    {% if question %}
+      {% comment %}Enter in a box presses a form's first submit button. This plain one comes first, so Enter saves again and never answers the question (KNOWN-13). It is hidden by its size, not by display, because a browser may skip a button that has no box on the page.{% endcomment %}
+      <button class="job-enter" type="submit" tabindex="-1" aria-hidden="true"></button>
+      {% include "jobs/_question.html" %}
+    {% endif %}
 
     <div class="job-card">
       <div class="job-sec-head">
@@ -72,9 +102,7 @@ page (JOB-54). Parts come in their place in Phase 6.
           <label class="job-label" for="{{ form.plate.id_for_label }}">{{ form.plate.label }}</label>
           {{ form.plate }}
           {% include "jobs/_box_error.html" with field=form.plate %}
-          {% if open_card %}
-            <a class="btn job-open-card" href="{% url 'jobs:edit' open_card.pk %}">{% blocktranslate with number=open_card.number %}Open {{ number }}{% endblocktranslate %}</a>
-          {% endif %}
+          {% if new_key %}<div class="job-known" id="known-plate" aria-live="polite">{% partial known_plate %}</div>{% endif %}
         </div>
         {% include "jobs/_box.html" with field=form.brand %}
         {% include "jobs/_box.html" with field=form.car_model %}
@@ -127,7 +155,19 @@ page (JOB-54). Parts come in their place in Phase 6.
           <span class="job-chevron"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#chevron-down"></use></svg></span>
         </summary>
         <div class="job-body"><div class="job-grid job-grid--customer">
-          {% include "jobs/_box.html" with field=form.customer_name %}
+          {% if new_key %}
+            {% comment %}The last customer, offered, never filled (KNOWN-7): the page's script shows this button with the offer. It ships hidden, so a page whose script never ran offers nothing.{% endcomment %}
+            <div>
+              <div class="job-label-row job-label-row--start">
+                <label class="job-label" for="{{ form.customer_name.id_for_label }}">{{ form.customer_name.label }}</label>
+                <button class="job-use-last" id="job-use-last" type="button" hidden>{% translate "Use last visit" %}</button>
+              </div>
+              {{ form.customer_name }}
+              {% include "jobs/_box_error.html" with field=form.customer_name %}
+            </div>
+          {% else %}
+            {% include "jobs/_box.html" with field=form.customer_name %}
+          {% endif %}
           {% include "jobs/_box.html" with field=form.contact_number %}
           {% include "jobs/_box.html" with field=form.note cell="job-span-all job-note-cell" %}
         </div></div>

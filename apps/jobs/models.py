@@ -111,6 +111,8 @@ class JobCard(BranchModel):
     class Meta(BranchModel.Meta):
         verbose_name = _("job card")
         verbose_name_plural = _("job cards")
+        # A plate no car has today is looked for among the job cards (KNOWN-1).
+        indexes = [models.Index(fields=["workshop", "plate"], name="jobs_jobcard_plate")]
         constraints = [
             *BranchModel.Meta.constraints,
             SameWorkshop("car", name="jobs_jobcard_car_same_workshop"),

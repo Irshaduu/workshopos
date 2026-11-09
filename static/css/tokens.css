@@ -152,6 +152,8 @@
     --job-labour-width: 11.25rem;
     --job-save-height: 3.5rem;
     --job-colours-width: 26rem;
+    --job-answer-min-width: 10rem;
+    --job-answer-max-width: 16rem;
     --job-paint-height: 2rem;
     --hatch-stripe: 3px;
     --hatch-size: 6px;
