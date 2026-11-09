@@ -62,7 +62,7 @@ workshopos/
 | `vehicles` | customers, vehicles, brands and models, vehicle profile |
 | `staff` | the staff list, salary, advances |
 | `suppliers` | spare shops, Supplies Shops, purchases, payments, discounts, opening balances |
-| `jobs` | job cards, concerns, work done, parts used, warranty, estimates |
+| `jobs` | job cards, concerns, work done, parts used, warranty, estimates, known plate |
 | `billing` | invoices, settling, GST, fleet accounts, old bills, printed documents |
 | `finance` | cashbook, rent, owner withdrawals |
 | `reports` | profit, cash tracking, deep analysis, dashboard; read-only |
@@ -248,13 +248,13 @@ How each workshop's data stays its own: ADR-0023.
 
 | v1 area | New app |
 |---|---|
-| Job cards, concerns, job lines, parts on cards, warranty, estimates | `jobs` |
+| Job cards, concerns, job lines, parts on cards, warranty, estimates, known plate | `jobs` |
 | Invoice, settle, printed documents, fleet accounts, old bills | `billing` |
 | Spare shops, unassigned spares, Supplies Shops, payments, shop discounts, opening balances | `suppliers` |
 | Inventory items, categories, stock, costing replay, opening stock, stock history | `inventory` |
 | Cashbook, rent, owner withdrawals | `finance` |
 | Staff roster, salary and advances | `staff` |
-| Car profiles, brands and models, chassis code and VIN, known plate | `vehicles` |
+| Car profiles, brands and models, chassis code and VIN | `vehicles` |
 | Spare-part and concern master lists | `jobs` |
 | Profit, cash tracking, deep analysis, dashboard, live report | `reports` |
 | Deletion, edit and back-dated history | `audit` |

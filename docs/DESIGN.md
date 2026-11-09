@@ -134,7 +134,7 @@ sign is written in the template, before the number.
 | Date | In a template | Looks like | Where |
 |---|---|---|---|
 | Date, the default | `{{ date }}` | 3 Oct 2026 | Every screen, unless a line below says otherwise |
-| Short date | `date:"SHORT_DATE_FORMAT"` | 03/10/2026 | The job card, and lists with little room |
+| Short date | `date:"SHORT_DATE_FORMAT"` | 03/10/2026 | The boxes and rows of the job card, and lists with little room |
 | Date and time | `{{ datetime }}` | 3 Oct 2026, 3:05 PM | Alerts and change history, in India time |
 | Month | `date:"YEAR_MONTH_FORMAT"` | October 2026 | Rent and salary |
 | Day and month | `date:"MONTH_DAY_FORMAT"` | 3 Oct | The job list and the live report |
