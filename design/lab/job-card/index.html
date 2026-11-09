@@ -16,6 +16,7 @@
 
   <a class="back" href="../system/">Design system</a>
   <p class="lab-intro">Job card: v1, the chosen design. Type in the last, empty row of a list and the next one opens. A prototype, never used by the app. All data is fake.</p>
+  <p class="lab-intro">Known plate: a new card that an old plate filled, so the line under the plate shows (a plate seen today shows none), and the last customer offered to Office. Question: what a save asks before it uses one car's record for another, here a VIN already on a car of the same brand.</p>
 
   <div class="lab-bar">
     <fieldset class="lab-switch">
@@ -29,6 +30,8 @@
       <label class="lab-switch__option"><input type="radio" name="state" id="state-new"> New</label>
       <label class="lab-switch__option"><input type="radio" name="state" id="state-refused"> Refused</label>
       <label class="lab-switch__option"><input type="radio" name="state" id="state-cancelled"> Cancelled</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-known"> Known plate</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-question"> Question</label>
     </fieldset>
     <fieldset class="lab-switch">
       <legend>Later steps</legend>
@@ -62,10 +65,21 @@
 
     <fieldset class="jc1-form" id="jc1-form">
     <legend class="lab-sr">Job card boxes</legend>
+
+    <div class="card card--warning jc1-question only-question" role="alert">
+      <h2 class="jc1-question__title"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg>Is this the same car?</h2>
+      <p class="jc1-question__text">This VIN is on BMW 520d, KL00AA0001. Last in on 3 Mar 2026. Is it the same car, now with KL00AB0002?</p>
+      <div class="jc1-question__answers">
+        <button class="btn" type="button">Yes, same car</button>
+        <button class="btn" type="button">No, another car</button>
+      </div>
+      <p class="jc1-question__more">If it is another car, this car keeps the VIN, and the VIN of BMW 520d is asked again at its next visit. Or fix the VIN below and save again.</p>
+    </div>
+
     <div class="jc1-card">
       <div class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#car"></use></svg></span><h2 class="jc1-sec-name">Car Details</h2></div></div>
       <div class="jc1-body"><div class="jc1-grid">
-        <div class=""><label class="jc1-label" for="jc1-reg">Plate Number</label><input class="jc1-input" id="jc1-reg" value="KL00AA0001" autocapitalize="characters" spellcheck="false"></div>
+        <div class=""><label class="jc1-label" for="jc1-reg">Plate Number</label><input class="jc1-input" id="jc1-reg" value="KL00AA0001" autocapitalize="characters" spellcheck="false" aria-describedby="jc1-known"><p class="jc1-known only-known" id="jc1-known"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#info"></use></svg>An old plate of this car. Its plate now is KL00AA0001.</p></div>
         <div class=""><label class="jc1-label" for="jc1-brand">Car Brand</label><input class="jc1-input" id="jc1-brand" value="BMW"></div>
         <div class=""><label class="jc1-label" for="jc1-model">Car Model</label><input class="jc1-input" id="jc1-model" value="520d"></div>
         <div class=""><label class="jc1-label" for="jc1-chassis">Chassis Code</label><input class="jc1-input is-empty" id="jc1-chassis" value="" autocapitalize="characters" spellcheck="false"></div>
@@ -105,7 +119,7 @@
     <details class="jc1-card jc1-fold office-only" open>
       <summary class="jc1-sec-head"><div class="jc1-sec-title"><span class="jc1-sec-icon"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#users"></use></svg></span><h2 class="jc1-sec-name">Customer &amp; Notes</h2></div><span class="jc1-chevron"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#chevron-down"></use></svg></span></summary>
       <div class="jc1-body"><div class="jc1-grid jc1-grid--2 jc1-grid--cust">
-        <div class=""><label class="jc1-label" for="jc1-cust">Customer Name</label><input class="jc1-input" id="jc1-cust" value="Arun K."></div>
+        <div class=""><div class="jc1-label-row jc1-label-row--start"><label class="jc1-label" for="jc1-cust">Customer Name</label><button class="jc1-use-last only-known" id="jc1-use-last" type="button">Use last visit</button></div><input class="jc1-input" id="jc1-cust" value="Arun K."></div>
         <div class=""><label class="jc1-label" for="jc1-contact">Contact Number</label><input class="jc1-input" id="jc1-contact" value="00000 00000" inputmode="tel"></div>
         <div class="jc1-span-all jc1-note-cell"><label class="jc1-label" for="jc1-note">Internal Note</label><textarea class="jc1-input jc1-note" id="jc1-note" rows="1">Brake noise only when cold.</textarea></div>
         <div class="jc1-span-all later"><span class="jc1-label">Photos</span><div class="jc1-photos"><button class="jc1-camera" type="button" aria-label="Take a photo"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#camera"></use></svg></button>Tap to open the camera.</div></div>

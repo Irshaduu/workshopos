@@ -61,22 +61,20 @@
   // filled.
   var vin = document.getElementById("jc1-vin");
   var meter = document.querySelector(".jc1-vin-meter");
-  if (vin && meter) {
-    var bars = Array.from(meter.querySelectorAll(".jc1-vin-dots i"));
-    var counter = meter.querySelector(".jc1-vin-count");
-    var showVin = function () {
-      var count = vin.value.replace(/[\s-]+/g, "").length;
-      bars.forEach(function (bar, i) {
-        bar.classList.toggle("is-on", i < count);
-      });
-      counter.textContent = count + "/" + bars.length;
-      meter.classList.toggle("is-done", count === bars.length);
-      meter.classList.toggle("is-over", count > bars.length);
-      vin.classList.toggle("is-empty", vin.value.trim() === "");
-    };
-    vin.addEventListener("input", showVin);
-    showVin();
+  var bars = Array.from(meter.querySelectorAll(".jc1-vin-dots i"));
+  var counter = meter.querySelector(".jc1-vin-count");
+  function showVin() {
+    var count = vin.value.replace(/[\s-]+/g, "").length;
+    bars.forEach(function (bar, i) {
+      bar.classList.toggle("is-on", i < count);
+    });
+    counter.textContent = count + "/" + bars.length;
+    meter.classList.toggle("is-done", count === bars.length);
+    meter.classList.toggle("is-over", count > bars.length);
+    vin.classList.toggle("is-empty", vin.value.trim() === "");
   }
+  vin.addEventListener("input", showVin);
+  showVin();
 
   // Unsaved work: the head turns amber and the changed box gets its edge (v1's jc-dirty).
   var head = document.getElementById("jc1-head");
@@ -88,14 +86,82 @@
     }
   });
 
+  // Known plate and Question show a new card that a known plate filled
+  // (docs/rules/known-plate.md). In the app the server sends what it knows, and the
+  // page's script writes it only into boxes nobody typed in. Here it is written at once.
+  var filledValues = {
+    "jc1-reg": "KL00AB0002",
+    "jc1-brand": "BMW",
+    "jc1-model": "520d",
+    "jc1-chassis": "G30",
+    "jc1-vin": "WBA00000000000001",
+    "jc1-km": "",
+    "jc1-cust": "",
+    "jc1-contact": "",
+    "jc1-note": ""
+  };
+  var savedValues = {};
+  Object.keys(filledValues).forEach(function (id) {
+    savedValues[id] = document.getElementById(id).value;
+  });
+  // The last customer, offered as the two boxes' greyed words, never as their values.
+  var offer = { "jc1-cust": "Arun K.", "jc1-contact": "00000 00000" };
+
   // The State switch: a cancelled card locks every box at once. In the app the server
   // writes the lock. The note also takes its one-row start here.
   function showState() {
     var isNew = document.getElementById("state-new").checked;
+    var isKnown = document.getElementById("state-known").checked;
+    var filled = isKnown || document.getElementById("state-question").checked;
     form.disabled = document.getElementById("state-cancelled").checked;
     head.classList.toggle("paint-unset", isNew);
     head.classList.toggle("paint-black", !isNew);
+    head.classList.toggle("is-dirty", filled);
+    Object.keys(filledValues).forEach(function (id) {
+      var box = document.getElementById(id);
+      box.value = filled ? filledValues[id] : savedValues[id];
+      box.classList.toggle("is-changed", filled && filledValues[id] !== "");
+    });
+    Object.keys(offer).forEach(function (id) {
+      var box = document.getElementById(id);
+      if (isKnown) {
+        box.setAttribute("placeholder", offer[id]);
+      } else {
+        box.removeAttribute("placeholder");
+      }
+      box.classList.toggle("is-offered", isKnown);
+    });
+    useLast.hidden = false;
+    var chassis = document.getElementById("jc1-chassis");
+    chassis.classList.toggle("is-empty", chassis.value === "");
+    showVin();
   }
+
+  // The offer shows only while both boxes are empty. Use last visit copies both.
+  var useLast = document.getElementById("jc1-use-last");
+  function endOffer() {
+    Object.keys(offer).forEach(function (id) {
+      var box = document.getElementById(id);
+      box.removeAttribute("placeholder");
+      box.classList.remove("is-offered");
+    });
+    useLast.hidden = true;
+  }
+  useLast.addEventListener("click", function () {
+    Object.keys(offer).forEach(function (id) {
+      var box = document.getElementById(id);
+      box.value = offer[id];
+      box.classList.add("is-changed");
+    });
+    endOffer();
+  });
+  Object.keys(offer).forEach(function (id) {
+    document.getElementById(id).addEventListener("input", function () {
+      if (Object.keys(offer).some(function (key) { return document.getElementById(key).value !== ""; })) {
+        endOffer();
+      }
+    });
+  });
   document.querySelectorAll('input[name="state"]').forEach(function (box) {
     box.addEventListener("change", showState);
   });

@@ -64,22 +64,23 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
 - **JOB-13** A job card keeps the plate of that visit. A new plate changes the car from
   that day on, and an old card still shows the plate it came with. *New
   (`docs/PLAN.md`).*
-- **JOB-14** A plate typed on a new job card finds its car, and a plate the workshop
-  has never seen makes a new car. What was typed is the car in front of you, so it
-  replaces what the record says, and a box left empty changes nothing. *New. Known
-  plate fills the boxes first, and asks before another brand replaces the saved one
-  (step 7).*
-- **JOB-15** Changing the plate on an open job card: a free plate becomes the car's
-  plate, and a plate on another car is refused next to the box, naming that car. *v1,
-  changed: v1's card held only text, and it refused only a plate with another open
-  card. Moving a card to the right car comes with Known plate (step 7).*
+- **JOB-14** A plate typed on a new job card finds its car, by its plate today or an old
+  plate (KNOWN-1), and a plate the workshop has never seen makes a new car. What was typed
+  is the car in front of you, so it replaces what the record says, and a box left empty
+  changes nothing. A known plate fills the boxes first (KNOWN-4), and the save asks before
+  another brand replaces the saved one (KNOWN-10). *New.*
+- **JOB-15** Changing the plate on an open job card: a plate that names no car becomes the
+  car's plate, and asks first when the car has another visit (KNOWN-15). A plate that names
+  another car moves the card to it, after asking (KNOWN-14). *v1, changed: v1's card held
+  only text, and it refused only a plate with another open card.*
 - **JOB-16** A plate is required, and it is saved in one spelling: capitals, with
   spaces, dashes, dots and slashes gone, so "kl-10 aa 1000" is KL10AA1000. What is left
   must be letters and digits, up to 20, and PostgreSQL holds that. Its shape is never
   judged further, because temporary, new and other countries' plates are real. A car with
   no plate yet takes its temporary number or its VIN here. A plate belongs to one car in a
-  workshop, by PostgreSQL. *v1, changed: v1 only trimmed it and raised its capitals, so
-  KL 10 AA 1000 and KL10AA1000 were two cars.*
+  workshop, by PostgreSQL. A car can be left with no plate for a while (KNOWN-3); a job card
+  never is. *v1, changed: v1 only trimmed it and raised its capitals, so KL 10 AA 1000 and
+  KL10AA1000 were two cars.*
 - **JOB-17** The brand and the model are required. Each workshop has one list of
   brands, and one list of models for each brand. A typed word finds its entry whatever
   the capitals, and the list's spelling wins, so "bmw" shows BMW. A new word joins the
@@ -98,8 +99,8 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
   never told to cut the box off. Floor may record it. *v1: `vin_problem`,
   `_prepare_vehicle_ids`.*
 - **JOB-20** A VIN belongs to one car in a workshop, by PostgreSQL. A VIN saved on
-  another car is refused next to the box, naming that car. *New (`docs/PLAN.md`).
-  Known plate replaces this refusal with its question (step 7).*
+  another car asks first (KNOWN-11), and one on a car with an open job card is refused next
+  to the box, naming that card (KNOWN-12). *New (`docs/PLAN.md`).*
 - **JOB-21** The colour is optional: v1's 14 colours, or Other, where the browser's own
   colour box picks any colour, or Not set. Other left at the box's starting grey is
   refused, because nobody chose it. A swatch opens the choices, each with its name
@@ -268,7 +269,7 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
   short, and the plate and the number never are. *v1, changed: v1's head did not show the
   number.*
 - **JOB-59** The plate comes first, before the brand and the model, as on v1's Old Bills,
-  so a known car can fill them (step 7). *v1, chosen in the lab.*
+  so a known car can fill them (KNOWN-4). *v1, chosen in the lab.*
 - **JOB-60** A longer list never means more queries (`tests/test_query_counts.py`).
   *New (`docs/PLAN.md`).*
 
@@ -288,8 +289,6 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
 
 - Parts, and the job lines suggested from them: Parts on the job card (Phase 6).
 - On hold, Ready, and Ready's undo: the live board and the Completed list (Phase 6).
-- Finding a car by an old plate or a VIN, filling the boxes from a known plate, offering
-  the last customer, and moving a card to another car: Known plate (step 7).
 - Locking a settled card, and the Invoice button: Settle bill (step 8). The Profile button:
   Car profiles (After). A button comes with its page (ROLE-32).
 - Suggestions as you type, and the concerns list: Phase 6. Photos: After. Warranty cards,
