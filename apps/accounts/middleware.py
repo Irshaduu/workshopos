@@ -2,14 +2,19 @@
 every page (ADR-0023, ADR-0026), and keeps signed-in pages out of the
 browser's cache."""
 
+from urllib.parse import urlsplit
+
 from django.contrib import messages
 from django.contrib.auth.middleware import LoginRequiredMiddleware
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
+from django.shortcuts import resolve_url
 from django.utils.cache import add_never_cache_headers
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.selectors import branch_of, may_open, membership_of
+from apps.accounts.selectors import branch_of, may_open, membership_of, on_this_site
 from apps.workshops.selectors import may_work
 
 
@@ -18,7 +23,8 @@ class SignInRequiredMiddleware(LoginRequiredMiddleware):
 
     A visitor whose session ended while saving sends a POST. They go to the
     sign-in page like anyone else, and back to the page after signing in;
-    the sign-in page says that the change was not saved.
+    the sign-in page says that the change was not saved. A request from inside
+    a page sends the whole page there (SIGN-39).
     """
 
     def handle_no_permission(self, request, view_func):
@@ -30,7 +36,28 @@ class SignInRequiredMiddleware(LoginRequiredMiddleware):
                     "saved. Sign in, then enter it again."
                 ),
             )
+        if request.headers.get("HX-Request") == "true":
+            return self._whole_page_to_sign_in(request, view_func)
         return super().handle_no_permission(request, view_func)
+
+    def _whole_page_to_sign_in(self, request, view_func):
+        """A request from inside a page (htmx) sends the whole page to the sign-in page,
+        never just a part of it, and back to that page after signing in (SIGN-39).
+
+        htmx's docs ask for a 2xx answer with HX-Redirect, and a 204 holds no part of a page.
+        The page comes from htmx's HX-Current-URL, and only when it is an address of this site.
+        """
+        page = request.headers.get("HX-Current-URL", "")
+        parts = urlsplit(page if on_this_site(request, page) else "")
+        back_to = (parts.path or "/") + (f"?{parts.query}" if parts.query else "")
+        sign_in = redirect_to_login(
+            back_to,
+            resolve_url(self.get_login_url(view_func)),
+            self.get_redirect_field_name(view_func),
+        )
+        response = HttpResponse(status=204)
+        response["HX-Redirect"] = sign_in.url
+        return response
 
 
 class WorkshopMiddleware:

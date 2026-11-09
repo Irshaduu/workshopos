@@ -125,8 +125,8 @@ For a password: Office, Floor, and the platform's own staff.
   were saving something, the sign-in page says it was not saved. *v1, with
   v2's Session expired state (`docs/DESIGN.md`).*
 - **SIGN-39** A request from inside a page (htmx) whose session has ended
-  sends the whole page to the sign-in page, never just a part of it. *New
-  (`docs/DESIGN.md`). Built with the first htmx call.*
+  sends the whole page to the sign-in page, never just a part of it, and
+  back to that page after signing in. *New (`docs/DESIGN.md`).*
 
 ## Signing out
 

@@ -16,7 +16,6 @@ from django.contrib.auth.decorators import login_not_required
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
 from django.utils.translation import ngettext
 from django.views.decorators.cache import never_cache
@@ -33,6 +32,7 @@ from apps.accounts.selectors import (
     account_by_username,
     code_tries_left,
     minutes_locked,
+    on_this_site,
 )
 from apps.accounts.services import CodeNotSent, send_sign_in_code
 
@@ -288,7 +288,4 @@ def _signed_in(request, account):
     request.session.pop(PENDING, None)
     request.session.pop(ASKED, None)
     login(request, account)
-    on_this_site = url_has_allowed_host_and_scheme(
-        next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
-    )
-    return redirect(next_url if on_this_site else "jobs:live_board")
+    return redirect(next_url if on_this_site(request, next_url) else "jobs:live_board")
