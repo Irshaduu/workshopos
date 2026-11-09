@@ -5,7 +5,8 @@ How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
 **Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
-first pages, the Staff list, the money base and the job card are built; Known plate is next.
+first pages, the Staff list, the money base, the job card and Known plate are built; Settle bill
+is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -249,7 +250,7 @@ work gets its own pull request, just before the page that first uses it.
    money column
 6. Job card: customers and cars, the number, the links, the labour charge,
    history, a form per role
-7. Known plate: old plates, the chassis number, moving an open job card
+7. Known plate: old plates, the VIN, moving an open job card
 8. Settle bill: payments, the discount, the frozen copy, the money dates,
    the first settings, the audit log
 9. Linked devices (ADR-0027), with the second design of the sign-in page
@@ -278,23 +279,13 @@ work gets its own pull request, just before the page that first uses it.
   - the settled bill keeps a frozen copy of the customer and the car as
     printed, so fixing a name later, or a customer's request to delete
     their data, never changes an old bill
-- [~] Customers and vehicles as real records (ADR-0006, ADR-0030): built with
-      the job card; old plates, the chassis number and moving a card come with
-      Known plate. In a workshop, a car keeps one record and its whole
-      history; each job card keeps the customer and the plate of that
-      visit; a sale changes only the owner, and a new plate (a car from
-      another state registered here, a temporary plate made permanent)
-      only the plate, from that day on; Floor never sees customers (v1). A
-      job card finds its car by the plate, an old plate or the chassis
-      number (VIN), as v1's Known plate did; old bills join that search
-      with the old bills tool (Phase 6). The chassis number stays optional,
-      with v1's checks. A plate or a chassis number belongs to one car in a
-      workshop; when two cars claim one, the car in front of you, checked
-      against its RC, keeps it, and the other car's is asked again at its
-      next visit. A chassis number never decides alone: a match asks "same
-      car with a new number?", only when the brand matches. Office can move
-      an open job card to the right car; a settled one never moves. The
-      car's page (Car profiles, After) gets the same changes; no merge tool
+- [x] Customers and vehicles as real records (ADR-0006, ADR-0030), built with
+      the job card and Known plate (`docs/rules/known-plate.md`): one record and
+      its whole history for each car, found by its plate today or an old one;
+      the questions a save asks when the records disagree; and moving an open
+      job card to the right car. Old bills join the plate search with the old
+      bills tool (Phase 6), and a settled card never moves (Settle bill). The
+      car's page (Car profiles, After) gets the same rules; no merge tool
       unless the staging trial shows a need
 - [x] A branch link on operational records (`BranchModel`), and every link
       kept inside its workshop by PostgreSQL (`SameWorkshop`, ADR-0023); a test
@@ -350,9 +341,8 @@ work gets its own pull request, just before the page that first uses it.
       list, and one check reads both (decided with the roles ADR); this
       test and the permission matrix go through the same list of pages
 - [x] Sign-in, as ADR-0025 decides, with every rule in
-      `docs/rules/sign-in.md` built and tested; SIGN-39 comes with the first
-      htmx call, and the rules marked Phase 6 with the Staff logins page and
-      the bell
+      `docs/rules/sign-in.md` built and tested; the rules marked Phase 6 come
+      with the Staff logins page and the bell
 - [x] Roles, as ADR-0026 decides, with every rule in `docs/rules/roles.md`
       built and tested: a list of what each role may do (each app adds its
       own, like the module list), no page checks a role by name, so a new

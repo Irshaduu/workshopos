@@ -4,7 +4,7 @@ Management system for premium automotive workshops: job cards, billing,
 parts and stock, supplier ledgers, cash, staff pay and owner reports.
 
 > **Status: Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
-> first pages, the Staff list, the money base and the job card are built; Known plate is next.** The Django
+> first pages, the Staff list, the money base, the job card and Known plate are built; Settle bill is next.** The Django
 > project and the base every later app stands on are set up; the first business
 > pages are the Staff list and the job card. See [the plan](docs/PLAN.md).
 

@@ -6,7 +6,7 @@ reports.
 
 ## Status
 
-**Phase 5 (Slice 1) is in progress: Sign-in, Roles, the base for the first pages, the Staff list, the money base and the job card are built; Known plate is next.** The Django
+**Phase 5 (Slice 1) is in progress: Sign-in, Roles, the base for the first pages, the Staff list, the money base, the job card and Known plate are built; Settle bill is next.** The Django
 project exists (`manage.py`, `config/`) with code checks, tests and CI;
 the design system and the three signature screens are in the UI lab
 (`design/lab/`); the first apps are `core` (the base model and the money column), `workshops` (the

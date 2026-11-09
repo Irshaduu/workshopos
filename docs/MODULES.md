@@ -42,7 +42,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 |---|---|---|---|
 | Job card | Car, concerns, jobs and one labour charge; locked once settled | `jobs` | Go-live |
 | Parts on the job card | Shop parts and shelf stock kept apart; ordered, received, expected | `jobs` | Go-live |
-| Known plate | A known number plate fills brand, model, chassis code and VIN | `vehicles` | Go-live |
+| Known plate | A known or old plate fills the car's brand, model, chassis code, VIN and colour, and offers the last customer; a save asks before it uses one car's record for another; an open job card moves to the right car | `jobs` | Go-live |
 | Suggestions as you type | Car, part and concern names; jobs suggested from the card's parts | `jobs` | Go-live |
 | Suggested price and markup | Customer price suggested from cost, with a markup badge | `jobs` | Go-live |
 | Parts transport | Courier and parcel costs, counted in profit | `jobs` | Go-live |

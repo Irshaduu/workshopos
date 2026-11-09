@@ -177,6 +177,10 @@ closes the issue.
 - **A service that changes money or stock runs in one transaction** and
   locks the rows it reads to decide (`transaction.atomic`,
   `select_for_update`).
+- **A locking query joins nothing:** no `select_for_update()` with
+  `select_related()`. A save that waited for the lock would get the row as it is
+  now beside the linked row as it was, or no row at all when the link changed.
+  Read the links after the lock. A test reads every query (`tests/test_queries.py`).
 - **A balance or total is worked out from its rows when it is read.** It is
   stored only when measured slowness needs it, with a test that it equals
   its rows.
@@ -206,8 +210,11 @@ closes the issue.
   outside `design/lab/`.
 - **The server decides; JavaScript only shows** (ADR-0016). htmx 4 for
   server calls: mark inherited attributes with `:inherited`, use the htmx 4
-  event names, and no `hx-on`, `js:` values or trigger filters. JS modules
-  hold no business rules and work out no money.
+  event names, and no `hx-on`, `js:` values or trigger filters. In htmx 4,
+  `htmx:after:swap` goes to the element that asked, and `htmx:after:settle` to
+  the part of the page that changed. An error answer stays out of a page by one
+  setting in `templates/base.html` (`noSwap`). JS modules hold no business rules
+  and work out no money.
 - **Delete code; never comment it out.** Git remembers.
 - **No dead files, no experiments on `main`.**
 - **Every new dependency needs an ADR.**
