@@ -3,8 +3,17 @@
 from dataclasses import dataclass
 
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 
-from apps.jobs.models import JobCard, JobCardStatus, JobCardStep, StepKind
+from apps.jobs.models import (
+    Concern,
+    ConcernStatus,
+    JobCard,
+    JobCardStatus,
+    JobCardStep,
+    JobLine,
+    StepKind,
+)
 from apps.vehicles.selectors import car_with_plate
 
 #: What a job card's page and the live board's rows show, in one query.
@@ -46,12 +55,58 @@ def open_card_of(workshop, car):
 
 def cancelled_step(workshop, card):
     """Who cancelled this card, and when (JOB-51)."""
+    return _step_of(workshop, card, StepKind.CANCELLED)
+
+
+def settled_step(workshop, card):
+    """Who settled this card's bill, and when (SETTLE-23, SETTLE-36)."""
+    return _step_of(workshop, card, StepKind.SETTLED)
+
+
+def _step_of(workshop, card, kind):
+    """The newest step of this kind, so a step that comes again later is read as it is now."""
     return (
         JobCardStep.objects.for_workshop(workshop)
-        .filter(job_card=card, kind=StepKind.CANCELLED)
+        .filter(job_card=card, kind=kind)
         .select_related("by")
+        .order_by("-id")
         .first()
     )
+
+
+@dataclass(frozen=True)
+class Unfilled:
+    """One thing still not filled on a job card (SETTLE-11): what kind of thing, what is
+    missing, and for a concern its own words. The card's own boxes have no name."""
+
+    kind: str
+    missing: str
+    name: str = ""
+
+
+def unfilled(workshop, card):
+    """What is still not filled on this job card, in the order someone would fix it
+    (SETTLE-10 to SETTLE-13): its own boxes, then each concern not marked Fixed. The settle
+    box reads this one list, and the live report will too (Phase 6), so the two never
+    disagree.
+
+    A labour charge of 0 is asked for only when jobs are listed: a card with no jobs is a
+    parts-only bill, where 0 is right (v1)."""
+    found = []
+    if card.mileage is None:
+        found.append(Unfilled("mileage", _("no mileage")))
+    if card.lead_mechanic_id is None:
+        found.append(Unfilled("mechanic", _("no lead mechanic")))
+    if not card.labour and JobLine.objects.for_workshop(workshop).filter(job_card=card).exists():
+        found.append(Unfilled("labour", _("no labour charge")))
+    found += [
+        Unfilled("concern", _("not fixed"), concern.text)
+        for concern in Concern.objects.for_workshop(workshop)
+        .filter(job_card=card)
+        .exclude(status=ConcernStatus.FIXED)
+        .order_by("id")
+    ]
+    return found
 
 
 def _visits(workshop, car):

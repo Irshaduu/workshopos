@@ -1,0 +1,129 @@
+{% extends "app.html" %}
+{% load i18n static %}
+{% comment %}
+A job card's bill (docs/rules/settle-bill.md): v1's bill page, chosen in the lab
+(design/lab/bill/). Its row of buttons sits under the app's tab bar (ROLE-23); the bill itself
+is _sheet.html, the one bill design for now (ADR-0032). Each box over the page is a dialog
+that static/js/dialog.js opens; the server says which one opens with the page.
+{% endcomment %}
+{% block title %}{% if sheet.settled %}{{ sheet.bill.number }}{% else %}{% blocktranslate with number=card.number %}Bill of {{ number }}{% endblocktranslate %}{% endif %}{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'billing/bill.css' %}">
+{% endblock %}
+{% block page_js %}
+  <script src="{% static 'billing/bill.js' %}" type="module"></script>
+{% endblock %}
+
+{% block content %}
+<a class="back" href="{% url 'jobs:edit' card.pk %}">{{ card.number }}</a>
+
+<div class="bill-bar">
+  <h1 class="bill-bar__title">{% translate "Bill" %}</h1>
+  {% if sheet.settled %}
+    <span class="badge badge--success">{% translate "Settled" %}</span>
+  {% else %}
+    <span class="badge badge--warning">{% translate "Preview" %}</span>
+  {% endif %}
+  <span class="bill-bar__spacer"></span>
+  <a class="btn" href="{% url 'jobs:edit' card.pk %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#pencil"></use></svg>{% translate "Job card" %}</a>
+  {% if form %}
+    <button class="btn btn--save" type="button" data-dialog-open="{% if unfilled %}settle-unfilled{% else %}settle-box{% endif %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#indian-rupee"></use></svg>{% translate "Settle bill" %}</button>
+  {% endif %}
+</div>
+{% if nothing_to_bill %}
+  {% comment %}A bill of 0.00 is never settled, so it offers no button that could only be refused (SETTLE-18, ROLE-12).{% endcomment %}
+  <p class="bill-who">{{ nothing_to_bill }}</p>
+{% endif %}
+{% if sheet.settled %}
+  <p class="bill-who">{% blocktranslate with who=sheet.bill.settled_by.get_full_name|default:sheet.bill.settled_by.get_username when=sheet.bill.settled_at %}Settled by {{ who }}, {{ when }}.{% endblocktranslate %}</p>
+{% endif %}
+
+{% if form %}
+  {% if unfilled %}
+    {% comment %}Before you settle: what is still not filled. It never stops a settle (SETTLE-10 to SETTLE-12).{% endcomment %}
+    <dialog class="confirm confirm--danger bill-unfilled" id="settle-unfilled" aria-labelledby="settle-unfilled-title">
+      <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#triangle-alert"></use></svg></div>
+      <h2 class="confirm__title" id="settle-unfilled-title">{% translate "Before you settle" %}</h2>
+      <p class="confirm__text">{% blocktranslate count count=unfilled|length %}{{ count }} thing is not filled. Settling locks the job card.{% plural %}{{ count }} things are not filled. Settling locks the job card.{% endblocktranslate %}</p>
+      <ul class="bill-unfilled__list">
+        {% for thing in unfilled %}
+          <li class="bill-unfilled__item">
+            <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#{% if thing.kind == 'mileage' %}gauge{% elif thing.kind == 'mechanic' %}user-cog{% elif thing.kind == 'labour' %}wrench{% else %}circle-alert{% endif %}"></use></svg>
+            {% if thing.name %}<span class="bill-unfilled__name">{{ thing.name }}</span>{% endif %}
+            <span class="bill-unfilled__what">{{ thing.missing }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+      <div class="confirm__actions">
+        <a class="btn" href="{% url 'jobs:edit' card.pk %}">{% translate "Open job card" %}</a>
+        <button class="btn btn--primary" type="button" data-dialog-close data-dialog-open="settle-box">{% translate "Continue" %}</button>
+      </div>
+    </dialog>
+  {% endif %}
+
+  {% comment %}The settle box: one money box for each method, all empty at first (SETTLE-15). Its Settle bill sends the total it showed (SETTLE-26).{% endcomment %}
+  <dialog class="form-dialog bill-settle" id="settle-box" aria-labelledby="settle-title"{% if form.is_bound and not check %} data-open-now{% endif %}>
+    <div class="form-dialog__head">
+      <h2 class="form-dialog__title" id="settle-title">{% translate "Settle bill" %}</h2>
+      <button class="form-dialog__close" type="button" data-dialog-close aria-label="{% translate 'Close' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#x"></use></svg></button>
+    </div>
+    <form class="form-dialog__form" id="settle-form" method="post" action="{% url 'billing:settle' card.pk new_key %}">
+      {% csrf_token %}
+      <div class="bill-settle__top">
+        <div>
+          <p class="pay__label">{% translate "Total" %}</p>
+          <p class="bill-settle__total">&#8377; {{ sheet.total|floatformat:"2g" }}</p>
+        </div>
+        <div>
+          <p class="pay__label" id="settle-date-label">{{ form.paid_on.label }}</p>
+          {% comment %}The chip's words come from bill.js, with the month words Django gives every date.{% endcomment %}
+          <label class="pay__date" data-date-chip>
+            <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#calendar"></use></svg>
+            <span data-date-words data-today="{% translate 'Today' %}" data-empty="{% translate 'Pick the day' %}" data-months="{{ months }}"></span>
+            {{ form.paid_on }}
+          </label>
+        </div>
+      </div>
+      {% if form.paid_on.errors %}<p class="field__error" id="{{ form.paid_on.auto_id }}_error">{{ form.paid_on.errors.0 }}</p>{% endif %}
+      <div class="bill-settle__methods">
+        {% for box in form.visible_fields %}{% if box.name != "paid_on" %}
+          <div class="field">
+            <label class="field__label" for="{{ box.id_for_label }}">{{ box.label }}</label>
+            <div class="pay__money">{{ box }}</div>
+            {% if box.errors %}<p class="field__error" id="{{ box.auto_id }}_error">{{ box.errors.0 }}</p>{% endif %}
+          </div>
+        {% endif %}{% endfor %}
+      </div>
+      {% for problem in form.non_field_errors %}<p class="field__error" role="alert">{{ problem }}</p>{% endfor %}
+      <button class="btn btn--primary" type="submit" name="seen" value="{{ sheet.total|stringformat:'s' }}">{% translate "Settle bill" %}</button>
+    </form>
+  </dialog>
+
+  {% if check %}
+    {% comment %}The check: what the server worked out, before anything is saved (SETTLE-20). Its Settle bill sends the box again, with the total it showed (SETTLE-26).{% endcomment %}
+    <dialog class="confirm confirm--warning bill-check" id="settle-check" aria-labelledby="settle-check-title" data-open-now>
+      <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#indian-rupee"></use></svg></div>
+      <h2 class="confirm__title" id="settle-check-title">{% blocktranslate with amount=check.discount|floatformat:"2g" %}Discount &#8377; {{ amount }}{% endblocktranslate %}</h2>
+      <p class="confirm__text">{% translate "The rest of the bill is the discount. Settling locks the job card and gives the bill its number." %}</p>
+      <dl class="bill-sum">
+        <div class="bill-sum__row"><dt>{% translate "Total" %}</dt><dd>&#8377; {{ check.total|floatformat:"2g" }}</dd></div>
+        {% for word, amount in check.payments %}
+          <div class="bill-sum__row bill-sum__row--paid"><dt>{{ word }}</dt><dd>&#8377; {{ amount|floatformat:"2g" }}</dd></div>
+        {% endfor %}
+        <div class="bill-sum__row bill-sum__row--discount"><dt>{% translate "Discount" %}</dt><dd>&#8377; {{ check.discount|floatformat:"2g" }}</dd></div>
+        <div class="bill-sum__row bill-sum__row--net"><dt>{% translate "Net" %}</dt><dd>&#8377; {{ check.net|floatformat:"2g" }}</dd></div>
+      </dl>
+      <p class="bill-check__date">{% if check.today %}{% blocktranslate with day=check.paid_on %}Date paid: today, {{ day }}{% endblocktranslate %}{% else %}{% blocktranslate with day=check.paid_on %}Date paid: {{ day }}{% endblocktranslate %}{% endif %}</p>
+      <div class="confirm__actions">
+        <button class="btn" type="button" data-dialog-close data-dialog-open="settle-box">{% translate "Go back" %}</button>
+        <button class="btn btn--warning" type="submit" form="settle-form" name="checked" value="{{ check.total|stringformat:'s' }}">{% translate "Settle bill" %}</button>
+      </div>
+    </dialog>
+  {% endif %}
+{% endif %}
+
+<div class="sheet-wrap">
+  {% include "billing/_sheet.html" %}
+</div>
+{% endblock %}

@@ -3,8 +3,8 @@
 from decimal import Decimal
 
 import pytest
-from django.db import IntegrityError, connection, transaction
 
+from apps.core.tests.postgresql import refused_by_postgresql
 from apps.jobs.models import ConcernStatus, JobCardStatus, StepKind, number_from
 from apps.jobs.tests.factories import (
     ConcernFactory,
@@ -18,13 +18,6 @@ from apps.vehicles.tests.factories import CarFactory, CustomerFactory
 from apps.workshops.tests.factories import BranchFactory, WorkshopFactory, first_branch
 
 pytestmark = pytest.mark.django_db
-
-
-def refused_by_postgresql(make):
-    """Asks at once for the checks that wait for the end of the transaction, like a link's."""
-    with pytest.raises(IntegrityError), transaction.atomic():
-        make()
-        connection.check_constraints()
 
 
 def cancelled(**values):

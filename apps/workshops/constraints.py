@@ -1,4 +1,6 @@
-"""A link from one workshop record to another stays inside its workshop (ADR-0023)."""
+"""A link from one workshop record to another stays inside its workshop (ADR-0023), and a
+link that must stay inside its branch, like a bill's to its job card, stays there too
+(ADR-0032)."""
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -21,6 +23,8 @@ class SameWorkshop(models.BaseConstraint):
     """
 
     default_violation_error_message = _("This belongs to another workshop.")
+    #: The column the two records share.
+    shared = "workshop"
 
     def __init__(self, link, *, name):
         self.link = link
@@ -29,14 +33,16 @@ class SameWorkshop(models.BaseConstraint):
     def constraint_sql(self, model, schema_editor):
         quote = schema_editor.quote_name
 
-        def workshop_and(field):
-            return f"{quote(field.model._meta.get_field('workshop').column)}, {quote(field.column)}"
+        def shared_and(field):
+            return (
+                f"{quote(field.model._meta.get_field(self.shared).column)}, {quote(field.column)}"
+            )
 
         link = model._meta.get_field(self.link)
         target = link.related_model
         return (
-            f"CONSTRAINT {quote(self.name)} FOREIGN KEY ({workshop_and(link)}) "
-            f"REFERENCES {quote(target._meta.db_table)} ({workshop_and(target._meta.pk)}) "
+            f"CONSTRAINT {quote(self.name)} FOREIGN KEY ({shared_and(link)}) "
+            f"REFERENCES {quote(target._meta.db_table)} ({shared_and(target._meta.pk)}) "
             "DEFERRABLE INITIALLY DEFERRED"
         )
 
@@ -49,11 +55,12 @@ class SameWorkshop(models.BaseConstraint):
         return f"ALTER TABLE {table} DROP CONSTRAINT {schema_editor.quote_name(self.name)}"
 
     def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
-        if exclude and {"workshop", self.link} & set(exclude):
+        if exclude and {self.shared, self.link} & set(exclude):
             return
         if getattr(instance, model._meta.get_field(self.link).attname) is None:
             return
-        if getattr(instance, self.link).workshop_id != instance.workshop_id:
+        shared_id = f"{self.shared}_id"
+        if getattr(getattr(instance, self.link), shared_id) != getattr(instance, shared_id):
             raise ValidationError({self.link: self.get_violation_error_message()})
 
     def deconstruct(self):
@@ -62,4 +69,16 @@ class SameWorkshop(models.BaseConstraint):
         return path, args, kwargs
 
     def __eq__(self, other):
-        return isinstance(other, SameWorkshop) and self.deconstruct() == other.deconstruct()
+        return type(other) is type(self) and self.deconstruct() == other.deconstruct()
+
+
+class SameBranch(SameWorkshop):
+    """A two-column foreign key: this record's (branch, link) to the target's (branch, id).
+
+    For a record whose branch is one fact with its link's, like a bill and its job card, so
+    the two can never disagree (ADR-0032). The target needs a unique (branch, id) pair of its
+    own: BranchModel does not give one, because few links need it.
+    """
+
+    default_violation_error_message = _("This belongs to another branch.")
+    shared = "branch"

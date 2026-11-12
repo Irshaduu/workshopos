@@ -146,6 +146,38 @@ def test_a_repeat_in_the_same_branch_gets_the_saved_record(planted, workshop):
     assert saved.pk == key
 
 
+def under(planted_under, workshop):
+    """Two parents in one branch, and a new record's maker for each."""
+    parent_model, child_model = planted_under
+    branch = BranchFactory(workshop=workshop)
+    first, second = (parent_model.objects.create(workshop=workshop, branch=branch) for _ in "ab")
+
+    def child(key, parent):
+        return child_model(id=key, workshop=workshop, branch=branch, parent=parent)
+
+    return first, second, child
+
+
+def test_a_key_taken_under_another_parent_is_not_found(planted_under, workshop):
+    first, second, child = under(planted_under, workshop)
+    key = uuid.uuid7()
+    save_once(child(key, first), parent="parent")
+
+    with pytest.raises(Http404):
+        save_once(child(key, second), parent="parent")
+
+
+def test_a_repeat_under_the_same_parent_gets_the_saved_record(planted_under, workshop):
+    first, _second, child = under(planted_under, workshop)
+    key = uuid.uuid7()
+    save_once(child(key, first), parent="parent")
+
+    saved, saved_now = save_once(child(key, first), parent="parent")
+
+    assert saved_now is False
+    assert saved.parent_id == first.pk
+
+
 def test_a_real_rule_still_refuses_with_a_new_key(workshop):
     save_once(new_branch(workshop, name="Main"))
 

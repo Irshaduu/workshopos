@@ -1,0 +1,105 @@
+{% load i18n %}
+{% comment %}
+The bill as it prints: v1's sheet (_invoice_sheet.html), the one bill design for now. It only
+shows what bill_sheet() worked out (apps/billing/selectors.py), so a second design later
+shows the same figures (ADR-0032). The letterhead, the address and Print come with Printed
+bill (Phase 6); until then the letterhead is the workshop's name. The Part name table is
+v1's, and parts fill it in Phase 6.
+{% endcomment %}
+<article class="sheet" aria-label="{% translate 'The bill as it prints' %}">
+  <header class="sheet-head">
+    <p class="sheet-brand">{{ request.workshop.name }}</p>
+    <div class="sheet-doc">
+      <p class="sheet-title">{% translate "BILL" %}</p>
+      {% if sheet.settled %}
+        <p class="sheet-meta"><span>{% translate "DATE:" %} {{ sheet.bill.date }}</span><span>{% translate "#:" context "bill number" %} {{ sheet.bill.number }}</span></p>
+        <p class="sheet-meta sheet-meta--card"><span>{% translate "JOB CARD:" %} {{ card.number }}</span></p>
+      {% else %}
+        <p class="sheet-meta"><span>{% translate "JOB CARD:" %} {{ card.number }}</span><span>{% translate "PREVIEW" %}</span></p>
+      {% endif %}
+    </div>
+  </header>
+
+  <table class="sheet-table sheet-parties">
+    <colgroup><col class="sheet-col-wide"><col></colgroup>
+    <tbody>
+      <tr class="sheet-band">
+        <th scope="col">{% translate "BILL TO" %}</th>
+        <th scope="col">{% translate "VEHICLE INFO" %}</th>
+      </tr>
+      <tr>
+        <td>{% translate "NAME:" %} {{ sheet.customer_name }}<br>{% translate "MAKE:" %} {{ sheet.brand }}</td>
+        <td>{% translate "REG NO:" %} {{ sheet.plate }}<br>{% translate "MODEL:" %} {{ sheet.car_model }}<br>{% translate "MILEAGE:" %} {% if sheet.mileage %}{% blocktranslate with km=sheet.mileage|floatformat:"0g" %}{{ km }} km{% endblocktranslate %}{% endif %}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="sheet-table sheet-jobs">
+    <colgroup><col class="sheet-col-wide"><col class="sheet-col-qty"><col class="sheet-col-unit"><col class="sheet-col-amount"></colgroup>
+    <thead>
+      <tr><th colspan="3" class="sheet-th-left">{% translate "JOB PERFORMED" %}</th><th>{% translate "AMOUNT" %}</th></tr>
+    </thead>
+    <tbody class="sheet-rows">
+      {% for line in sheet.job_lines %}<tr><td colspan="3">{{ line }}</td><td></td></tr>{% endfor %}
+      {% for _ in sheet.job_pad %}<tr><td colspan="3">&nbsp;</td><td></td></tr>{% endfor %}
+    </tbody>
+    <tbody class="sheet-totals">
+      <tr>
+        <td colspan="2" class="sheet-void"></td>
+        <td class="sheet-sub-label">{% translate "SUBTOTAL" %}</td>
+        <td class="sheet-money sheet-sub-cell"><span class="sheet-acct"><span>&#8377;</span><span>{{ sheet.labour|floatformat:"2g" }}</span></span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="sheet-table sheet-parts">
+    <colgroup><col class="sheet-col-wide"><col class="sheet-col-qty"><col class="sheet-col-unit"><col class="sheet-col-amount"></colgroup>
+    <thead>
+      <tr><th class="sheet-th-left">{% translate "PART NAME" %}</th><th>{% translate "QTY" %}</th><th>{% translate "UNIT PRICE" %}</th><th>{% translate "AMOUNT" %}</th></tr>
+    </thead>
+    <tbody class="sheet-rows">
+      {% for _ in sheet.part_pad %}<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>{% endfor %}
+    </tbody>
+    <tbody class="sheet-totals">
+      <tr>
+        <td class="sheet-void"></td>
+        <td class="sheet-sub-cell"></td>
+        <td class="sheet-sub-label">{% translate "SUBTOTAL" %}</td>
+        <td class="sheet-r sheet-sub-cell">{{ sheet.parts|floatformat:"2g" }}</td>
+      </tr>
+      {% if sheet.settled %}
+        <tr>
+          <td class="sheet-void"></td>
+          <td class="sheet-sub-cell"></td>
+          <td class="sheet-sub-label">{% translate "TOTAL" %}</td>
+          <td class="sheet-money sheet-sub-cell"><span class="sheet-acct"><span>&#8377;</span><span>{{ sheet.total|floatformat:"2g" }}</span></span></td>
+        </tr>
+        {% if sheet.discount %}
+          <tr>
+            <td class="sheet-void"></td>
+            <td class="sheet-sub-cell"></td>
+            <td class="sheet-sub-label">{% translate "DISCOUNT" %}</td>
+            <td class="sheet-money sheet-sub-cell"><span class="sheet-acct"><span>&#8377;</span><span>{{ sheet.discount|floatformat:"2g" }}</span></span></td>
+          </tr>
+        {% endif %}
+        <tr class="sheet-grand">
+          <td class="sheet-thanks">{% translate "Thank you for your business!" %}</td>
+          <td class="sheet-grand-cell"></td>
+          <td class="sheet-grand-label">{% translate "NET" %}</td>
+          <td class="sheet-money sheet-grand-amount"><span class="sheet-acct"><span>&#8377;</span><span>{{ sheet.net|floatformat:"2g" }}</span></span></td>
+        </tr>
+      {% else %}
+        <tr class="sheet-grand">
+          <td class="sheet-thanks">{% translate "Thank you for your business!" %}</td>
+          <td class="sheet-grand-cell"></td>
+          <td class="sheet-grand-label">{% translate "TOTAL" %}</td>
+          <td class="sheet-money sheet-grand-amount"><span class="sheet-acct"><span>&#8377;</span><span>{{ sheet.total|floatformat:"2g" }}</span></span></td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  {% if sheet.settled %}
+    <p class="sheet-payments"><span class="sheet-payments__label">{% translate "PAYMENTS" %}</span><span>{% for payment in sheet.payments %}{{ payment.get_method_display }} &#8377; {{ payment.amount|floatformat:"2g" }}{% if not forloop.last %}, {% endif %}{% endfor %}</span></p>
+  {% endif %}
+</article>
