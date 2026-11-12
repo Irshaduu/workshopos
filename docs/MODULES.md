@@ -63,7 +63,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Module | What it does | App | When |
 |---|---|---|---|
 | Printed bill | A4 on the workshop's letterhead; PDF named after the car; WhatsApp button | `billing` | Go-live |
-| Settle bill | Shows anything still unfilled before the bill is settled; gives the bill its number from the branch's own series | `billing` | Go-live |
+| Settle bill | Shows anything still unfilled before the bill is settled; takes what was paid by method, and the rest is the discount, shown before saving; gives the bill its number from the branch's own series | `billing` | Go-live |
 | Pending and paid bills | Who still owes, and every bill paid, by date | `billing` | Go-live |
 | Discount audit | Every bill settled for less, largest first | `billing` | Go-live |
 | Cashbook | Money in and out by the day it moved; asks before a double count | `finance` | Go-live |
@@ -175,6 +175,8 @@ so adding them changes no existing table.
 | Plans and limits | Which modules each plan includes; user and branch limits per plan (the switches are in Foundation) | SaaS |
 | More roles | Main Manager, Branch Owner, Service Advisor, Floor Supervisor, Parts Manager, a read-only Accountant and a read-only Viewer, each only when a real workshop asks (ADR-0026). Each needs one small migration for the role check and changes no record. A read-only role also needs one check in the guard: any save needs one more permission, which it does not have | SaaS |
 | Price each job | Each workshop chooses one way, once: one labour charge (the default); or a price on each job, with the total worked out, and the bill printing those prices or only the subtotal. Never a typed subtotal beside job prices. A job card keeps the way it started with, so the choice never changes an open card or an old bill. It needs small new columns on the job card and its job lines, and changes no record | SaaS |
+| Pay later | For a workshop whose customers pay part of a bill later: the rest is still owed, not a discount, and shows in Pending bills. The bill already keeps its discount as its own amount, so this changes no record | SaaS |
+| Bill designs | A standard bill design for every new workshop, made its own by its logo, details and one colour from a short list; 3 or 4 ready designs only if workshops ask. Never a one-off design for one workshop, and never one a workshop uploads. The first client's design is used only for that client (ADR-0032) | SaaS |
 | Several workshops per account | One sign-in for a person who works in more than one workshop, with a workshop picker | SaaS |
 | Export and exit | A workshop's data exported, then deleted when it leaves | SaaS |
 | Terms and privacy | Terms of service; privacy policy under India's DPDP Act | SaaS |

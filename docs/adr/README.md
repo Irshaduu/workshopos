@@ -36,6 +36,7 @@ costs.
 | [0029](0029-money.md) | Money: one column and one box for every amount | Accepted |
 | [0030](0030-cars-customers-and-the-job-card.md) | Cars and customers as records, and a job card that keeps its visit | Accepted |
 | [0031](0031-known-plate.md) | Known plate: which car a plate names, and a save that asks first | Accepted |
+| [0032](0032-settle-bill.md) | Settle bill: the bill's shape, and who may date or change money | Proposed |
 
 ## Rules
 

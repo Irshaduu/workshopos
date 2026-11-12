@@ -239,6 +239,17 @@
       var(--color-bar-end) 100%
     );
 
+    /* Colour and type: the bill, as it prints (design/lab/bill/). v1's navy
+       and its bands, measured off the workshop's own printed bill; its type
+       is Calibri, which every Windows machine has, with fallbacks of the same
+       width so a bill keeps its line breaks on a phone. */
+    --color-bill-text: #000000;
+    --color-bill-ink: #1f4e79;
+    --color-bill-band: #dce6f1;
+    --color-bill-grand: #bdd7ee;
+    --color-bill-thanks: #2e74b5;
+    --font-bill: Calibri, "Segoe UI", Candara, "Trebuchet MS", Arial, sans-serif;
+
     /* The frame of every screen (docs/DESIGN.md) */
     --frame-max-width: 75rem;
 
