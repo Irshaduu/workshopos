@@ -174,7 +174,8 @@ How each workshop's data stays its own: ADR-0023.
   Otherwise the answer is "not allowed" (403).
 - **A link stays inside its workshop.** A link to another workshop record
   carries a `SameWorkshop` constraint, so PostgreSQL refuses a link to a
-  record of another workshop.
+  record of another workshop. A record whose branch is one fact with its
+  link's, like a bill and its job card, also carries `SameBranch` (ADR-0032).
 - **Whether a workshop may work now** has one home: `may_work()` in
   `apps/workshops/selectors.py`, asked by the middleware.
 - **A membership** (`apps/accounts/models.py`) is an account's place in a
@@ -207,19 +208,23 @@ How each workshop's data stays its own: ADR-0023.
 - **Dates:** India time, `timezone.localdate()`, never `date.today()`.
   Screens show Indian dates and numbers (26 Oct 2026, 1,50,000.00) from our
   own formats file (`apps/core/formats/en/formats.py`): Django has none for
-  Indian English. Which style goes where: `docs/DESIGN.md`.
+  Indian English. Which style goes where: `docs/DESIGN.md`. A money date goes
+  through `money_date_problem()` (`apps/audit/selectors.py`): never in the
+  future, and Office no further back than the workshop's back-date limit.
 - **Saving once:** a form that makes a new record takes the record's key from
   its address, and its service saves with `save_once()`
   (`apps/workshops/services.py`), so a double tap or a slow network never
-  saves it twice.
+  saves it twice. A record under a parent also names its parent, so its key
+  is never taken for another parent's record.
 - **Saving what changed:** a form on a record people share keeps each box's opening
   value, and its service applies only what this person changed, in one locked
   transaction, so nobody undoes another person's save by accident (ADR-0030).
-- **Audit:** services call `audit` whenever money is changed, deleted or
-  back-dated. Each entry keeps a frozen copy of what changed, with who, when
-  and why, and no link to the record, so it outlives the record. The log is
-  built in the same pull request as the first service that changes money,
-  because history cannot be filled in later.
+- **Audit:** services call `audit` whenever money is changed or deleted. Each
+  entry keeps a frozen copy of what changed, with who, when and why, and no
+  link to the record, so it outlives the record. The log is built in the same
+  pull request as the first service that changes money, because history cannot
+  be filled in later. Back-dated money keeps nothing extra: its record already
+  keeps the day the money moved, and when and by whom it was typed (ADR-0032).
 - **Notifications:** services call `notifications`; views never do. Built
   with the first alert.
 - **History:** record when things happen. Status changes that matter store

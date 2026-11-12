@@ -5,8 +5,8 @@ How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
 **Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
-first pages, the Staff list, the money base, the job card and Known plate are built; Settle bill
-is next.
+first pages, the Staff list, the money base, the job card and Known plate are built. Settle bill
+is under way: settling is built, and Change payments, with the change history, is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -304,15 +304,16 @@ work gets its own pull request, just before the page that first uses it.
       number at every visit, or blank when the odometer does not work,
       never miles (settle warns when it is blank, as v1 does); the time of
       every step the workflow has, kept as rows, one per change, because
-      ready can be undone: car in and each concern started and fixed are in;
+      ready can be undone: car in, each concern started and fixed, and settled
+      are in;
       on hold and back, and ready, come with their buttons on the live board,
       and part ordered and received with parts (Phase 6); a delivered step
       only if the client asks (v1 had none)
-- [ ] The first per-workshop settings (ADR-0024), with settle: how far
+- [~] The first per-workshop settings (ADR-0024), with settle: how far
       back Office may date money (v1: 3 days), and how long Office may
       change a settled bill before only owners can (v1: 24 hours); the
       big-discount alert limit comes with the bell (Phase 6)
-- [ ] The bill's number per branch, with Settle bill (ADR-0030): a counter
+- [x] The bill's number per branch, with Settle bill (ADR-0030): a counter
       locked when the bill becomes final, never a PostgreSQL sequence (it
       skips a number when a save fails), like INV-26-27-0045, restarting each
       financial year (GST: unique in a financial year, at most 16 characters),
@@ -320,7 +321,7 @@ work gets its own pull request, just before the page that first uses it.
       JB numbers as printed, so the two never clash
 - [x] Money, as ADR-0029 decides: one column and one box for every amount; a
       test walks every column
-- [ ] The money date rules, with settle: no future date, how far back
+- [x] The money date rules, with settle: no future date, how far back
       Office may go
 - [x] Indian dates and numbers on screen: one formats file, read by Django's
       own filters (26 Oct 2026; 1,50,000, 1,50,000.50 or 1,50,000.00 through
@@ -329,11 +330,13 @@ work gets its own pull request, just before the page that first uses it.
       figure for a big number on a phone (45.2L) comes with Profit (After),
       as our own code in `core`
 - [ ] The audit log, in the same pull request as the first service that
-      changes, deletes or back-dates money: a frozen copy of what changed,
-      with who, when and why (v1's shape, in one table), saved in the same
-      transaction; every service that changes money is told who acts. Its
-      first entries: a change to a settled bill (amount, discount, payment,
-      date); a first settle is not a change (v1)
+      changes or deletes money, Change payments: a frozen copy of what
+      changed, with who, when and why (v1's shape, in one table), saved in
+      the same transaction; every service that changes money is told who
+      acts. Its first entries: a change to a settled bill (amount, discount,
+      payment, date); a first settle is not a change (v1). Back-dated money
+      keeps nothing extra: its record keeps its date, and when it was typed
+      and by whom (ADR-0032)
 - [x] Every page and menu item names its module, from the first page: a
       list of modules in the code, where each app adds its own, and a test
       that fails for a page with no module or an unknown one (ADR-0011). A
@@ -417,6 +420,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
     accountant's export
 - [ ] Spare shops, unassigned spares and payments
 - [ ] Supplies shops, inventory and stock costing
+- [ ] Parts on the job card, and on its bill, with Change job card
+      (`docs/rules/settle-bill.md`)
 - [ ] Cashbook
 - [ ] Fleet accounts
 - [ ] The change history screen, alerts and push: the bell comes with

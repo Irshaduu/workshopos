@@ -6,7 +6,10 @@ How the UI lab works: `CONTRIBUTING.md`. Words on screen: `docs/GLOSSARY.md`.
 
 CSS base: plain CSS with our own tokens, no framework (ADR-0017).
 
-- Tokens: `static/css/tokens.css`, the only home of every colour and size.
+- Tokens: `static/css/tokens.css`, the only home of every colour and size. One
+  exception: the bill as it prints keeps its paper sizes, in millimetres and points,
+  in its own file (`apps/billing/static/billing/bill.css`), because they belong to the
+  bill's design, not to the screens (ADR-0032).
 - Components: `static/css/components.css`: card (with a status edge),
   button, field, status badge, chip, back control, payment row,
   confirmation card, form card, list search, info button, and the screen
