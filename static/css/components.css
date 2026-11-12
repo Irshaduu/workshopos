@@ -121,6 +121,14 @@
     background: var(--color-warning-strong);
   }
 
+  /* v1's amber save, with dark words: the job card's Update and the bill's Settle bill. */
+  .btn--save,
+  .btn--save:hover {
+    border-color: var(--color-save);
+    background: var(--color-save);
+    color: var(--color-on-save);
+  }
+
   .btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;

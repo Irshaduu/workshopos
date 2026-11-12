@@ -45,7 +45,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Lead mechanic | `lead_mechanic` | mechanic (staff), assigned mechanic | The staff member picked on a job card to do its work |
 | Job card | `JobCard` | bill, before it is settled | One visit of one car to one branch |
 | Job card number | `JobCard.number`, `NumberCounter` | job number, serial | A job card's own number, like JC-0027, given when the card is made |
-| Bill number | | invoice number, on a plain bill | A bill's own number, like INV-26-27-0045, given when the bill is final. Old Excel bills keep their JB numbers. Not built yet |
+| Bill number | `Bill.number`, `BillCounter` | invoice number, on a plain bill | A bill's own number, like INV-26-27-0045, given when the bill is final. Old Excel bills keep their JB numbers |
 | Open | `JobCardStatus.OPEN` | active, live | A job card that has not ended. A car has one at a time |
 | Cancelled | `JobCardStatus.CANCELLED`, `cancel()` | deleted, trashed | A job card that ended with no bill. It keeps its number and everything on it |
 | Admitted date | `admitted_date` | check-in date | The day the car came in |
@@ -70,6 +70,26 @@ the code (models, functions, files, URLs) and in the docs.
 | Step | `JobCardStep` | event, log | One change in a job card's life, with its time, like Car in or a concern Fixed |
 | Move | `move` | transfer, reassign | Putting an open job card on another car, when it was made on the wrong one. It keeps its number and everything on it |
 | Question | `Question` | conflict, clash | What a save asks before it uses one car's record for another, with a button for each answer |
+| Bill | `Bill` | invoice, on a plain bill | What a customer pays for one job card: its jobs, the labour charge and the total; once settled, also its number, date, discount, net and payments |
+| Preview | | draft, estimate, pro forma | A bill while its job card is open. It has no number, and it changes with the card |
+| Settle | `settle_bill()` | close, finalise, mark paid | Record what the customer paid, by method. The rest of the bill is the discount, and the bill is final |
+| Settled | `JobCardStatus.SETTLED`; a bill's `settled_at` and `settled_by` | paid, closed | A job card whose bill is settled. It is locked, and off the live board. The bill keeps when it was settled and by whom |
+| Not filled | `unfilled()`, `Unfilled` | preflight, gaps, checklist | What is still empty on a job card. Shown before it is settled, and later on the live report |
+| Bill sheet | `bill_sheet()`, `Sheet`, `_sheet.html` | invoice sheet | Everything a bill shows, worked out once, and the bill as it prints |
+| Check | `Check` | confirm, review | What the settle box answers first when a settle has a discount: the total, each payment, the discount and the net, before anything is saved |
+| Payment | `Payment` | receipt, received amount | Money a customer paid toward a bill, by one method. Always above zero |
+| Payment method | `PaymentMethod` | mode, payment type | How a payment was made: Cash, UPI, Card or Bank transfer, always in words |
+| Total | `total` | grand total, bill amount | What a bill adds up to, before the discount |
+| Discount | `discount` | shortfall, write-off, concession | The part of a bill the workshop lets the customer off, kept as its own amount, before tax |
+| Net | `net` | paid, amount paid, balance | A bill's total less its discount: what the customer pays |
+| Date paid | `paid_on`, saved as the bill's `date` | paid date, payment date | The day the customer paid, as typed in the settle box. The bill is dated that day |
+| Financial year | `financial_year` | FY, fiscal year | 1 April to 31 March, as Indian tax counts a year. A bill number carries it, like 26-27 |
+| Frozen copy | | snapshot | A settled bill's own copy of what it prints about the customer and the car, so a later change to those records never changes the bill |
+| Change payments | `change_payments()` | re-settle, settle again | Correcting the payments of a settled bill. Not built yet |
+| Change history | `audit` (the app) | edit history, deletion history, audit trail | The record of every change to money after it was recorded. Not built yet; its page for the owners comes in Phase 6 |
+| Change | `Change` | edit, edit log, log entry | One kept change to money: each figure before and after, who, when and why. Kept for good. Not built yet |
+| Edit window | `edit_window_hours` | delete window, lock window | How long Office may change money after recording it: 24 hours at first. Each workshop's own setting. Not built yet |
+| Back-date limit | `back_date_days` | backdate floor | How many days back Office may date money: 3 at first. Each workshop's own setting |
 | Live board | `live_board` | dashboard, floor board | The home page: every car open in this branch |
 | Turned off | `is_active`, `turn_off()`, `turn_on()` | retired, archived, deactivated | A staff member or an account kept on record but no longer in use. Never deleted; Turn on brings them back |
 | Supplier | `suppliers` (the app) | | Any shop we buy from: a spare shop or a supplies shop |

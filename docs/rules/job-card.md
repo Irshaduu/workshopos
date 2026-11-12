@@ -20,9 +20,8 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
   with Parts on the job card (Phase 6).*
 - **JOB-2** A job card belongs to one branch. A card of another workshop or another
   branch is never found: its pages answer "Not found" (ROLE-10). *New (ADR-0028).*
-- **JOB-3** A job card is Open or Cancelled. Later steps add its other states: Ready
-  with the live board (Phase 6), and Settled with Settle bill. *New: v1 kept these as
-  separate flags.*
+- **JOB-3** A job card is Open, Settled (SETTLE-23) or Cancelled. Ready comes with the
+  live board (Phase 6). *New: v1 kept these as separate flags.*
 - **JOB-4** A car has one open job card at a time, across all the branches of its
   workshop, and PostgreSQL holds this. A second is refused, with no way around it.
   The refusal names the open card's number, with a link to it when it is in this
@@ -51,7 +50,8 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
   saved number changes then. Until then, each branch counts from JC-0001. *New. Built with
   Branch screens.*
 - **JOB-10** The printed bill shows both numbers, and a list's search finds a card by
-  either. *New. Built with Printed bill and the lists (Phase 6).*
+  either. *New. The bill shows both (Settle bill); the lists' search comes with them
+  (Phase 6).*
 
 ## The car
 
@@ -114,7 +114,7 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
   of kilometres, from 1 to 20,00,000. Commas are fine only where they truly group a
   number, like 50,000 or 1,02,340, and km may follow. Anything else is refused in plain
   words, never guessed: miles, a decimal, 50k, or 0. Empty means the odometer does not
-  work or was not read, and settling warns about that (step 8). *v1, changed: v1 read
+  work or was not read, and settling warns about that (SETTLE-10). *v1, changed: v1 read
   the same shapes, but it also took 50k, rounded a decimal, and saved as text whatever
   it could not read.*
 - **JOB-23** The lead mechanic is optional, picked from this branch's Mechanics, then
@@ -239,7 +239,8 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
   is refused. It cannot be brought back: if a card was cancelled by mistake, a new card
   takes a new number. *New.*
 - **JOB-52** A card with parts cannot be cancelled until they are moved, and a settled
-  card can never be. *v1: its delete guard. Built with parts (Phase 6) and Settle bill.*
+  card can never be (SETTLE-37). *v1: its delete guard. The parts half comes with parts
+  (Phase 6).*
 - **JOB-64** When a card is cancelled, the owners get an alert. *v1: `RECORD_DELETED`.
   Built with the bell (Phase 6).*
 
@@ -289,8 +290,7 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
 
 - Parts, and the job lines suggested from them: Parts on the job card (Phase 6).
 - On hold, Ready, and Ready's undo: the live board and the Completed list (Phase 6).
-- Locking a settled card, and the Invoice button: Settle bill (step 8). The Profile button:
-  Car profiles (After). A button comes with its page (ROLE-32).
+- The Profile button: Car profiles (After). A button comes with its page (ROLE-32).
 - Suggestions as you type, and the concerns list: Phase 6. Photos: After. Warranty cards,
   v1's second kind of card: After. A fleet account on the card: Phase 6.
 - Job card view, the read-only page: Phase 6.

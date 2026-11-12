@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bill lab</title>
+  <link rel="stylesheet" href="../../../static/css/tokens.css">
+  <link rel="stylesheet" href="../../../static/css/base.css">
+  <link rel="stylesheet" href="../../../static/css/components.css">
+  <link rel="stylesheet" href="bill.css">
+  <script src="bill.js" defer></script>
+</head>
+<body>
+<main class="lab">
+
+  <a class="back" href="../system/">Design system</a>
+  <p class="lab-intro">Bill and Settle bill: v1's bill page, rebuilt with the changes of step 8 (docs/rules/settle-bill.md). A prototype, never used by the app. All data is fake.</p>
+  <p class="lab-intro">Pick a state. A box that opens over the page shows here above the bill, on a dark panel. In the app it is a dialog in the middle of the screen. The letterhead, Print and WhatsApp come with Printed bill (Phase 6); the empty Part name table is v1's, and parts fill it in Phase 6.</p>
+
+  <div class="lab-bar">
+    <fieldset class="lab-switch">
+      <legend>State</legend>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-preview" checked> Preview</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-before"> Before you settle</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-settle"> Settle box</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-refused"> Refused</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-check"> Check</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-settled"> Settled</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-change"> Change payments</label>
+      <label class="lab-switch__option"><input type="radio" name="state" id="state-late"> Office, 30 hours later</label>
+    </fieldset>
+  </div>
+
+  <section class="bill-page" aria-label="Bill page">
+    <a class="back" href="#">JC-0027</a>
+
+    <div class="bill-bar">
+      <h1 class="bill-bar__title">Bill</h1>
+      <span class="badge badge--warning when-open">Preview</span>
+      <span class="badge badge--success when-settled">Settled</span>
+      <span class="bill-bar__spacer"></span>
+      <a class="btn bill-bar__card" href="#"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#pencil"></use></svg>Job card</a>
+      <button class="btn btn--settle when-open" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#indian-rupee"></use></svg>Settle bill</button>
+      <button class="btn btn--primary when-settled not-late" type="button"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#wallet"></use></svg>Change payments</button>
+    </div>
+    <p class="bill-late only-late"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#clock"></use></svg>Settled 30 hours ago. Office can change money only within 24 hours. Ask an owner.</p>
+
+    <div class="notice notice--success only-settled" role="status">
+      <svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-check"></use></svg>
+      <p class="notice__text">KL00AA0001 settled. Its bill number is INV-26-27-0045.</p>
+    </div>
+
+    <!-- Before you settle: what is still not filled. It never stops a settle. -->
+    <div class="bill-stage only-before">
+      <div class="confirm confirm--danger bill-gaps" role="dialog" aria-modal="true" aria-labelledby="gaps-title">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#triangle-alert"></use></svg></div>
+        <h2 class="confirm__title" id="gaps-title">Before you settle</h2>
+        <p class="confirm__text">2 things are not filled. Settling locks the job card.</p>
+        <ul class="bill-gaps__list">
+          <li class="bill-gap"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#gauge"></use></svg><span class="bill-gap__what">no mileage</span></li>
+          <li class="bill-gap"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#circle-alert"></use></svg><span class="bill-gap__name">AC not cooling</span><span class="bill-gap__what">not fixed</span></li>
+        </ul>
+        <div class="confirm__actions">
+          <a class="btn" href="#">Open job card</a>
+          <button class="btn btn--primary" type="button">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- The settle box: one money box for each method, all empty at first. -->
+    <div class="bill-stage only-settle">
+      <section class="form-dialog bill-settle" role="dialog" aria-modal="true" aria-labelledby="settle-title">
+        <div class="form-dialog__head">
+          <h2 class="form-dialog__title" id="settle-title">Settle bill</h2>
+          <button class="form-dialog__close" type="button" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </div>
+        <form class="form-dialog__form">
+          <div class="bill-settle__top">
+            <div>
+              <p class="bill-settle__label">Total</p>
+              <p class="bill-settle__total">&#8377; 43,000.00</p>
+            </div>
+            <div>
+              <p class="bill-settle__label" id="s1-date-label">Date paid</p>
+              <label class="pay__date"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>Today</span><input type="date" aria-labelledby="s1-date-label" value="2026-11-10" max="2026-11-10" min="2026-11-07"></label>
+            </div>
+          </div>
+          <div class="bill-settle__methods">
+            <div class="field">
+              <label class="field__label" for="s1-cash">Cash</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s1-cash" inputmode="decimal" autocomplete="off" value="20000"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s1-upi">UPI</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s1-upi" inputmode="decimal" autocomplete="off" value="20000"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s1-card">Card</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s1-card" inputmode="decimal" autocomplete="off"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s1-bank">Bank transfer</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s1-bank" inputmode="decimal" autocomplete="off"></div>
+            </div>
+          </div>
+          <button class="btn btn--primary" type="button">Settle bill</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Refused: the payments come to more than the total. -->
+    <div class="bill-stage only-refused">
+      <section class="form-dialog bill-settle" role="dialog" aria-modal="true" aria-labelledby="refused-title">
+        <div class="form-dialog__head">
+          <h2 class="form-dialog__title" id="refused-title">Settle bill</h2>
+          <button class="form-dialog__close" type="button" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </div>
+        <form class="form-dialog__form">
+          <div class="bill-settle__top">
+            <div>
+              <p class="bill-settle__label">Total</p>
+              <p class="bill-settle__total">&#8377; 43,000.00</p>
+            </div>
+            <div>
+              <p class="bill-settle__label" id="s2-date-label">Date paid</p>
+              <label class="pay__date"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>Today</span><input type="date" aria-labelledby="s2-date-label" value="2026-11-10" max="2026-11-10" min="2026-11-07"></label>
+            </div>
+          </div>
+          <div class="bill-settle__methods">
+            <div class="field">
+              <label class="field__label" for="s2-cash">Cash</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s2-cash" inputmode="decimal" autocomplete="off" value="25000" aria-invalid="true" aria-describedby="s2-error"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s2-upi">UPI</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s2-upi" inputmode="decimal" autocomplete="off" value="20000" aria-invalid="true" aria-describedby="s2-error"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s2-card">Card</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s2-card" inputmode="decimal" autocomplete="off"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s2-bank">Bank transfer</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s2-bank" inputmode="decimal" autocomplete="off"></div>
+            </div>
+          </div>
+          <p class="field__error" id="s2-error">The payments come to 45,000.00, more than the total of 43,000.00.</p>
+          <button class="btn btn--primary" type="button">Settle bill</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- The check: the server's answer, before anything is saved. -->
+    <div class="bill-stage only-check">
+      <div class="confirm confirm--warning bill-check" role="dialog" aria-modal="true" aria-labelledby="check-title">
+        <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#indian-rupee"></use></svg></div>
+        <h2 class="confirm__title" id="check-title">Discount &#8377; 3,000.00</h2>
+        <p class="confirm__text">The rest of the bill is the discount. Settling locks the job card and gives the bill its number.</p>
+        <dl class="bill-sum">
+          <div class="bill-sum__row"><dt>Total</dt><dd>&#8377; 43,000.00</dd></div>
+          <div class="bill-sum__row bill-sum__row--paid"><dt>Cash</dt><dd>&#8377; 20,000.00</dd></div>
+          <div class="bill-sum__row bill-sum__row--paid"><dt>UPI</dt><dd>&#8377; 20,000.00</dd></div>
+          <div class="bill-sum__row bill-sum__row--discount"><dt>Discount</dt><dd>&#8377; 3,000.00</dd></div>
+          <div class="bill-sum__row bill-sum__row--net"><dt>Net</dt><dd>&#8377; 40,000.00</dd></div>
+        </dl>
+        <p class="bill-check__date">Date paid: today, 10 Nov 2026</p>
+        <div class="confirm__actions">
+          <button class="btn" type="button">Go back</button>
+          <button class="btn btn--warning" type="button">Settle bill</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change payments: the settle box as saved, and why. -->
+    <div class="bill-stage only-change">
+      <section class="form-dialog bill-settle" role="dialog" aria-modal="true" aria-labelledby="change-title">
+        <div class="form-dialog__head">
+          <h2 class="form-dialog__title" id="change-title">Change payments</h2>
+          <button class="form-dialog__close" type="button" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#x"></use></svg></button>
+        </div>
+        <form class="form-dialog__form">
+          <div class="bill-settle__top">
+            <div>
+              <p class="bill-settle__label">Total</p>
+              <p class="bill-settle__total">&#8377; 43,000.00</p>
+            </div>
+            <div>
+              <p class="bill-settle__label" id="s3-date-label">Date paid</p>
+              <label class="pay__date"><svg class="icon" aria-hidden="true"><use href="../../../static/icons/icons.svg#calendar"></use></svg><span>Today</span><input type="date" aria-labelledby="s3-date-label" value="2026-11-10" max="2026-11-10" min="2026-11-07"></label>
+            </div>
+          </div>
+          <div class="bill-settle__methods">
+            <div class="field">
+              <label class="field__label" for="s3-cash">Cash</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s3-cash" inputmode="decimal" autocomplete="off" value="20000"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s3-upi">UPI</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s3-upi" inputmode="decimal" autocomplete="off" value="19000"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s3-card">Card</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s3-card" inputmode="decimal" autocomplete="off"></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s3-bank">Bank transfer</label>
+              <div class="pay__money"><input class="field__input pay__amount num" id="s3-bank" inputmode="decimal" autocomplete="off"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="s3-why">Why are you changing this bill?</label>
+            <input class="field__input" id="s3-why" maxlength="255" autocomplete="off" aria-describedby="s3-why-hint" value="UPI was 19,000, not 20,000">
+            <p class="field__hint" id="s3-why-hint">Kept in the change history, with what it was.</p>
+          </div>
+          <button class="btn btn--primary" type="button">Change payments</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- The bill, as it prints: A4 wide, and scaled down whole on a narrow screen. -->
+    <div class="sheet-wrap">
+      <article class="sheet" aria-label="The bill as it prints">
+        <header class="sheet-head">
+          <p class="sheet-brand">Workshop A</p>
+          <div class="sheet-doc">
+            <p class="sheet-title">BILL</p>
+            <p class="sheet-meta when-open"><span>JOB CARD: JC-0027</span><span>PREVIEW</span></p>
+            <p class="sheet-meta when-settled"><span>DATE: 10 Nov 2026</span><span>#: INV-26-27-0045</span></p>
+            <p class="sheet-meta sheet-meta--card when-settled"><span>JOB CARD: JC-0027</span></p>
+          </div>
+        </header>
+
+        <table class="sheet-table sheet-parties">
+          <colgroup><col class="sheet-col-wide"><col></colgroup>
+          <tbody>
+            <tr class="sheet-band">
+              <th scope="col">BILL TO</th>
+              <th scope="col">VEHICLE INFO</th>
+            </tr>
+            <tr>
+              <td>NAME: Ravi Menon<br>MAKE: BMW</td>
+              <td>REG NO: KL00AA0001<br>MODEL: 520d<br>MILEAGE: <span class="when-settled">45,230 km</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="sheet-table sheet-jobs">
+          <colgroup><col class="sheet-col-wide"><col class="sheet-col-qty"><col class="sheet-col-unit"><col class="sheet-col-amount"></colgroup>
+          <thead>
+            <tr><th colspan="3" class="sheet-th-left">JOB PERFORMED</th><th>AMOUNT</th></tr>
+          </thead>
+          <tbody class="sheet-rows">
+            <tr><td colspan="3">Clutch plate replaced</td><td></td></tr>
+            <tr><td colspan="3">Gearbox oil replaced</td><td></td></tr>
+            <tr><td colspan="3">Engine oil and filter replaced</td><td></td></tr>
+            <tr><td colspan="3">Wheel alignment</td><td></td></tr>
+            <tr><td colspan="3">&nbsp;</td><td></td></tr>
+            <tr><td colspan="3">&nbsp;</td><td></td></tr>
+            <tr><td colspan="3">&nbsp;</td><td></td></tr>
+            <tr><td colspan="3">&nbsp;</td><td></td></tr>
+            <tr><td colspan="3">&nbsp;</td><td></td></tr>
+          </tbody>
+          <tbody class="sheet-totals">
+            <tr>
+              <td colspan="2" class="sheet-void"></td>
+              <td class="sheet-sub-label">SUBTOTAL</td>
+              <td class="sheet-money sheet-sub-cell"><span class="sheet-acct"><span>&#8377;</span><span>43,000.00</span></span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="sheet-table sheet-parts">
+          <colgroup><col class="sheet-col-wide"><col class="sheet-col-qty"><col class="sheet-col-unit"><col class="sheet-col-amount"></colgroup>
+          <thead>
+            <tr><th class="sheet-th-left">PART NAME</th><th>QTY</th><th>UNIT PRICE</th><th>AMOUNT</th></tr>
+          </thead>
+          <tbody class="sheet-rows">
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          </tbody>
+          <tbody class="sheet-totals">
+            <tr>
+              <td class="sheet-void"></td>
+              <td class="sheet-sub-cell"></td>
+              <td class="sheet-sub-label">SUBTOTAL</td>
+              <td class="sheet-r sheet-sub-cell">0.00</td>
+            </tr>
+            <tr class="sheet-grand when-open">
+              <td class="sheet-thanks">Thank you for your business!</td>
+              <td class="sheet-grand-cell"></td>
+              <td class="sheet-grand-label">TOTAL</td>
+              <td class="sheet-money sheet-grand-amount"><span class="sheet-acct"><span>&#8377;</span><span>43,000.00</span></span></td>
+            </tr>
+            <tr class="when-settled">
+              <td class="sheet-void"></td>
+              <td class="sheet-sub-cell"></td>
+              <td class="sheet-sub-label">TOTAL</td>
+              <td class="sheet-money sheet-sub-cell"><span class="sheet-acct"><span>&#8377;</span><span>43,000.00</span></span></td>
+            </tr>
+            <tr class="when-settled">
+              <td class="sheet-void"></td>
+              <td class="sheet-sub-cell"></td>
+              <td class="sheet-sub-label">DISCOUNT</td>
+              <td class="sheet-money sheet-sub-cell"><span class="sheet-acct"><span>&#8377;</span><span>3,000.00</span></span></td>
+            </tr>
+            <tr class="sheet-grand when-settled">
+              <td class="sheet-thanks">Thank you for your business!</td>
+              <td class="sheet-grand-cell"></td>
+              <td class="sheet-grand-label">NET</td>
+              <td class="sheet-money sheet-grand-amount"><span class="sheet-acct"><span>&#8377;</span><span>40,000.00</span></span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="sheet-payments when-settled"><span class="sheet-payments__label">PAYMENTS</span><span>Cash &#8377; 20,000.00, UPI &#8377; 20,000.00</span></p>
+      </article>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

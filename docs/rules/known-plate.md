@@ -128,8 +128,8 @@ car's record is used for another.
   *New.*
 - **KNOWN-17** Every role that changes job cards may move one (JOB-53), because Floor
   already answers the same questions when it makes a card, and every question names the
-  cars first. A cancelled card never moves (JOB-51), and a settled one never will (Settle
-  bill). *New.*
+  cars first. A cancelled card never moves (JOB-51), and a settled one never does
+  (SETTLE-37). *New.*
 
 ## Who may do what
 
