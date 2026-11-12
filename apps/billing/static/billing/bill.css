@@ -1,0 +1,386 @@
+/* A job card's bill (docs/design/, design/lab/bill/): v1's bill page, chosen in the lab.
+   Its screen parts take their sizes from the tokens. The sheet is the bill as it prints, so
+   its sizes are a printed page's, in millimetres and points, measured off the workshop's own
+   bill as in v1 (_invoice_sheet_style.html). */
+
+@layer page {
+  /* ---------- The page's own row: its title, the bill's state, what can be done ---------- */
+  .bill-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .bill-bar__title {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+  }
+
+  .bill-bar__spacer {
+    flex: 1 1 auto;
+  }
+
+  .bill-who {
+    margin: calc(var(--space-2) * -1) 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* ---------- Before you settle: one row for each thing not filled (v1's pf-gap) ---------- */
+  .bill-unfilled__list {
+    display: grid;
+    gap: var(--space-2);
+    margin: calc(var(--space-2) * -1) 0 var(--space-6);
+    padding: 0;
+    list-style: none;
+    text-align: left;
+  }
+
+  .bill-unfilled__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-danger-edge);
+    border-radius: var(--radius-md);
+    background: var(--color-danger-soft);
+    font-size: var(--text-sm);
+  }
+
+  .bill-unfilled__item .icon {
+    flex: none;
+    color: var(--color-danger-text);
+  }
+
+  /* A concern's own words take the room and push what is missing to the right. A box of the
+     card itself has no name, so its words sit beside the icon. */
+  .bill-unfilled__name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-weight: var(--weight-semibold);
+  }
+
+  .bill-unfilled__what {
+    color: var(--color-danger-text);
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  /* ---------- The settle box: the total and the date on top, four methods below ---------- */
+  .bill-settle__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .bill-settle__total {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bill-settle .pay__date {
+    justify-content: flex-start;
+    margin-left: calc(var(--space-2) * -1);
+    padding: 0 var(--space-2);
+  }
+
+  /* Two columns, so all four methods show without scrolling, even on a phone. */
+  .bill-settle__methods {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .bill-settle__methods .field {
+    margin: 0;
+  }
+
+  /* ---------- The check: the sum, line by line; the net is the line that counts ---------- */
+  .bill-sum {
+    display: grid;
+    margin: calc(var(--space-2) * -1) 0 var(--space-3);
+    font-variant-numeric: tabular-nums;
+    text-align: left;
+  }
+
+  .bill-sum__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bill-sum__row dd {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .bill-sum__row--paid dt {
+    padding-left: var(--space-4);
+    color: var(--color-text-muted);
+  }
+
+  .bill-sum__row--discount {
+    color: var(--color-warning-text);
+    font-weight: var(--weight-bold);
+  }
+
+  .bill-sum__row--net {
+    border-bottom: 0;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+  }
+
+  .bill-check__date {
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* ==================================================================
+     THE SHEET: A4 wide on a screen too. A narrow screen scales it down whole (bill.js),
+     because a bill that reflowed on a phone would not be the bill that prints.
+     ================================================================== */
+  .sheet-wrap {
+    margin: var(--space-2) 0 var(--space-8);
+    overflow: hidden;
+  }
+
+  .sheet {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 12mm;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    color: var(--color-bill-text);
+    font-family: var(--font-bill);
+    font-size: 10pt;
+    line-height: 1.15;
+    transform-origin: top left;
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8mm;
+  }
+
+  /* Until Printed bill (Phase 6) brings the logo and the address, the letterhead is the
+     workshop's name. */
+  .sheet-brand {
+    color: var(--color-bill-ink);
+    font-size: 20pt;
+    font-weight: var(--weight-bold);
+  }
+
+  .sheet-doc {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 14mm;
+  }
+
+  .sheet-title {
+    font-size: 26pt;
+    font-weight: var(--weight-bold);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .sheet-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 7mm;
+    margin-top: 20mm;
+    font-size: 11pt;
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+  }
+
+  .sheet-meta--card {
+    margin-top: 1mm;
+  }
+
+  .sheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .sheet-table td,
+  .sheet-table th {
+    padding: 0 2mm;
+    border: 1px solid var(--color-surface);
+    font-size: 10pt;
+    font-weight: var(--weight-normal);
+    vertical-align: middle;
+    overflow-wrap: break-word;
+  }
+
+  /* One grid of columns for both money tables, so QTY, UNIT PRICE and AMOUNT line up
+     between them, as on the reference bill. */
+  .sheet-col-wide {
+    width: 57.5%;
+  }
+
+  .sheet-col-qty {
+    width: 7.7%;
+  }
+
+  .sheet-col-unit {
+    width: 14.5%;
+  }
+
+  .sheet-col-amount {
+    width: 20.3%;
+  }
+
+  .sheet-table thead th {
+    height: 5.5mm;
+    border-color: var(--color-bill-ink);
+    background: var(--color-bill-ink);
+    color: var(--color-text-on-strong);
+    font-size: 11pt;
+    font-weight: var(--weight-bold);
+    text-align: center;
+  }
+
+  .sheet-table thead th.sheet-th-left {
+    text-align: left;
+  }
+
+  .sheet-table .sheet-r {
+    text-align: right;
+  }
+
+  .sheet-money .sheet-acct {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2mm;
+  }
+
+  .sheet-table .sheet-void {
+    border-color: var(--color-surface);
+    background: var(--color-surface);
+  }
+
+  .sheet-table .sheet-sub-cell,
+  .sheet-table .sheet-sub-label {
+    background: var(--color-bill-band);
+    font-weight: var(--weight-bold);
+  }
+
+  .sheet-parties {
+    margin-top: 2.7mm;
+  }
+
+  .sheet-parties .sheet-band th {
+    height: 4.4mm;
+    border-color: var(--color-bill-ink);
+    background: var(--color-bill-ink);
+    color: var(--color-text-on-strong);
+    font-size: 11pt;
+    font-weight: var(--weight-bold);
+  }
+
+  .sheet-parties .sheet-band th,
+  .sheet-parties td {
+    padding-left: 3.5mm;
+    text-align: left;
+  }
+
+  .sheet-parties td {
+    padding-right: 2mm;
+    border-color: var(--color-bill-band);
+    background: var(--color-bill-band);
+    font-size: 11pt;
+    line-height: 4.98mm;
+    vertical-align: top;
+  }
+
+  .sheet-jobs {
+    margin-top: 1.4mm;
+  }
+
+  .sheet-jobs tbody td {
+    height: 5.25mm;
+  }
+
+  .sheet-jobs .sheet-rows tr:nth-child(even) td {
+    background: var(--color-bill-band);
+  }
+
+  .sheet-parts {
+    margin-top: 5.6mm;
+  }
+
+  .sheet-parts tbody td {
+    height: 6.94mm;
+  }
+
+  .sheet-parts .sheet-rows tr:nth-child(odd) td {
+    background: var(--color-bill-band);
+  }
+
+  .sheet-table .sheet-grand td {
+    height: 6.8mm;
+    border-top-width: 2px;
+  }
+
+  .sheet-table .sheet-grand-cell {
+    background: var(--color-bill-grand);
+  }
+
+  .sheet-table .sheet-grand-label,
+  .sheet-table .sheet-grand-amount {
+    background: var(--color-bill-grand);
+    color: var(--color-bill-ink);
+    font-size: 14pt;
+    font-weight: var(--weight-bold);
+  }
+
+  .sheet-table .sheet-thanks {
+    border-color: var(--color-surface);
+    background: var(--color-surface);
+    color: var(--color-bill-thanks);
+    font-size: 12pt;
+    font-style: italic;
+    font-weight: var(--weight-bold);
+    text-align: center;
+  }
+
+  /* How the bill was paid: under the sum, not part of it, as v1's Paid box was. Its width
+     is the last two columns, so its edges line up with them. It never says Paid
+     (SETTLE-7). */
+  .sheet-payments {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1mm 2mm;
+    width: 34.8%;
+    margin: 1.6mm 0 0 auto;
+    padding: 1.1mm 1.8mm;
+    border: 0.35mm solid var(--color-success-edge);
+    background: var(--color-success-soft);
+    color: var(--color-success-text);
+    font-size: 9.5pt;
+    line-height: 1.15;
+  }
+
+  .sheet-payments__label {
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.02em;
+  }
+}

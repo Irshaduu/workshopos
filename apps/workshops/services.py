@@ -5,7 +5,7 @@ from django.db import IntegrityError, transaction
 from django.http import Http404
 
 
-def save_once(record):
+def save_once(record, *, parent=None):
     """Saves a new record once, however many times its form is sent (docs/PLAN.md, Phase 5).
 
     The page made the record's key when it opened the form, and put it in the
@@ -19,8 +19,9 @@ def save_once(record):
 
     A key taken by a record of another workshop or branch answers "not found", like
     any record of another workshop: it never shows that record, and never calls it a
-    success. A record under a parent, like a photo on a job card, must also match its
-    parent (v1's lesson): that check comes with the first such record.
+    success. A record under a parent, like a bill under its job card, names its link
+    as `parent`: a key taken under another parent answers "not found" too, so a key
+    sent again for another parent never adds to that record (v1's lesson).
     """
     # An address can be typed by hand, and only a UUID7 may become a key (ADR-0022).
     if record.pk.version != 7:
@@ -37,10 +38,15 @@ def save_once(record):
         saved = type(record).objects.filter(pk=record.pk).first()
         if saved is None:
             raise
-        if _place(saved) != _place(record):
+        if _place(saved) != _place(record) or _parent(saved, parent) != _parent(record, parent):
             raise Http404 from None
         return saved, False
     return record, True
+
+
+def _parent(record, link):
+    """The key of a record's parent, through its link; None when no link is named."""
+    return getattr(record, record._meta.get_field(link).attname) if link else None
 
 
 def _place(record):

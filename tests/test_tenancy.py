@@ -29,6 +29,8 @@ NOT_WORKSHOP_MODELS = {
 #: (ADR-0028).
 WORKSHOP_WIDE_MODELS = {
     "accounts.Membership": "a person belongs to the workshop; Branch screens limit what they see",
+    "audit.AuditSettings": "one row of the workshop's own limits, for all its branches (ADR-0024)",
+    "billing.Payment": "a row of a bill, which has the branch (ADR-0032)",
     "jobs.Concern": "a row of a job card, which has the branch (ADR-0030)",
     "jobs.JobCardStep": "a row of a job card, which has the branch (ADR-0030)",
     "jobs.JobLine": "a row of a job card, which has the branch (ADR-0030)",

@@ -8,6 +8,8 @@ Like the permission matrix, this test finds every page by itself, so a new page 
 say here whether it shows rows.
 """
 
+from decimal import Decimal
+
 import pytest
 from django.contrib.auth.decorators import login_not_required
 from django.db import connection
@@ -45,6 +47,8 @@ NO_ROWS = {
     "jobs:cancel",
     # What one plate names: one car, never a list (KNOWN-4).
     "jobs:known_plate",
+    # It shows the bill page, through the same selector as billing:bill.
+    "billing:settle",
 }
 
 
@@ -56,14 +60,21 @@ def live_board_rows(member):
     return reverse("jobs:live_board"), lambda: JobCardFactory(workshop=member.workshop)
 
 
-def job_card_rows(member):
-    card = JobCardFactory(workshop=member.workshop)
+def card_rows(name):
+    """A job card's page, or its bill's, with its rows: its job lines, and the concerns. A
+    labour charge, so the bill page offers its settle box and names each concern not fixed in
+    Before you settle (SETTLE-10)."""
 
-    def add_row():
-        ConcernFactory(workshop=member.workshop, job_card=card)
-        JobLineFactory(workshop=member.workshop, job_card=card)
+    def rows(member):
+        card = JobCardFactory(workshop=member.workshop, labour=Decimal("43000"))
 
-    return reverse("jobs:edit", kwargs={"key": card.pk}), add_row
+        def add_row():
+            ConcernFactory(workshop=member.workshop, job_card=card)
+            JobLineFactory(workshop=member.workshop, job_card=card)
+
+        return reverse(name, kwargs={"key": card.pk}), add_row
+
+    return rows
 
 
 #: Each page that shows rows. The function gets a signed-in owner's membership, and
@@ -71,7 +82,8 @@ def job_card_rows(member):
 WITH_ROWS = {
     "staff:list": staff_list_rows,
     "jobs:live_board": live_board_rows,
-    "jobs:edit": job_card_rows,
+    "jobs:edit": card_rows("jobs:edit"),
+    "billing:bill": card_rows("billing:bill"),
 }
 
 

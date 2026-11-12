@@ -7,21 +7,25 @@ Playwright (step 10 of Slice 1). Until then they are clicked through by hand.
 """
 
 import re
+import threading
 import uuid
 from datetime import date
 from decimal import Decimal
 
 import pytest
+from django.db import connection, transaction
 from django.urls import reverse
 from django.utils import timezone
 
 from apps.accounts.models import Role
 from apps.accounts.roles import PERMISSIONS
 from apps.accounts.tests.factories import MembershipFactory
+from apps.core.tests.postgresql import wait_for_a_lock
 from apps.jobs.models import ConcernStatus, JobCard, JobCardStatus, NumberCounter, StepKind
+from apps.jobs.services import end_as_settled, lock_job_card
 from apps.jobs.tests.cards import visit
 from apps.jobs.tests.factories import ConcernFactory, JobCardFactory, JobLineFactory
-from apps.jobs.tests.page_reader import what_the_page_sends
+from apps.jobs.tests.page_reader import notices_of, what_the_page_sends
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.vehicles.models import Colour
 from apps.vehicles.tests.factories import CarFactory, CustomerFactory
@@ -85,10 +89,6 @@ def send_card(client, card, **typed):
     address_of_card = address("jobs:edit", card)
     html = client.get(address_of_card).text
     return client.post(address_of_card, what_the_page_sends(html, **typed))
-
-
-def notices_of(response):
-    return [str(message) for message in response.wsgi_request._messages]
 
 
 # The first live board.
@@ -1056,6 +1056,31 @@ def test_job_51_a_second_cancel_changes_nothing(client, office):
     card.refresh_from_db()
     assert card.cancel_reason == "First"
     assert response.status_code == 302
+
+
+@pytest.mark.django_db(transaction=True)
+def test_settle_37_a_cancel_that_waits_for_a_settle_says_the_card_is_settled(client, office):
+    """The cancel's page read the card while it was open, then waited for a settle's lock."""
+    card = card_of(office)
+    answers = []
+
+    def cancel():
+        try:
+            answers.append(client.post(address("jobs:cancel", card), {"reason": "Customer left"}))
+        finally:
+            connection.close()
+
+    thread = threading.Thread(target=cancel)
+    with transaction.atomic():
+        # A settle in progress: the card is locked and settled, and not saved yet.
+        end_as_settled(lock_job_card(office.workshop, card.branch, card.pk), office.user)
+        thread.start()
+        wait_for_a_lock()
+    thread.join()
+
+    assert notices_of(answers[0]) == ["This job card is settled, so nothing was saved."]
+    card.refresh_from_db()
+    assert (card.status, card.cancel_reason) == (JobCardStatus.SETTLED, "")
 
 
 def test_job_51_a_get_on_the_cancel_address_shows_the_card(client, office):

@@ -51,11 +51,13 @@ def test_role_7_a_permission_nobody_listed_is_a_no(see_money):
 
 
 @pytest.mark.django_db
-def test_role_7_templates_ask_the_same_list(see_money):
+def test_role_7_templates_ask_the_same_list(see_money, monkeypatch):
+    # An app whose permissions are all the owners', for this test only.
+    monkeypatch.setitem(PERMISSIONS, "owners_only.see_profit", frozenset({Role.OWNER}))
     office = fresh(MembershipFactory(role=Role.OFFICE).user)
 
     assert office.has_module_perms("tests")
-    assert not office.has_module_perms("billing")
+    assert not office.has_module_perms("owners_only")
 
 
 @pytest.mark.django_db

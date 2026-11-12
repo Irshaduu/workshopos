@@ -22,6 +22,9 @@ class FormReader(HTMLParser):
         self.select = None
         self.first_option = None
         self.chosen = False
+        # The form's first submit button with a name: a browser sends its name and value
+        # when it is pressed, and so does Enter in a box. A test adds it when it presses it.
+        self.pressed = {}
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -37,6 +40,9 @@ class FormReader(HTMLParser):
             return
         elif tag == "input":
             self._read_input(attrs)
+        elif tag == "button":
+            if attrs.get("type", "submit") == "submit" and attrs.get("name") and not self.pressed:
+                self.pressed = {attrs["name"]: attrs.get("value", "")}
         elif tag == "textarea":
             self.textarea = attrs.get("name")
             self.sent[self.textarea] = ""
@@ -92,3 +98,8 @@ def what_the_page_sends(html, **typed):
     reader = FormReader("job-form")
     reader.feed(html)
     return {**reader.sent, **typed}
+
+
+def notices_of(response):
+    """The notices a page answered with, like "JC-0007 cancelled.", as words."""
+    return [str(message) for message in response.wsgi_request._messages]

@@ -53,10 +53,12 @@ class NumberCounter(BranchModel):
 
 
 class JobCardStatus(models.TextChoices):
-    """A job card's state (JOB-3). Later steps add Ready and Settled."""
+    """A job card's state (JOB-3). Settled ends it with its bill (SETTLE-23); Ready comes with
+    the live board (Phase 6)."""
 
     OPEN = "open", _("Open")
     CANCELLED = "cancelled", _("Cancelled")
+    SETTLED = "settled", _("Settled")
 
 
 class JobCard(BranchModel):
@@ -125,6 +127,8 @@ class JobCard(BranchModel):
                 violation_error_message=_("This car already has an open job card."),
             ),
             models.UniqueConstraint(fields=["branch", "number"], name="jobs_jobcard_number_once"),
+            # So a bill can be kept in its card's branch by PostgreSQL (SameBranch, ADR-0032).
+            models.UniqueConstraint(fields=["branch", "id"], name="jobs_jobcard_branch_id"),
             models.CheckConstraint(
                 condition=Q(status__in=JobCardStatus.values),
                 name="jobs_jobcard_status_known",
@@ -144,8 +148,8 @@ class JobCard(BranchModel):
             ),
             models.CheckConstraint(
                 condition=(
-                    Q(status="open", cancel_reason="")
-                    | Q(status="cancelled", cancel_reason__regex=r"\S")
+                    Q(status__in=[JobCardStatus.OPEN, JobCardStatus.SETTLED], cancel_reason="")
+                    | Q(status=JobCardStatus.CANCELLED, cancel_reason__regex=r"\S")
                 ),
                 name="jobs_jobcard_cancelled_has_a_reason",
             ),
@@ -157,6 +161,14 @@ class JobCard(BranchModel):
     @property
     def is_open(self):
         return self.status == JobCardStatus.OPEN
+
+    @property
+    def is_settled(self):
+        return self.status == JobCardStatus.SETTLED
+
+    @property
+    def is_cancelled(self):
+        return self.status == JobCardStatus.CANCELLED
 
 
 class ConcernStatus(models.TextChoices):
@@ -239,6 +251,7 @@ class StepKind(models.TextChoices):
     CONCERN_WORKING = "concern_working", _("Concern working")
     CONCERN_FIXED = "concern_fixed", _("Concern fixed")
     CANCELLED = "cancelled", _("Cancelled")
+    SETTLED = "settled", _("Settled")
 
 
 #: The step that says a concern reached this status.

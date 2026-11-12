@@ -2,8 +2,8 @@
 (apps/vehicles/models.py). The examples come from v1's tests."""
 
 import pytest
-from django.db import IntegrityError, connection, transaction
 
+from apps.core.tests.postgresql import refused_by_postgresql
 from apps.vehicles.models import (
     Car,
     CarBrand,
@@ -27,13 +27,6 @@ from apps.vehicles.tests.factories import (
 from apps.workshops.tests.factories import WorkshopFactory
 
 GOOD_VIN = "WBA8E9C50GK123456"
-
-
-def refused_by_postgresql(make):
-    """Asks at once for the checks that wait for the end of the transaction, like a link's."""
-    with pytest.raises(IntegrityError), transaction.atomic():
-        make()
-        connection.check_constraints()
 
 
 # The plate.

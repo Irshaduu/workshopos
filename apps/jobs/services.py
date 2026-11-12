@@ -319,13 +319,14 @@ class RowRefused(ValidationError):
 def _step(card, by, kind, concern=None):
     """One change in the card's life, with who acted and the lead mechanic at this moment
     (JOB-39, JOB-40)."""
+    # By their keys, so a card read under its lock needs no other row read.
     JobCardStep(
-        workshop=card.workshop,
+        workshop_id=card.workshop_id,
         job_card=card,
         kind=kind,
         concern=concern,
         by=by,
-        mechanic=card.lead_mechanic,
+        mechanic_id=card.lead_mechanic_id,
     ).save()
 
 
@@ -410,9 +411,10 @@ def make_job_card(
     return card
 
 
-def _locked(workshop, branch, key):
+def lock_job_card(workshop, branch, key):
     """The job card with this key, locked until the transaction ends. It joins nothing, so a
-    save that waited here reads the card's car afterwards, as the first save left it."""
+    save that waited here reads the card's car afterwards, as the first save left it. Billing
+    locks a card this way too, before it settles it (SETTLE-25)."""
     return get_object_or_404(
         JobCard.objects.for_workshop(workshop).for_branch(branch).select_for_update(),
         pk=key,
@@ -504,9 +506,9 @@ def change_job_card(
     undoes all of it, and `answers` are the answers to questions this form already asked.
     """
     with transaction.atomic():
-        card = _locked(workshop, branch, key)
+        card = lock_job_card(workshop, branch, key)
         if not card.is_open:
-            raise ValidationError(_("This job card is cancelled, so nothing was saved."))
+            raise ValidationError(not_open_words(card))
 
         left = None
         car_changes = {box: changes[box] for box in CAR_BOXES if box in changes}
@@ -537,11 +539,28 @@ def change_job_card(
     return card
 
 
+def not_open_words(card):
+    """Why a send to a card that has ended saved nothing (JOB-51, SETTLE-27)."""
+    if card.is_settled:
+        return _("This job card is settled, so nothing was saved.")
+    return _("This job card is cancelled, so nothing was saved.")
+
+
+def end_as_settled(card, by):
+    """Ends an open job card as Settled, with its step (SETTLE-23). Billing calls it inside its
+    own transaction, after it locked the card with lock_job_card() and checked it is open."""
+    if not card.is_open:
+        raise ValueError(f"Only an open job card is settled, and {card.number} is {card.status}.")
+    card.status = JobCardStatus.SETTLED
+    card.save(update_fields=["status"])
+    _step(card, by, StepKind.SETTLED)
+
+
 def cancel_job_card(workshop, branch, key, by, reason):
     """Ends a job card with no bill: it keeps its number and everything on it, and its car is
     free at once for a new card (JOB-49, JOB-51). A repeat changes nothing."""
     with transaction.atomic():
-        card = _locked(workshop, branch, key)
+        card = lock_job_card(workshop, branch, key)
         if card.is_open:
             card.status = JobCardStatus.CANCELLED
             card.cancel_reason = tidy_spaces(reason)

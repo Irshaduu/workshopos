@@ -61,6 +61,16 @@ ONLY_OWNERS_GO_TO_STAFF_LIST = {
     SUPERUSER: 403,
 }
 
+#: A page's answer when Office and owners may in, and Floor may not.
+OFFICE_AND_OWNERS = {
+    SIGNED_OUT: TO_SIGN_IN,
+    OWNER: 200,
+    OFFICE: 200,
+    FLOOR: 403,
+    STAFF: 403,
+    SUPERUSER: 403,
+}
+
 #: A page's answer when every role of a workshop may in.
 EVERY_ROLE_OPENS = {
     SIGNED_OUT: TO_SIGN_IN,
@@ -100,6 +110,10 @@ MATRIX = {
         STAFF: 403,
         SUPERUSER: 403,
     },
+    # Office and owners see a bill and settle it; Floor never sees a bill (SETTLE-47). A GET
+    # on the settle address shows the bill page (SIGN-38).
+    "billing:bill": OFFICE_AND_OWNERS,
+    "billing:settle": OFFICE_AND_OWNERS,
     # The sign-in steps: public; a signed-in person goes home (SIGN-12), and a
     # later step opened first goes back to step 1 (SIGN-26).
     "accounts:sign_in": {
@@ -155,6 +169,8 @@ MATRIX = {
 #: Each page that finds a record by the key in its address, and how to make such a
 #: record, in the state the page would change. A new one adds its line here.
 RECORD_PAGES = {
+    "billing:bill": JobCardFactory,
+    "billing:settle": JobCardFactory,
     "jobs:edit": JobCardFactory,
     "jobs:cancel": JobCardFactory,
     "staff:edit": StaffMemberFactory,
@@ -164,6 +180,18 @@ RECORD_PAGES = {
 
 #: Each page whose key is a new record's, not yet saved (ADR-0022).
 NEW_KEY_PAGES = {"staff:new", "jobs:create"}
+
+#: Each page with a record's key and a new record's key too: the new key's name.
+SECOND_NEW_KEY = {"billing:settle": "new_key"}
+
+
+def keys_of(name, key):
+    """The address's keys: the record's, and a new record's when the page has one."""
+    keys = {"key": key}
+    if name in SECOND_NEW_KEY:
+        keys[SECOND_NEW_KEY[name]] = uuid.uuid7()
+    return keys
+
 
 #: A permission that starts with one of these only shows (ROLE-5).
 SHOWING_WORDS = ("see_", "open_")
@@ -192,7 +220,7 @@ def address_of(name, workshop):
     if name in NEW_KEY_PAGES:
         return reverse(name, kwargs={"key": uuid.uuid7()})
     if name in RECORD_PAGES:
-        return reverse(name, kwargs={"key": RECORD_PAGES[name](workshop=workshop).pk})
+        return reverse(name, kwargs=keys_of(name, RECORD_PAGES[name](workshop=workshop).pk))
     return reverse(name)
 
 
@@ -267,10 +295,16 @@ def test_role_10_every_page_with_a_key_says_what_its_key_is():
     assert with_a_key == RECORD_PAGES.keys() | NEW_KEY_PAGES
 
 
+def not_found(name):
+    """A GET and a POST for a key the visitor may not reach. A page that only shows refuses
+    every POST first (ROLE-5), so it never reads the key."""
+    return 404, 405 if only_shows(name) else 404
+
+
 def changed_by_a_send(client, name, key):
     """The answer to a GET and a POST for this key. A POST carries what the page's form
     would, so nothing but the key can refuse it."""
-    address = reverse(name, kwargs={"key": key})
+    address = reverse(name, kwargs=keys_of(name, key))
     typed = {"name": "Changed", "designation": "general_helper"}
     return client.get(address).status_code, client.post(address, typed).status_code
 
@@ -282,7 +316,7 @@ def test_role_10_a_record_of_another_workshop_is_not_found_and_stays_as_it_was(c
     theirs = RECORD_PAGES[name]()
     before = model_to_dict(theirs)
 
-    assert changed_by_a_send(client, name, theirs.pk) == (404, 404)
+    assert changed_by_a_send(client, name, theirs.pk) == not_found(name)
 
     theirs.refresh_from_db()
     assert model_to_dict(theirs) == before
@@ -299,7 +333,7 @@ def test_role_10_a_record_of_another_branch_is_not_found_and_stays_as_it_was(cli
     other = RECORD_PAGES[name](workshop=member.workshop, branch=there)
     before = model_to_dict(other)
 
-    assert changed_by_a_send(client, name, other.pk) == (404, 404)
+    assert changed_by_a_send(client, name, other.pk) == not_found(name)
 
     other.refresh_from_db()
     assert model_to_dict(other) == before
@@ -310,7 +344,7 @@ def test_role_10_a_record_of_another_branch_is_not_found_and_stays_as_it_was(cli
 def test_role_10_a_key_that_does_not_exist_answers_the_same(client, name):
     client.force_login(MembershipFactory(owner=True).user)
 
-    assert changed_by_a_send(client, name, uuid.uuid7()) == (404, 404)
+    assert changed_by_a_send(client, name, uuid.uuid7()) == not_found(name)
 
 
 def test_role_5_a_showing_page_exists_to_check():

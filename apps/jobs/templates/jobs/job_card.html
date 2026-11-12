@@ -1,7 +1,7 @@
 {% extends "app.html" %}
 {% load i18n static %}
 {% comment %}
-A job card's one page, new, saved, refused or cancelled (docs/rules/job-card.md): v1's job
+A job card's one page, new, saved, refused, cancelled or settled (docs/rules/job-card.md): v1's job
 card, in its order. What a role may not see is left out of its form, so it is nowhere in its
 page (JOB-54). Parts come in their place in Phase 6.
 {% endcomment %}
@@ -53,6 +53,10 @@ The customer is in it only for a role whose form has the customer (KNOWN-8).
   <span class="job-head__end">
     <span class="job-head__unsaved">{% translate "Unsaved" %}</span>
     {% if card %}<span class="job-head__number">{{ card.number }}</span>{% endif %}
+    {% comment %}A cancelled card has no bill (SETTLE-4), and Floor never sees one (SETTLE-47).{% endcomment %}
+    {% if card and not card.is_cancelled and perms.billing.see_bill %}
+      <a class="job-head__bill" href="{% url 'billing:bill' card.pk %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#receipt-indian-rupee"></use></svg>{% translate "Bill" %}</a>
+    {% endif %}
   </span>
 </div>
 
@@ -68,14 +72,22 @@ The customer is in it only for a role whose form has the customer (KNOWN-8).
   </div>
 {% endif %}
 
-{% if locked %}
+{% if settled %}
+  <div class="card card--success job-state">
+    <h2 class="job-settled__title">
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-check"></use></svg>
+      {% translate "Settled" %}
+    </h2>
+    <p class="job-state__who">{% blocktranslate with who=settled.by.get_full_name|default:settled.by.get_username when=settled.at %}{{ who }}, {{ when }}. The bill is final, so every box is locked.{% endblocktranslate %}</p>
+  </div>
+{% elif cancelled %}
   <div class="card card--danger job-state">
     <h2 class="job-cancelled__title">
       <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#circle-alert"></use></svg>
       {% translate "Cancelled" %}
     </h2>
     <p>{{ card.cancel_reason }}</p>
-    <p class="job-cancelled__who">{% blocktranslate with who=cancelled.by.get_full_name|default:cancelled.by.get_username when=cancelled.at number=card.number %}{{ who }}, {{ when }}. The number {{ number }} stays with this card.{% endblocktranslate %}</p>
+    <p class="job-state__who">{% blocktranslate with who=cancelled.by.get_full_name|default:cancelled.by.get_username when=cancelled.at number=card.number %}{{ who }}, {{ when }}. The number {{ number }} stays with this card.{% endblocktranslate %}</p>
   </div>
 {% endif %}
 
@@ -219,7 +231,8 @@ The customer is in it only for a role whose form has the customer (KNOWN-8).
 
     {% if not locked %}
       {% if card %}
-        <button class="btn job-save job-save--update" type="submit">
+        {% comment %}Update: amber, the colour of your changes in v1, with dark words (JOB-46).{% endcomment %}
+        <button class="btn btn--save job-save" type="submit">
           <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#check"></use></svg>
           {% translate "Update Job Card" %}
         </button>

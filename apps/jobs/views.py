@@ -22,6 +22,7 @@ from apps.jobs.selectors import (
     known_car,
     open_job_cards,
     saved_job_card,
+    settled_step,
 )
 from apps.jobs.services import (
     CarHasOpenCard,
@@ -30,6 +31,7 @@ from apps.jobs.services import (
     cancel_job_card,
     change_job_card,
     make_job_card,
+    not_open_words,
 )
 from apps.vehicles.models import plate_problem, tidy_plate
 
@@ -113,7 +115,7 @@ def job_card_edit(request, key):
     if request.method == "GET":
         return _card_page(request, forms, card=card)
     if not card.is_open:
-        messages.error(request, _("This job card is cancelled, so nothing was saved."))
+        messages.error(request, not_open_words(card))
         return _open(card)
     answers = request.POST.getlist("answers")
     stopped = {}
@@ -159,10 +161,14 @@ def job_card_cancel(request, key):
     cancel_form = CancelForm(request.POST)
     if not cancel_form.is_valid():
         return _card_page(request, forms, card=card, cancel_form=cancel_form)
-    cancel_job_card(
+    ended = cancel_job_card(
         request.workshop, request.branch, key, request.user, cancel_form.cleaned_data["reason"]
     )
-    messages.success(request, _("%(number)s cancelled.") % {"number": card.number})
+    if ended.is_settled:
+        # A settle took the card's lock first, so nothing was cancelled (SETTLE-37).
+        messages.warning(request, not_open_words(ended))
+    else:
+        messages.success(request, _("%(number)s cancelled.") % {"number": card.number})
     return _open(card)
 
 
@@ -221,7 +227,7 @@ def _card_page(
     answers=(),
     cancel_form=None,
 ):
-    """The one page of a job card, new, saved, refused, asking or cancelled."""
+    """The one page of a job card, new, saved, refused, asking, cancelled or settled."""
     bound = forms.main.is_bound
     problems = forms.problems() if bound else []
     context = {
@@ -247,9 +253,14 @@ def _card_page(
         "cancel_form": cancel_form or CancelForm(),
         "cancelled": (
             cancelled_step(request.workshop, card)
-            if card is not None and not card.is_open
+            if card is not None and card.is_cancelled
             else None
         ),
+        # Who settled it and when; its bill's number is on the bill page, because a job card
+        # never reads its bill (SETTLE-36).
+        "settled": settled_step(request.workshop, card)
+        if card is not None and card.is_settled
+        else None,
         "locked": card is not None and not card.is_open,
     }
     return render(request, "jobs/job_card.html", context)
