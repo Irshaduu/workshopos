@@ -112,8 +112,10 @@ closes the issue.
   record's key when it opens the form, and puts it in the form's address. On a
   send, it first asks whether that key is saved, and shows the saved record if
   it is, because the form's checks would refuse a repeat. Otherwise its service
-  saves with `save_once()` (`apps/workshops/services.py`). A change to a saved
-  record runs in one locked transaction that refuses a repeat.
+  saves with `save_once()` (`apps/workshops/services.py`). A record under a
+  parent, like a bill under its job card, names its link, `parent="job_card"`,
+  so a key sent for another parent is never taken for its record. A change to a
+  saved record runs in one locked transaction that refuses a repeat.
 - **A form's link field to a workshop record starts empty:**
   `ModelChoiceField(queryset=Model.objects.none())`, and the form's `__init__`
   fills it from `for_workshop()`. A link field Django makes by itself would list
@@ -166,6 +168,10 @@ closes the issue.
   its check in `Meta`: `Q(amount__gt=0)` for money that moved, and
   `Q(labour__gte=0)` with `allow_zero=True` for a charge. A test walks every
   column (`tests/test_money.py`).
+- **A money date goes through `money_date_problem()`** (`apps/audit/selectors.py`):
+  never in the future, and Office no further back than the workshop's back-date limit
+  (docs/rules/change-history.md). Its date box shows `earliest_money_date()`, but only
+  the server decides.
 - **A calculation rounds on purpose before it saves.** PostgreSQL rounds a third
   decimal with no error. Saving a plain amount refuses a float or a third decimal,
   but an expression like `F("amount") * Decimal("1.18")` goes straight to PostgreSQL.
