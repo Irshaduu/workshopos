@@ -365,11 +365,9 @@ def test_settle_35_a_preview_reads_the_records_as_they_are_now(office):
 def test_settle_25_two_settles_of_one_card_at_one_moment_make_one_bill():
     place = Place(Role.OFFICE)
     card = place.card()
-    barrier = threading.Barrier(2)
     answers = []
 
     def send():
-        barrier.wait()
         try:
             answers.append(place.settle(card, key=uuid.uuid7()))
         except NotOpen as ended:
@@ -378,8 +376,12 @@ def test_settle_25_two_settles_of_one_card_at_one_moment_make_one_bill():
             connection.close()
 
     threads = [threading.Thread(target=send) for _ in range(2)]
-    for thread in threads:
-        thread.start()
+    with transaction.atomic():
+        # The test holds the card, so both settles start before either can end it.
+        JobCard.objects.select_for_update().get(pk=card.pk)
+        for thread in threads:
+            thread.start()
+        wait_for_a_lock(2)
     for thread in threads:
         thread.join()
 
@@ -391,18 +393,22 @@ def test_settle_25_two_settles_of_one_card_at_one_moment_make_one_bill():
 def test_settle_29_two_cards_settled_at_one_moment_never_take_one_number():
     place = Place(Role.OFFICE)
     cards = [place.card(), place.card()]
-    barrier = threading.Barrier(2)
+    year = financial_year_of(timezone.localdate())
+    BillCounterFactory(workshop=place.workshop, branch=place.branch, financial_year=year)
 
     def send(card):
-        barrier.wait()
         try:
             place.settle(card)
         finally:
             connection.close()
 
     threads = [threading.Thread(target=send, args=(card,)) for card in cards]
-    for thread in threads:
-        thread.start()
+    with transaction.atomic():
+        # The test holds the number's row, so both settles reach it before either takes one.
+        BillCounter.objects.for_workshop(place.workshop).select_for_update().get()
+        for thread in threads:
+            thread.start()
+        wait_for_a_lock(2)
     for thread in threads:
         thread.join()
 
