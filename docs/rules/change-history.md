@@ -81,7 +81,9 @@ keep that for every money record, in one place.
 - **CHANGE-18** The 24 hours and the 3 days are each workshop's own settings, the edit
   window and the back-date limit, beside these rules (ADR-0024). A workshop that never chose
   its own uses v1's values. A new value acts from the next action, never on what is saved.
-  Only an owner changes one, and the change is kept (CHANGE-1). *New (ADR-0024).*
+  Only an owner changes one, and the change is kept (CHANGE-1): built with the first way to
+  change a setting, a settings screen or a command the developer runs for the owners.
+  *New (ADR-0024).*
 
 ## Left out for now
 

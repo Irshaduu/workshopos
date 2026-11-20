@@ -186,8 +186,11 @@ the discount, and the bill is final.
   Change job card is built with Parts on the job card (Phase 6), because a change to a
   settled card must then also move stock and shop money.*
 - **SETTLE-39** Change payments opens the settle box with the payments and the date paid
-  as saved, and the same rules hold (SETTLE-15 to SETTLE-21). The discount becomes the
-  total less the new payments. *v1: settling a paid bill again.*
+  as saved, and a box for why. The same rules hold (SETTLE-15 to SETTLE-20, SETTLE-26): the
+  discount becomes the total less the new payments, and a change that leaves a discount
+  answers first with the check, which also shows what each changed figure was. The date
+  paid follows SETTLE-54. *v1, changed: v1 settled a paid bill again, with no check and no
+  reason.*
 - **SETTLE-40** Change job card on a settled card opens its boxes for one save, except the
   plate, because a settled card never moves (KNOWN-17). The payments stay, and the discount
   becomes the new total less the payments. A new total below the payments is refused, so
@@ -208,6 +211,31 @@ the discount, and the bill is final.
   never undo each other, and a repeat changes nothing twice. *New (`docs/PLAN.md`).*
 - **SETTLE-46** Office past the edit window sees why, in place of the buttons that change
   the bill (ROLE-12, CHANGE-12). *v1: `settle_past_window`, `unlock_past_window`.*
+- **SETTLE-52** A change sent after someone else changed the bill's payments or its date
+  paid is refused whole, and the box opens again with them as they are now. It is never
+  merged box by box, like a job card's save (JOB-43), because the discount comes from all
+  the payments together, and the check showed one discount. A send that finds the bill
+  already as it typed it, because someone else made the same change, is refused the same
+  way, so nothing is kept in its name. The box's address holds the new change's key, so a
+  double tap shows the change kept the first time, with the same notice. A send that
+  changes nothing saves nothing, needs no reason, and says so. *New: v1 saved over it.*
+- **SETTLE-54** A change asks the date rules only about a date paid that was changed, on the
+  day it is changed: SETTLE-21 and SETTLE-44. A date left as it was is never judged again,
+  because money never becomes past the limit as time goes by (CHANGE-17). So the date box
+  takes the saved date, even one Office could not type today. *New.*
+
+## Paid bills
+
+- **SETTLE-53** Paid bills is the first, plain list of settled bills, so a settled bill can
+  be found. It is in the menu's Money section, for Office and owners. Each row shows the
+  date paid, the number, the car and its plate, the customer, the total, the net and how it
+  was paid, newest first by the date paid, and a tap opens its bill page. Owners see every
+  bill of the branch. Office sees the bills settled in the last 7 days, counted from the
+  moment each was settled, as v1 counted, so every bill Office may still change is on its
+  list (CHANGE-9). The server keeps to it (ROLE-20). A settled bill's page goes back to
+  Paid bills. *New, for now: v1's cards, the search, the owners' period filter, 45 bills to
+  a page, the count and the discount audit come with Pending and paid bills (Phase 6), from
+  the lab.*
 
 ## Who may do what
 
@@ -238,9 +266,8 @@ the discount, and the bill is final.
 - The alerts for a large discount, a changed bill and a back-dated payment: with the bell
   (Phase 6), and the discount limit with them.
 - Fleet accounts, whose bills are final before they are paid: Phase 6.
-- Pending bills, paid bills and the discount audit: Phase 6. Until then, a settled bill is
-  reached from its job card, and a settled job card is on no list: the way in comes with
-  Change payments, which needs it.
+- Pending bills, v1's look for Paid bills (SETTLE-53) and the discount audit: Pending and
+  paid bills (Phase 6).
 - Other bill designs: a standard design for every new workshop, with its own logo, details
   and colour, and a few ready designs if workshops ask (SaaS, `docs/MODULES.md`). The
   client's design is used only for the client (ADR-0032).

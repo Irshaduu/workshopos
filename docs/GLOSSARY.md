@@ -76,7 +76,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Settled | `JobCardStatus.SETTLED`; a bill's `settled_at` and `settled_by` | paid, closed | A job card whose bill is settled. It is locked, and off the live board. The bill keeps when it was settled and by whom |
 | Not filled | `unfilled()`, `Unfilled` | preflight, gaps, checklist | What is still empty on a job card. Shown before it is settled, and later on the live report |
 | Bill sheet | `bill_sheet()`, `Sheet`, `_sheet.html` | invoice sheet | Everything a bill shows, worked out once, and the bill as it prints |
-| Check | `Check` | confirm, review | What the settle box answers first when a settle has a discount: the total, each payment, the discount and the net, before anything is saved |
+| Check | `Check` | confirm, review | What the settle box answers first when a settle has a discount: the total, each payment, the discount and the net, before anything is saved. A change of a settled bill's payments that leaves a discount answers with one too, showing what each figure was |
 | Payment | `Payment` | receipt, received amount | Money a customer paid toward a bill, by one method. Always above zero |
 | Payment method | `PaymentMethod` | mode, payment type | How a payment was made: Cash, UPI, Card or Bank transfer, always in words |
 | Total | `total` | grand total, bill amount | What a bill adds up to, before the discount |
@@ -85,10 +85,11 @@ the code (models, functions, files, URLs) and in the docs.
 | Date paid | `paid_on`, saved as the bill's `date` | paid date, payment date | The day the customer paid, as typed in the settle box. The bill is dated that day |
 | Financial year | `financial_year` | FY, fiscal year | 1 April to 31 March, as Indian tax counts a year. A bill number carries it, like 26-27 |
 | Frozen copy | | snapshot | A settled bill's own copy of what it prints about the customer and the car, so a later change to those records never changes the bill |
-| Change payments | `change_payments()` | re-settle, settle again | Correcting the payments of a settled bill. Not built yet |
-| Change history | `audit` (the app) | edit history, deletion history, audit trail | The record of every change to money after it was recorded. Not built yet; its page for the owners comes in Phase 6 |
-| Change | `Change` | edit, edit log, log entry | One kept change to money: each figure before and after, who, when and why. Kept for good. Not built yet |
-| Edit window | `edit_window_hours` | delete window, lock window | How long Office may change money after recording it: 24 hours at first. Each workshop's own setting. Not built yet |
+| Paid bills | `paid_bills_for()`, the page `paid-bills/` | settled list | The list of a branch's settled bills, newest first; a tap opens the bill. Office sees those settled in the last 7 days |
+| Change payments | `change_payments()` | re-settle, settle again | Correcting the payments or the date paid of a settled bill, with the reason |
+| Change history | `audit` (the app) | edit history, deletion history, audit trail | The record of every change to money after it was recorded. Its page for the owners comes in Phase 6 |
+| Change | `Change`, `keep_change()`, `kept_change()` | edit, edit log, log entry | One kept change to money: each figure before and after, who, when and why. Kept for good |
+| Edit window | `edit_window_hours`, `money_change_refusal()` | delete window, lock window | How long Office may change money after recording it: 24 hours at first. Each workshop's own setting |
 | Back-date limit | `back_date_days` | backdate floor | How many days back Office may date money: 3 at first. Each workshop's own setting |
 | Live board | `live_board` | dashboard, floor board | The home page: every car open in this branch |
 | Turned off | `is_active`, `turn_off()`, `turn_on()` | retired, archived, deactivated | A staff member or an account kept on record but no longer in use. Never deleted; Turn on brings them back |
