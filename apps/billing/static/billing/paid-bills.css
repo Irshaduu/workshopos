@@ -1,0 +1,69 @@
+/* The first, plain Paid bills (SETTLE-53): one row for each settled bill, like the first
+   plain live board. v1's cards come with Pending and paid bills (Phase 6), from the lab. */
+
+@layer page {
+  .paid-head {
+    margin-bottom: var(--space-4);
+  }
+
+  .paid-head__span {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .paid-list {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    list-style: none;
+  }
+
+  .paid-list li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* A phone: the car and its plate, then the rest as it fits. A laptop: fewer lines. */
+  .paid-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-3);
+    min-height: var(--tap-min);
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .paid-row:hover {
+    background: var(--color-surface-sunken);
+  }
+
+  .paid-row__car {
+    font-weight: var(--weight-bold);
+  }
+
+  .paid-row__plate {
+    color: var(--color-primary-text);
+    font-weight: var(--weight-bold);
+  }
+
+  .paid-row__number,
+  .paid-row__customer,
+  .paid-row__date,
+  .paid-row__methods {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .paid-row__money {
+    font-size: var(--text-sm);
+  }
+
+  .paid-row__money--net {
+    font-weight: var(--weight-bold);
+  }
+}

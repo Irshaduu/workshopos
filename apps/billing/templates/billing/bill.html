@@ -1,10 +1,11 @@
 {% extends "app.html" %}
 {% load i18n static %}
 {% comment %}
-A job card's bill (docs/rules/settle-bill.md): v1's bill page, chosen in the lab
-(design/lab/bill/). Its row of buttons sits under the app's tab bar (ROLE-23); the bill itself
-is _sheet.html, the one bill design for now (ADR-0032). Each box over the page is a dialog
-that static/js/dialog.js opens; the server says which one opens with the page.
+A job card's bill (docs/rules/settle-bill.md): v1's bill page, chosen in the lab. Its row of
+buttons sits under the app's tab bar (ROLE-23); the bill itself is _sheet.html, the one bill
+design for now (ADR-0032). Each box over the page is a dialog that static/js/dialog.js opens;
+the server says which one opens with the page. A preview has the settle box, and a settled
+bill the change box (SETTLE-38).
 {% endcomment %}
 {% block title %}{% if sheet.settled %}{{ sheet.bill.number }}{% else %}{% blocktranslate with number=card.number %}Bill of {{ number }}{% endblocktranslate %}{% endif %}{% endblock %}
 
@@ -16,7 +17,12 @@ that static/js/dialog.js opens; the server says which one opens with the page.
 {% endblock %}
 
 {% block content %}
-<a class="back" href="{% url 'jobs:edit' card.pk %}">{{ card.number }}</a>
+{% comment %}A settled bill lives in Paid bills, and a preview on its job card (SETTLE-53). A role that may not open Paid bills is never offered it (ROLE-12).{% endcomment %}
+{% if sheet.settled and perms.billing.see_paid_bills %}
+  <a class="back" href="{% url 'billing:paid_bills' %}">{% translate "Paid bills" %}</a>
+{% else %}
+  <a class="back" href="{% url 'jobs:edit' card.pk %}">{{ card.number }}</a>
+{% endif %}
 
 <div class="bill-bar">
   <h1 class="bill-bar__title">{% translate "Bill" %}</h1>
@@ -30,6 +36,9 @@ that static/js/dialog.js opens; the server says which one opens with the page.
   {% if form %}
     <button class="btn btn--save" type="button" data-dialog-open="{% if unfilled %}settle-unfilled{% else %}settle-box{% endif %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#indian-rupee"></use></svg>{% translate "Settle bill" %}</button>
   {% endif %}
+  {% if change_form %}
+    <button class="btn btn--primary" type="button" data-dialog-open="change-box"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#wallet"></use></svg>{% translate "Change payments" %}</button>
+  {% endif %}
 </div>
 {% if nothing_to_bill %}
   {% comment %}A bill of 0.00 is never settled, so it offers no button that could only be refused (SETTLE-18, ROLE-12).{% endcomment %}
@@ -37,6 +46,10 @@ that static/js/dialog.js opens; the server says which one opens with the page.
 {% endif %}
 {% if sheet.settled %}
   <p class="bill-who">{% blocktranslate with who=sheet.bill.settled_by.get_full_name|default:sheet.bill.settled_by.get_username when=sheet.bill.settled_at %}Settled by {{ who }}, {{ when }}.{% endblocktranslate %}</p>
+{% endif %}
+{% if change_refusal %}
+  {% comment %}Office past the edit window: why, in place of Change payments (SETTLE-46, CHANGE-12).{% endcomment %}
+  <p class="bill-late"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#clock"></use></svg>{{ change_refusal }}</p>
 {% endif %}
 
 {% if form %}
@@ -70,56 +83,45 @@ that static/js/dialog.js opens; the server says which one opens with the page.
     </div>
     <form class="form-dialog__form" id="settle-form" method="post" action="{% url 'billing:settle' card.pk new_key %}">
       {% csrf_token %}
-      <div class="bill-settle__top">
-        <div>
-          <p class="pay__label">{% translate "Total" %}</p>
-          <p class="bill-settle__total">&#8377; {{ sheet.total|floatformat:"2g" }}</p>
-        </div>
-        <div>
-          <p class="pay__label" id="settle-date-label">{{ form.paid_on.label }}</p>
-          {% comment %}The chip's words come from bill.js, with the month words Django gives every date.{% endcomment %}
-          <label class="pay__date" data-date-chip>
-            <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#calendar"></use></svg>
-            <span data-date-words data-today="{% translate 'Today' %}" data-empty="{% translate 'Pick the day' %}" data-months="{{ months }}"></span>
-            {{ form.paid_on }}
-          </label>
-        </div>
-      </div>
-      {% if form.paid_on.errors %}<p class="field__error" id="{{ form.paid_on.auto_id }}_error">{{ form.paid_on.errors.0 }}</p>{% endif %}
-      <div class="bill-settle__methods">
-        {% for box in form.visible_fields %}{% if box.name != "paid_on" %}
-          <div class="field">
-            <label class="field__label" for="{{ box.id_for_label }}">{{ box.label }}</label>
-            <div class="pay__money">{{ box }}</div>
-            {% if box.errors %}<p class="field__error" id="{{ box.auto_id }}_error">{{ box.errors.0 }}</p>{% endif %}
-          </div>
-        {% endif %}{% endfor %}
-      </div>
+      {% include "billing/_pay_boxes.html" %}
       {% for problem in form.non_field_errors %}<p class="field__error" role="alert">{{ problem }}</p>{% endfor %}
       <button class="btn btn--primary" type="submit" name="seen" value="{{ sheet.total|stringformat:'s' }}">{% translate "Settle bill" %}</button>
     </form>
   </dialog>
 
   {% if check %}
-    {% comment %}The check: what the server worked out, before anything is saved (SETTLE-20). Its Settle bill sends the box again, with the total it showed (SETTLE-26).{% endcomment %}
-    <dialog class="confirm confirm--warning bill-check" id="settle-check" aria-labelledby="settle-check-title" data-open-now>
-      <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#indian-rupee"></use></svg></div>
-      <h2 class="confirm__title" id="settle-check-title">{% blocktranslate with amount=check.discount|floatformat:"2g" %}Discount &#8377; {{ amount }}{% endblocktranslate %}</h2>
-      <p class="confirm__text">{% translate "The rest of the bill is the discount. Settling locks the job card and gives the bill its number." %}</p>
-      <dl class="bill-sum">
-        <div class="bill-sum__row"><dt>{% translate "Total" %}</dt><dd>&#8377; {{ check.total|floatformat:"2g" }}</dd></div>
-        {% for word, amount in check.payments %}
-          <div class="bill-sum__row bill-sum__row--paid"><dt>{{ word }}</dt><dd>&#8377; {{ amount|floatformat:"2g" }}</dd></div>
-        {% endfor %}
-        <div class="bill-sum__row bill-sum__row--discount"><dt>{% translate "Discount" %}</dt><dd>&#8377; {{ check.discount|floatformat:"2g" }}</dd></div>
-        <div class="bill-sum__row bill-sum__row--net"><dt>{% translate "Net" %}</dt><dd>&#8377; {{ check.net|floatformat:"2g" }}</dd></div>
-      </dl>
-      <p class="bill-check__date">{% if check.today %}{% blocktranslate with day=check.paid_on %}Date paid: today, {{ day }}{% endblocktranslate %}{% else %}{% blocktranslate with day=check.paid_on %}Date paid: {{ day }}{% endblocktranslate %}{% endif %}</p>
-      <div class="confirm__actions">
-        <button class="btn" type="button" data-dialog-close data-dialog-open="settle-box">{% translate "Go back" %}</button>
-        <button class="btn btn--warning" type="submit" form="settle-form" name="checked" value="{{ check.total|stringformat:'s' }}">{% translate "Settle bill" %}</button>
+    {% translate "The rest of the bill is the discount. Settling locks the job card and gives the bill its number." as words %}
+    {% translate "Settle bill" as button %}
+    {% include "billing/_check.html" with dialog_id="settle-check" box_id="settle-box" form_id="settle-form" %}
+  {% endif %}
+{% endif %}
+
+{% if change_form %}
+  {% comment %}Change payments: the settle box as the bill was saved, and why. Its boxes keep what they held when it opened (SETTLE-39, SETTLE-52), and it sends the total it showed (SETTLE-26).{% endcomment %}
+  <dialog class="form-dialog bill-settle" id="change-box" aria-labelledby="change-title"{% if change_form.is_bound and not change_check or change_problem %} data-open-now{% endif %}>
+    <div class="form-dialog__head">
+      <h2 class="form-dialog__title" id="change-title">{% translate "Change payments" %}</h2>
+      <button class="form-dialog__close" type="button" data-dialog-close aria-label="{% translate 'Close' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#x"></use></svg></button>
+    </div>
+    <form class="form-dialog__form" id="change-form" method="post" action="{% url 'billing:change_payments' card.pk change_key %}">
+      {% csrf_token %}
+      {% if change_problem %}<p class="field__error" role="alert">{{ change_problem }}</p>{% endif %}
+      {% include "billing/_pay_boxes.html" with form=change_form %}
+      <div class="field">
+        <label class="field__label" for="{{ change_form.reason.id_for_label }}">{{ change_form.reason.label }}</label>
+        {{ change_form.reason }}
+        {% if change_form.reason.errors %}<p class="field__error" id="{{ change_form.reason.auto_id }}_error">{{ change_form.reason.errors.0 }}</p>{% endif %}
+        <p class="field__hint" id="{{ change_form.reason.auto_id }}_helptext">{{ change_form.reason.help_text }}</p>
       </div>
-    </dialog>
+      {% for problem in change_form.non_field_errors %}<p class="field__error" role="alert">{{ problem }}</p>{% endfor %}
+      <button class="btn btn--primary" type="submit" name="seen" value="{{ sheet.total|stringformat:'s' }}">{% translate "Change payments" %}</button>
+    </form>
+  </dialog>
+
+  {% if change_check %}
+    {% translate "The rest of the bill is the discount. The change is kept in the change history, with what it was and why." as words %}
+    {% translate "Change payments" as button %}
+    {% include "billing/_check.html" with check=change_check dialog_id="change-check" box_id="change-box" form_id="change-form" %}
   {% endif %}
 {% endif %}
 

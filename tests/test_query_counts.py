@@ -8,6 +8,7 @@ Like the permission matrix, this test finds every page by itself, so a new page 
 say here whether it shows rows.
 """
 
+import uuid
 from decimal import Decimal
 
 import pytest
@@ -19,6 +20,7 @@ from django.urls import path, reverse
 from test_permissions import PAGES
 
 from apps.accounts.tests.factories import MembershipFactory
+from apps.billing.tests.factories import BillFactory, PaymentFactory
 from apps.jobs.tests.factories import ConcernFactory, JobCardFactory, JobLineFactory
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.workshops.models import Branch
@@ -60,6 +62,29 @@ def live_board_rows(member):
     return reverse("jobs:live_board"), lambda: JobCardFactory(workshop=member.workshop)
 
 
+def paid_bills_rows(member):
+    """Paid bills, with a settled bill and its payment for each row (SETTLE-53)."""
+
+    def add_row():
+        bill = BillFactory(workshop=member.workshop)
+        PaymentFactory(workshop=member.workshop, bill=bill)
+
+    return reverse("billing:paid_bills"), add_row
+
+
+def settled_bill_rows(member):
+    """A settled bill's page with its change box, through the change address's GET, with its
+    rows: the job lines (SETTLE-51)."""
+    bill = BillFactory(workshop=member.workshop, job_card__labour=Decimal("43000"))
+    PaymentFactory(workshop=member.workshop, bill=bill, amount=Decimal("40000"))
+
+    def add_row():
+        JobLineFactory(workshop=member.workshop, job_card=bill.job_card)
+
+    keys = {"key": bill.job_card_id, "change_key": uuid.uuid7()}
+    return reverse("billing:change_payments", kwargs=keys), add_row
+
+
 def card_rows(name):
     """A job card's page, or its bill's, with its rows: its job lines, and the concerns. A
     labour charge, so the bill page offers its settle box and names each concern not fixed in
@@ -84,6 +109,8 @@ WITH_ROWS = {
     "jobs:live_board": live_board_rows,
     "jobs:edit": card_rows("jobs:edit"),
     "billing:bill": card_rows("billing:bill"),
+    "billing:paid_bills": paid_bills_rows,
+    "billing:change_payments": settled_bill_rows,
 }
 
 

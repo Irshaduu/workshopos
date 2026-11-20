@@ -54,6 +54,11 @@ def _home(role):
 #: The menu of Owner and Office, one shape as in v1 (ROLE-36). A row shows only to
 #: the roles its page lets in, and a section with no row does not show.
 OFFICE_SECTIONS = (
+    # v1's Money section; its other rows come with their pages (ROLE-32).
+    Section(
+        _("Money"),
+        groups=((Link("billing:paid_bills", _("Paid bills"), "receipt-indian-rupee"),),),
+    ),
     Section(_("Administration"), groups=((Link("staff:list", _("Staff list"), "users"),),)),
 )
 

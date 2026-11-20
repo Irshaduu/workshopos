@@ -1,0 +1,25 @@
+{% load i18n static %}
+{% comment %}
+The check: what the server worked out, before anything is saved (SETTLE-20). Its button sends
+the box again, with the total the check showed (SETTLE-26). A change's check also shows what
+each changed figure was (SETTLE-39). It gets the check, the dialog's id, the box's id, its
+form's id, its words and its button's word.
+{% endcomment %}
+<dialog class="confirm confirm--warning bill-check" id="{{ dialog_id }}" aria-labelledby="{{ dialog_id }}-title" data-open-now>
+  <div class="confirm__disc"><svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#indian-rupee"></use></svg></div>
+  <h2 class="confirm__title" id="{{ dialog_id }}-title">{% blocktranslate with amount=check.discount|floatformat:"2g" %}Discount &#8377; {{ amount }}{% endblocktranslate %}</h2>
+  <p class="confirm__text">{{ words }}</p>
+  <dl class="bill-sum">
+    <div class="bill-sum__row"><dt>{% translate "Total" %}</dt><dd>&#8377; {{ check.total|floatformat:"2g" }}</dd></div>
+    {% for word, amount, was in check.payments %}
+      <div class="bill-sum__row bill-sum__row--paid"><dt>{{ word }}</dt><dd>&#8377; {{ amount|floatformat:"2g" }}{% if was is not None %}<span class="bill-sum__was">{% blocktranslate with amount=was|floatformat:"2g" %}was &#8377; {{ amount }}{% endblocktranslate %}</span>{% endif %}</dd></div>
+    {% endfor %}
+    <div class="bill-sum__row bill-sum__row--discount"><dt>{% translate "Discount" %}</dt><dd>&#8377; {{ check.discount|floatformat:"2g" }}{% if check.discount_was is not None %}<span class="bill-sum__was">{% blocktranslate with amount=check.discount_was|floatformat:"2g" %}was &#8377; {{ amount }}{% endblocktranslate %}</span>{% endif %}</dd></div>
+    <div class="bill-sum__row bill-sum__row--net"><dt>{% translate "Net" %}</dt><dd>&#8377; {{ check.net|floatformat:"2g" }}{% if check.net_was is not None %}<span class="bill-sum__was">{% blocktranslate with amount=check.net_was|floatformat:"2g" %}was &#8377; {{ amount }}{% endblocktranslate %}</span>{% endif %}</dd></div>
+  </dl>
+  <p class="bill-check__date">{% if check.paid_on_was %}{% blocktranslate with day=check.paid_on was=check.paid_on_was %}Date paid: {{ day }}, was {{ was }}{% endblocktranslate %}{% elif check.today %}{% blocktranslate with day=check.paid_on %}Date paid: today, {{ day }}{% endblocktranslate %}{% else %}{% blocktranslate with day=check.paid_on %}Date paid: {{ day }}{% endblocktranslate %}{% endif %}</p>
+  <div class="confirm__actions">
+    <button class="btn" type="button" data-dialog-close data-dialog-open="{{ box_id }}">{% translate "Go back" %}</button>
+    <button class="btn btn--warning" type="submit" form="{{ form_id }}" name="checked" value="{{ check.total|stringformat:'s' }}">{{ button }}</button>
+  </div>
+</dialog>

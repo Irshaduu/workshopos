@@ -4,9 +4,15 @@ One function builds everything a bill shows, bill_sheet(), so a second bill desi
 only shows the same figures (ADR-0032, decision 10 of the build plan).
 """
 
+import datetime
 from dataclasses import dataclass
 from decimal import Decimal
 
+from django.db.models import Prefetch
+from django.utils import timezone
+from django.utils.translation import gettext_lazy
+
+from apps.audit.selectors import money_change_refusal
 from apps.billing.models import Bill, Payment, PaymentMethod
 from apps.jobs.models import JobLine
 
@@ -14,12 +20,34 @@ from apps.jobs.models import JobLine
 #: on every bill (v1's MIN_JOB_ROWS and MIN_PART_ROWS). A longer list is never cut.
 JOB_ROWS = 9
 PART_ROWS = 11
+#: How many days back Office sees its paid bills, before today (ROLE-20, v1's
+#: paid_bills_list). It is never shorter than the longest edit window, so Office always
+#: finds a bill it may still change (SETTLE-53); a test holds the two together.
+OFFICE_PAID_BILLS_DAYS = 7
+#: A settled bill's own first words when Office is past the edit window (CHANGE-12).
+SETTLED_AGO = gettext_lazy("Settled %(ago)s.")
+#: The boxes of a settled bill a person may change: the date paid and one for each method
+#: (SETTLE-39).
+BOXES = ("paid_on", *PaymentMethod.values)
 
 
 def financial_year_of(day):
     """The year a financial year starts in, for a day in it: 1 April to 31 March, as Indian
     tax counts a year (SETTLE-28, SETTLE-30). 31 March 2027 is in 2026's year."""
     return day.year if day.month >= 4 else day.year - 1
+
+
+def financial_year_days(year):
+    """The first and the last day of the financial year that starts in `year`, so the date
+    box and the server keep one rule (SETTLE-44)."""
+    return datetime.date(year, 4, 1), datetime.date(year + 1, 3, 31)
+
+
+def change_refusal(workshop, user, bill):
+    """Why this person may no longer change this settled bill, in plain words; None when
+    they may. Its edit window counts from the moment it was settled, never its date paid,
+    and a change never starts it again (CHANGE-9, CHANGE-10, SETTLE-42)."""
+    return money_change_refusal(workshop, user, bill.settled_at, happened=SETTLED_AGO)
 
 
 def bill_total(workshop, card):
@@ -64,8 +92,60 @@ def bill_of(workshop, branch, card):
 
 def payments_of(workshop, bill):
     """A bill's payments, in the settle box's order of methods."""
-    found = Payment.objects.for_workshop(workshop).filter(bill=bill)
-    return sorted(found, key=lambda payment: PaymentMethod.values.index(payment.method))
+    return _in_method_order(Payment.objects.for_workshop(workshop).filter(bill=bill))
+
+
+def _in_method_order(payments):
+    return sorted(payments, key=lambda payment: PaymentMethod.values.index(payment.method))
+
+
+def bill_figures(workshop, bill):
+    """A settled bill's figures that Change payments may move, by name: the date paid, what
+    was paid by each method (None for a method not used), and the discount (SETTLE-39,
+    SETTLE-41). The change box opens with them, and a kept Change compares them."""
+    paid = {payment.method: payment.amount for payment in payments_of(workshop, bill)}
+    return {
+        "paid_on": bill.date,
+        **{method: paid.get(method) for method in PaymentMethod.values},
+        "discount": bill.discount,
+    }
+
+
+@dataclass(frozen=True)
+class PaidBill:
+    """One row of Paid bills (SETTLE-53): the bill, its total and net, and its payments."""
+
+    bill: Bill
+    total: Decimal
+    net: Decimal
+    payments: list
+
+
+def paid_bills_for(workshop, branch, user, today=None):
+    """The settled bills of this branch this person may see, newest first by the date paid
+    (SETTLE-53). Office sees those settled in the last 7 days, counted from the moment each
+    was settled, as v1 counted, so a bill an owner dated far back today is still there while
+    Office may change it (ROLE-20, CHANGE-10). Owners see every bill."""
+    bills = Bill.objects.for_workshop(workshop).for_branch(branch)
+    if not user.has_perm("billing.see_every_paid_bill"):
+        since = (today or timezone.localdate()) - datetime.timedelta(days=OFFICE_PAID_BILLS_DAYS)
+        # The moment that day starts in India, so the filter reads settled_at as it is kept.
+        start = datetime.datetime.combine(since, datetime.time.min, timezone.get_current_timezone())
+        bills = bills.filter(settled_at__gte=start)
+    bills = (
+        bills.select_related("job_card")
+        .prefetch_related(
+            Prefetch("payments", queryset=Payment.objects.for_workshop(workshop), to_attr="paid")
+        )
+        .order_by("-date", "-settled_at")
+    )
+    rows = []
+    for bill in bills:
+        # The labour charge, read with the bill. When parts join the total (Phase 6), they
+        # come in one query for every row, or tests/test_query_counts.py fails.
+        total = bill_total(workshop, bill.job_card)
+        rows.append(PaidBill(bill, total, total - bill.discount, _in_method_order(bill.paid)))
+    return rows
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,30 @@
+{% load i18n static %}
+{% comment %}
+The boxes of the settle box and the change box, which are one shape: the total and the date
+paid on top, then one money box for each method (SETTLE-15, SETTLE-21, SETTLE-39). The chip's
+words come from bill.js, with the month words Django gives every date.
+{% endcomment %}
+<div class="bill-settle__top">
+  <div>
+    <p class="pay__label">{% translate "Total" %}</p>
+    <p class="bill-settle__total">&#8377; {{ sheet.total|floatformat:"2g" }}</p>
+  </div>
+  <div>
+    <p class="pay__label" id="{{ form.date_label_id }}">{{ form.paid_on.label }}</p>
+    <label class="pay__date" data-date-chip>
+      <svg class="icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#calendar"></use></svg>
+      <span data-date-words data-today="{% translate 'Today' %}" data-empty="{% translate 'Pick the day' %}" data-months="{{ months }}"></span>
+      {{ form.paid_on }}
+    </label>
+  </div>
+</div>
+{% if form.paid_on.errors %}<p class="field__error" id="{{ form.paid_on.auto_id }}_error">{{ form.paid_on.errors.0 }}</p>{% endif %}
+<div class="bill-settle__methods">
+  {% for box in form.money_boxes %}
+    <div class="field">
+      <label class="field__label" for="{{ box.id_for_label }}">{{ box.label }}</label>
+      <div class="pay__money">{{ box }}</div>
+      {% if box.errors %}<p class="field__error" id="{{ box.auto_id }}_error">{{ box.errors.0 }}</p>{% endif %}
+    </div>
+  {% endfor %}
+</div>

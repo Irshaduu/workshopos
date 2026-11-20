@@ -4,6 +4,8 @@ Opening and closing the menu needs a browser: that test comes with Playwright
 (step 10 of Slice 1). Until then it is clicked through by hand.
 """
 
+import re
+
 import pytest
 from django.http import HttpResponse
 from django.template import engines
@@ -251,6 +253,25 @@ def test_staff_26_other_roles_see_no_door_to_the_staff_list(client, role):
 
     assert "/staff/" not in html
     assert "Administration" not in html
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("role", [Role.OWNER, Role.OFFICE])
+def test_settle_53_owners_and_office_see_paid_bills_in_money_first(client, role):
+    html = menu_of(signed_in(client, role).get("/"))
+
+    # Money is the menu's first section (ROLE-36), and Paid bills is in it.
+    assert re.findall(r'<h2 class="menu-label">([^<]+)</h2>', html)[0] == "Money"
+    assert '<a class="menu-link" href="/paid-bills/">' in html
+    assert html.index(">Money<") < html.index("Paid bills")
+
+
+@pytest.mark.django_db
+def test_settle_47_floor_sees_no_door_to_paid_bills(client):
+    html = menu_of(signed_in(client, Role.FLOOR).get("/"))
+
+    assert "/paid-bills/" not in html
+    assert ">Money<" not in html
 
 
 @pytest.mark.django_db
