@@ -10,4 +10,6 @@ PERMISSIONS = {
     # Only an owner dates money further back than the workshop's back-date limit
     # (CHANGE-15, CHANGE-16).
     "date_money_any_day": {Role.OWNER},
+    # Only an owner changes money after the workshop's edit window (CHANGE-9, CHANGE-11).
+    "money_change_any_time": {Role.OWNER},
 }

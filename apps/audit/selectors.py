@@ -1,4 +1,5 @@
-"""Reads for audit: what a person may do with a money date (docs/rules/change-history.md)."""
+"""Reads for audit: what a person may do with a money date, and with money already recorded
+(docs/rules/change-history.md)."""
 
 from datetime import timedelta
 
@@ -7,7 +8,7 @@ from django.utils.formats import date_format
 from django.utils.translation import gettext as _
 from django.utils.translation import ngettext
 
-from apps.audit.models import AuditSettings
+from apps.audit.models import AuditSettings, Change
 
 
 def limits(workshop):
@@ -56,3 +57,43 @@ def _back_date(workshop, today):
     today = today or timezone.localdate()
     days = limits(workshop).back_date_days
     return days, today - timedelta(days=days)
+
+
+def money_change_refusal(workshop, user, recorded_at, *, happened, now=None):
+    """Why this person may not change money recorded at that moment, in plain words; None
+    when they may (CHANGE-9 to CHANGE-12).
+
+    The window counts from the moment the money was typed in, never from its money date
+    (CHANGE-10). An owner, who may change money any time, is never refused (CHANGE-11). The
+    refusal says how long ago, the rule, and who can do it, and `happened` is the record's
+    own first words, like "Settled %(ago)s.", so a bill and a payment to a shop each say
+    theirs (CHANGE-12).
+    """
+    if user.has_perm("audit.money_change_any_time"):
+        return None
+    hours = limits(workshop).edit_window_hours
+    age = (now or timezone.now()) - recorded_at
+    if age <= timedelta(hours=hours):
+        return None
+    rule = ngettext(
+        "Office can change money only within %(hours)d hour.",
+        "Office can change money only within %(hours)d hours.",
+        hours,
+    ) % {"hours": hours}
+    return " ".join((happened % {"ago": how_long_ago(age)}, rule, _("Ask an owner.")))
+
+
+def kept_change(workshop, branch, key):
+    """The change kept under this key; None when none is. A change box asks this first,
+    because a double tap sends its key again (SETTLE-52)."""
+    return Change.objects.for_workshop(workshop).for_branch(branch).filter(pk=key).first()
+
+
+def how_long_ago(age):
+    """How long ago, in words: in hours for two days, then in days, like "30 hours ago" or
+    "5 days ago" (CHANGE-12, v1's _how_long_ago)."""
+    hours = int(age.total_seconds() // 3600)
+    if hours < 48:
+        return ngettext("%(count)d hour ago", "%(count)d hours ago", hours) % {"count": hours}
+    days = hours // 24
+    return ngettext("%(count)d day ago", "%(count)d days ago", days) % {"count": days}
