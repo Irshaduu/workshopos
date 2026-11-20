@@ -63,7 +63,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Module | What it does | App | When |
 |---|---|---|---|
 | Printed bill | A4 on the workshop's letterhead; PDF named after the car; WhatsApp button | `billing` | Go-live |
-| Settle bill | Shows anything still unfilled before the bill is settled; takes what was paid by method, and the rest is the discount, shown before saving; gives the bill its number from the branch's own series | `billing` | Go-live |
+| Settle bill | Shows anything still unfilled before the bill is settled; takes what was paid by method, and the rest is the discount, shown before saving; gives the bill its number from the branch's own series; its payments are changed later with a reason, by Office within the edit window and by owners any time, and every change is kept | `billing` | Go-live |
 | Pending and paid bills | Who still owes, and every bill paid, by date | `billing` | Go-live |
 | Discount audit | Every bill settled for less, largest first | `billing` | Go-live |
 | Cashbook | Money in and out by the day it moved; asks before a double count | `finance` | Go-live |

@@ -155,7 +155,8 @@ closes the issue.
   every form.
 - **A save changes only what the person changed.** A form on a record people share keeps
   each box's opening value (`show_hidden_initial`), and its service applies only
-  `changed_data`, in one locked transaction (ADR-0030).
+  `changed_data`, in one locked transaction (ADR-0030). A change to money is the one
+  exception: it is refused whole when its record changed since the box opened (below).
 - **A row of a job card builds on `WorkshopModel`, with `SameWorkshop` on its link.** It
   reaches its branch through its card, and sits on the short list in
   `tests/test_tenancy.py` (ADR-0030).
@@ -172,6 +173,12 @@ closes the issue.
   never in the future, and Office no further back than the workshop's back-date limit
   (docs/rules/change-history.md). Its date box shows `earliest_money_date()`, but only
   the server decides.
+- **A change to money after it was recorded asks `money_change_refusal()` first**
+  (`apps/audit/selectors.py`), and keeps a Change with `keep_change()`
+  (`apps/audit/services.py`) in the same transaction, under the key its box was opened
+  with, as every form that makes a record does. Its box keeps what it opened with, and a
+  send after someone else changed the record is refused whole, never merged box by box,
+  because a person confirms money as a whole (SETTLE-52).
 - **A calculation rounds on purpose before it saves.** PostgreSQL rounds a third
   decimal with no error. Saving a plain amount refuses a float or a third decimal,
   but an expression like `F("amount") * Decimal("1.18")` goes straight to PostgreSQL.

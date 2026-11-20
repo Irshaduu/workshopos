@@ -5,8 +5,8 @@ How we work: `CONTRIBUTING.md`. Structure: `docs/ARCHITECTURE.md`.
 Modules: `docs/MODULES.md`. Design: `docs/DESIGN.md`. Why: `docs/adr/`.
 
 **Now:** Phase 5, Slice 1, is in progress: Sign-in, Roles, the base for the
-first pages, the Staff list, the money base, the job card and Known plate are built. Settle bill
-is under way: settling is built, and Change payments, with the change history, is next.
+first pages, the Staff list, the money base, the job card, Known plate and Settle bill are
+built. Linked devices is next.
 **Alongside:** the client agreement, needed before go-live, not before code.
 
 Marks: `[x]` done, `[~]` in progress, `[ ]` to do
@@ -309,7 +309,7 @@ work gets its own pull request, just before the page that first uses it.
       on hold and back, and ready, come with their buttons on the live board,
       and part ordered and received with parts (Phase 6); a delivered step
       only if the client asks (v1 had none)
-- [~] The first per-workshop settings (ADR-0024), with settle: how far
+- [x] The first per-workshop settings (ADR-0024), with settle: how far
       back Office may date money (v1: 3 days), and how long Office may
       change a settled bill before only owners can (v1: 24 hours); the
       big-discount alert limit comes with the bell (Phase 6)
@@ -329,12 +329,13 @@ work gets its own pull request, just before the page that first uses it.
       each screen uses, with v1's reasons, is in `docs/DESIGN.md`. The short
       figure for a big number on a phone (45.2L) comes with Profit (After),
       as our own code in `core`
-- [ ] The audit log, in the same pull request as the first service that
+- [x] The audit log, in the same pull request as the first service that
       changes or deletes money, Change payments: a frozen copy of what
       changed, with who, when and why (v1's shape, in one table), saved in
       the same transaction; every service that changes money is told who
-      acts. Its first entries: a change to a settled bill (amount, discount,
-      payment, date); a first settle is not a change (v1). Back-dated money
+      acts. Its first entries: a change to a settled bill's payments, discount
+      and date; its total joins with Change job card (Phase 6); a first
+      settle is not a change (v1). Back-dated money
       keeps nothing extra: its record keeps its date, and when it was typed
       and by whom (ADR-0032)
 - [x] Every page and menu item names its module, from the first page: a
@@ -407,7 +408,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
       completed list
 - [ ] The rule for rounding money, half up as in v1, with the first calculation
       that needs one, like a rate times a quantity (ADR-0029)
-- [ ] The rest of billing: printed bill, pending and paid bills, discount audit
+- [ ] The rest of billing: printed bill, pending and paid bills (from the first, plain Paid
+      bills of SETTLE-53), discount audit
   - the workshop profile on the printed bill: its name and logo, the
     branch's address and phone, the UPI QR, with the file storage decision
     (`docs/ARCHITECTURE.md`, open decision 5); an old bill keeps the

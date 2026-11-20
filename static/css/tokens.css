@@ -239,7 +239,7 @@
       var(--color-bar-end) 100%
     );
 
-    /* Colour and type: the bill, as it prints (design/lab/bill/). v1's navy
+    /* Colour and type: the bill, as it prints (docs/design/bill.jpg). v1's navy
        and its bands, measured off the workshop's own printed bill; its type
        is Calibri, which every Windows machine has, with fallbacks of the same
        width so a bill keeps its line breaks on a phone. */
