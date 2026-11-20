@@ -1,6 +1,6 @@
 # 0032: Settle bill: the bill's shape, and who may date or change money
 
-**Status:** Proposed (2026-11-10)
+**Status:** Accepted (2026-11-18)
 
 ## Context
 
@@ -47,6 +47,9 @@
 - **The change history is one table, built with the first service that changes money** (Change
   payments): each change keeps what it was and what it became, who, when and why, with no link
   to the record. A first settle is not a change.
+- **A change to money is refused whole when its record changed since the box opened,** never
+  merged box by box like a job card's save (ADR-0030), because the discount comes from all
+  the payments together, and a person confirms money as a whole.
 - **One bill design for now: the client's, used only for the client.** One function builds a
   bill's figures, and a design only shows them, so a second design is a second template, not
   a second copy of the rules. A workshop's look comes from its profile (Phase 6). When a

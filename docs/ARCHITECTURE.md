@@ -220,11 +220,14 @@ How each workshop's data stays its own: ADR-0023.
   value, and its service applies only what this person changed, in one locked
   transaction, so nobody undoes another person's save by accident (ADR-0030).
 - **Audit:** services call `audit` whenever money is changed or deleted. Each
-  entry keeps a frozen copy of what changed, with who, when and why, and no
-  link to the record, so it outlives the record. The log is built in the same
-  pull request as the first service that changes money, because history cannot
-  be filled in later. Back-dated money keeps nothing extra: its record already
-  keeps the day the money moved, and when and by whom it was typed (ADR-0032).
+  entry, a `Change`, keeps a frozen copy of what changed, with who, when and
+  why, and no link to the record, so it outlives the record. A service asks
+  `money_change_refusal()` (`apps/audit/selectors.py`) first, whether this
+  person may still change it (the edit window), and keeps the entry with
+  `keep_change()` (`apps/audit/services.py`) in the same transaction as the change, so
+  one never commits without the other. Back-dated
+  money keeps nothing extra: its record already keeps the day the money moved,
+  and when and by whom it was typed (ADR-0032).
 - **Notifications:** services call `notifications`; views never do. Built
   with the first alert.
 - **History:** record when things happen. Status changes that matter store
