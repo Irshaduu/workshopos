@@ -676,13 +676,18 @@
     text-align: left;
   }
 
+  /* Two halves side by side. A button keeps its words on one line, so a longer label takes
+     more of the row; when the two cannot fit, Yes moves up onto its own line, as on a
+     narrow phone. */
   .confirm__actions {
     display: flex;
+    flex-wrap: wrap-reverse;
     gap: var(--space-3);
   }
 
   .confirm__actions .btn {
     flex: 1;
+    white-space: nowrap;
   }
 
   /* On a narrow phone the buttons stack and Yes goes on top, so a thumb

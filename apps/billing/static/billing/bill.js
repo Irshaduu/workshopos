@@ -59,10 +59,11 @@ if (typeof document !== "undefined") {
   }
 
   // The chip under Date paid shows the day the box holds (the box itself is see-through, on
-  // top of the chip, so a tap opens the device's own date picker).
+  // top of the chip, so a tap opens the device's own date picker). The box says which day is
+  // today, because its last day may be another: a bill's financial year can end before it.
   const chip = document.querySelector("[data-date-chip]");
   if (chip) {
-    const box = chip.querySelector("input");
+    const box = chip.querySelector('input[type="date"]');
     const shown = chip.querySelector("[data-date-words]");
     const words = {
       today: shown.dataset.today,
@@ -70,7 +71,7 @@ if (typeof document !== "undefined") {
       months: shown.dataset.months.split("|"),
     };
     const show = () => {
-      const chosen = chipWords(box.value, box.max, words);
+      const chosen = chipWords(box.value, box.dataset.todayIso, words);
       shown.textContent = chosen.words;
       chip.classList.toggle("pay__date--back-dated", chosen.backDated);
     };

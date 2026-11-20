@@ -1,4 +1,4 @@
-/* A job card's bill (docs/design/, design/lab/bill/): v1's bill page, chosen in the lab.
+/* A job card's bill (docs/design/bill.jpg): v1's bill page, chosen in the lab.
    Its screen parts take their sizes from the tokens. The sheet is the bill as it prints, so
    its sizes are a printed page's, in millimetres and points, measured off the workshop's own
    bill as in v1 (_invoice_sheet_style.html). */
@@ -26,6 +26,25 @@
     margin: calc(var(--space-2) * -1) 0 var(--space-4);
     color: var(--color-text-muted);
     font-size: var(--text-sm);
+  }
+
+  /* Office past the edit window: why, in place of Change payments (SETTLE-46). */
+  .bill-late {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: calc(var(--space-2) * -1) 0 var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-neutral-soft);
+    color: var(--color-neutral-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+
+  .bill-late .icon {
+    flex: none;
+    margin-top: 0.15em;
   }
 
   /* ---------- Before you settle: one row for each thing not filled (v1's pf-gap) ---------- */
@@ -137,6 +156,15 @@
     border-bottom: 0;
     font-size: var(--text-lg);
     font-weight: var(--weight-bold);
+  }
+
+  /* A change's check: what the figure was, on its own line under it (SETTLE-39). */
+  .bill-sum__was {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-normal);
+    text-align: right;
   }
 
   .bill-check__date {

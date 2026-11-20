@@ -1,0 +1,50 @@
+{% extends "app.html" %}
+{% load i18n static %}
+{% comment %}
+The first, plain Paid bills, so a settled bill can be found (SETTLE-53): one row for each
+bill, which opens its bill page. v1's cards, the search, the owners' period filter and pages
+of 45 come with Pending and paid bills (Phase 6), from the lab.
+{% endcomment %}
+{% block title %}{% translate "Paid bills" %}{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'billing/paid-bills.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="paid-head">
+  <h1>{% translate "Paid bills" %}</h1>
+  {% if not every_bill %}
+    <p class="paid-head__span">{% blocktranslate count days=office_days %}Settled in the last {{ days }} day{% plural %}Settled in the last {{ days }} days{% endblocktranslate %}</p>
+  {% endif %}
+</div>
+
+{% if rows %}
+  <ul class="paid-list">
+    {% for row in rows %}
+      <li>
+        <a class="paid-row" href="{% url 'billing:bill' row.bill.job_card_id %}">
+          <span class="paid-row__car">{{ row.bill.brand }} {{ row.bill.car_model }}</span>
+          <span class="paid-row__plate">{{ row.bill.job_card.plate }}</span>
+          <span class="paid-row__number num">{{ row.bill.number }}</span>
+          {% if row.bill.customer_name %}<span class="paid-row__customer">{{ row.bill.customer_name }}</span>{% endif %}
+          <span class="paid-row__date">{{ row.bill.date }}</span>
+          <span class="paid-row__money num">{% translate "Total" %} &#8377; {{ row.total|floatformat:"-2g" }}</span>
+          <span class="paid-row__money paid-row__money--net num">{% translate "Net" %} &#8377; {{ row.net|floatformat:"-2g" }}</span>
+          <span class="paid-row__methods">{% for payment in row.payments %}{{ payment.get_method_display }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="empty">
+    <svg class="icon empty__icon" aria-hidden="true"><use href="{% static 'icons/icons.svg' %}#receipt-indian-rupee"></use></svg>
+    {% if every_bill %}
+      <p class="empty__title">{% translate "No paid bills yet" %}</p>
+    {% else %}
+      <p class="empty__title">{% blocktranslate count days=office_days %}No bills settled in the last {{ days }} day{% plural %}No bills settled in the last {{ days }} days{% endblocktranslate %}</p>
+    {% endif %}
+    <p class="empty__text">{% translate "A bill shows here once it is settled." %}</p>
+  </div>
+{% endif %}
+{% endblock %}

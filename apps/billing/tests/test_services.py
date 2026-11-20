@@ -6,16 +6,15 @@ from datetime import date, timedelta
 from decimal import Decimal
 
 import pytest
-from django.core.exceptions import ValidationError
 from django.db import connection, transaction
 from django.http import Http404
 from django.utils import timezone
 
 from apps.accounts.models import Role
-from apps.billing.models import Bill, BillCounter, Payment, number_from
+from apps.billing.models import Bill, BillCounter, number_from
 from apps.billing.selectors import bill_sheet, financial_year_of
 from apps.billing.services import NotOpen, TotalChanged, settle_bill
-from apps.billing.tests.conftest import Place
+from apps.billing.tests.conftest import Place, payments, refused
 from apps.billing.tests.factories import BillCounterFactory
 from apps.core.tests.postgresql import wait_for_a_lock
 from apps.jobs.models import JobCard, JobCardStatus, JobCardStep, StepKind
@@ -30,21 +29,8 @@ def bills(place):
     return Bill.objects.for_workshop(place.workshop)
 
 
-def payments(bill):
-    return {payment.method: payment.amount for payment in Payment.objects.filter(bill=bill)}
-
-
 def this_year_number(count):
     return number_from(financial_year_of(timezone.localdate()), count)
-
-
-def refused(settle):
-    """The words of each box a settle was refused for; nothing is saved."""
-    with pytest.raises(ValidationError) as caught:
-        settle()
-    return (
-        caught.value.message_dict if hasattr(caught.value, "error_dict") else caught.value.messages
-    )
 
 
 def test_settle_14_19_the_rest_of_the_bill_is_the_discount(office):

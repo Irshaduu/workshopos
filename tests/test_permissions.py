@@ -25,6 +25,7 @@ from test_queries import form_classes
 from apps.accounts.models import Role
 from apps.accounts.selectors import membership_of
 from apps.accounts.tests.factories import MembershipFactory, UserFactory
+from apps.billing.tests.factories import BillFactory
 from apps.jobs.tests.factories import JobCardFactory
 from apps.staff.tests.factories import StaffMemberFactory
 from apps.workshops.models import Branch
@@ -114,6 +115,11 @@ MATRIX = {
     # on the settle address shows the bill page (SIGN-38).
     "billing:bill": OFFICE_AND_OWNERS,
     "billing:settle": OFFICE_AND_OWNERS,
+    # Office sees the last 7 days of them, and owners every bill (SETTLE-53, ROLE-20).
+    "billing:paid_bills": OFFICE_AND_OWNERS,
+    # Office and owners change a settled bill's payments; past the edit window the page
+    # refuses Office in words, not by role (SETTLE-38, CHANGE-12). A GET shows the bill page.
+    "billing:change_payments": OFFICE_AND_OWNERS,
     # The sign-in steps: public; a signed-in person goes home (SIGN-12), and a
     # later step opened first goes back to step 1 (SIGN-26).
     "accounts:sign_in": {
@@ -171,6 +177,8 @@ MATRIX = {
 RECORD_PAGES = {
     "billing:bill": JobCardFactory,
     "billing:settle": JobCardFactory,
+    # A settled card, with its bill.
+    "billing:change_payments": lambda **more: BillFactory(**more).job_card,
     "jobs:edit": JobCardFactory,
     "jobs:cancel": JobCardFactory,
     "staff:edit": StaffMemberFactory,
@@ -182,7 +190,7 @@ RECORD_PAGES = {
 NEW_KEY_PAGES = {"staff:new", "jobs:create"}
 
 #: Each page with a record's key and a new record's key too: the new key's name.
-SECOND_NEW_KEY = {"billing:settle": "new_key"}
+SECOND_NEW_KEY = {"billing:settle": "new_key", "billing:change_payments": "change_key"}
 
 
 def keys_of(name, key):
