@@ -416,14 +416,18 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
     details it was printed with
   - one period filter for every page that filters by date, from the first
     one
-  - internal jobs (own car, demo car, free redo) take no customer payment;
-    any money from a customer is a sale and gets a proper bill
+  - internal jobs (own car, demo car, free redo) and free visits take no
+    customer payment: they end as No charge, and a free visit may be marked
+    Charge next time (`docs/MODULES.md`); any money from a customer is a sale
+    and gets a proper bill
   - one sales register: every settled sale is in the reports and in the
     accountant's export
 - [ ] Spare shops, unassigned spares and payments
 - [ ] Supplies shops, inventory and stock costing
 - [ ] Parts on the job card, and on its bill, with Change job card
       (`docs/rules/settle-bill.md`)
+- [ ] What Office sees, once the shops and parts are built, with an ADR
+      first, because it changes ROLE-1 (`docs/MODULES.md`)
 - [ ] Cashbook
 - [ ] Fleet accounts
 - [ ] The change history screen, alerts and push: the bell comes with

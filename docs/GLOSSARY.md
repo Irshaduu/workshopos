@@ -21,6 +21,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Tab | `tab` | pill | One place on the tab bar, like New or Inventory |
 | Role menu | `RoleMenu` | | One role's tabs and menu sections, written once in `apps/accounts/menu.py` |
 | Menu | `menu` | drawer, for the menu | The list of every other page, opened from the tab bar's Manage (Office, Owners) or Menu (Floor) |
+| What Office sees | | Office access, Office permissions | An owner's page of switches that hide a few facts from Office, like customer numbers. Not built yet |
 | Sign in | `sign_in`, the page `sign-in/` | log in, login (as a verb) | Start using the system: an owner types the email and the code sent to it; Office and Floor type a username and the password |
 | Sign out | `sign_out`, the page `sign-out/` | log out, logout | End the session on this device |
 | Username | `username` | identifier | What Office and Floor type to sign in. It starts with the workshop's short code and a dot, like `ab.floor` |
@@ -48,6 +49,8 @@ the code (models, functions, files, URLs) and in the docs.
 | Bill number | `Bill.number`, `BillCounter` | invoice number, on a plain bill | A bill's own number, like INV-26-27-0045, given when the bill is final. Old Excel bills keep their JB numbers |
 | Open | `JobCardStatus.OPEN` | active, live | A job card that has not ended. A car has one at a time |
 | Cancelled | `JobCardStatus.CANCELLED`, `cancel()` | deleted, trashed | A job card that ended with no bill. It keeps its number and everything on it |
+| No charge | `JobCardStatus.NO_CHARGE` | free bill, zero bill; cancelled, for work done | A job card that ended with its work done and nothing to pay, because its bill came to 0, with the reason. It keeps its number and gets no bill number. Not built yet |
+| Charge next time | `charge_next_time` | pay later (a SaaS module), deferred charge, unbilled diagnostics, credit | A No charge visit marked to be charged at the car's next visit, with an amount if an owner named one. The car's next job card shows it as a note, and the Charge next time list keeps every one still waiting. Never a debt and never a discount. Not built yet |
 | Admitted date | `admitted_date` | check-in date | The day the car came in |
 | Car | `Car` | vehicle, except in the app's name `vehicles` | One car in a workshop, with its whole history |
 | Plate | `plate` | registration number, reg no | The letters and digits on a car's number plate. The box is called Plate Number |
@@ -59,11 +62,14 @@ the code (models, functions, files, URLs) and in the docs.
 | Chassis code | `chassis_code` | platform code | A car's generation, like F30. Many cars share one |
 | VIN | `vin` | chassis number | The 17 characters that name one car, from the RC book's Chassis No. |
 | Colour | `colour`, `colour_other` | color, paint | A car's colour: one of the list, or Other with a colour of its own |
+| Car picture | | profile photo, cover photo | The one photo of a car chosen to show it, small, on its job card and its page. Not built yet |
 | Mileage | `mileage` | odometer, km, kilometres (as a name) | The car's reading at this visit, in whole kilometres |
 | Internal note | `note` | notes, remarks | A line about this visit for the workshop only, never printed |
 | Customer | `Customer` | owner, client (for a car's owner) | A name and a contact number, as one record in a workshop |
 | Contact number | `contact_number` | phone, mobile (as a name) | The number a customer is reached on |
 | Last customer | `last_customer()` | owner, for a car | The customer on a car's newest job card that has one. A new job card offers them to Office and owners |
+| Customer profile | `customer_profile` | customer history, for this page | An owner's page about one customer: their cars, visits, billed and discounts. Not built yet |
+| Join | `join_customers()` | merge, for customers | An owner puts two customer records of one person together, so the customer profile shows them as one person with both numbers. It changes no visit and no bill, and it can be undone. Not built yet |
 | Concern | `Concern` | complaint | One thing the customer reported, with its status: Pending, Working or Fixed |
 | Job line | `JobLine` | labour item, labour line | One job that was done, in words, with no price. The list is called Job Performed |
 | Labour charge | `labour` | labour amount, subtotal, total labour | One amount for all the work on a job card |
@@ -97,6 +103,7 @@ the code (models, functions, files, URLs) and in the docs.
 | Spare shop | `SpareShop` | | A shop we buy a part from for one job |
 | Supplies shop | `SuppliesShop` | supplier shop | A shop we buy stock from, for the shelf |
 | Product | `Product` | item | Something the workshop keeps in stock |
+| Fits | `Product.fits` | compatibility, fitment | The chassis codes a product fits, like B9 or F30 F31, in one box. Empty means any car. Not built yet |
 | Money column | `MoneyField` | | A database column for an amount of rupees and paise. All have one size, and each says whether zero is allowed |
 | Money box | `MoneyFormField` | | The box a person types an amount into |
 | Money that moved | `MoneyField()` | | An amount that really changed hands, like a payment. Always above zero |
