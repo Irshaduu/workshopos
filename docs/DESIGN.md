@@ -15,6 +15,10 @@ CSS base: plain CSS with our own tokens, no framework (ADR-0017).
   confirmation card, form card, list search, info button, and the screen
   states below. Each is v1's, fixed only where a rule breaks. A card over the
   page opens and closes with `static/js/dialog.js`.
+- A pop-up, like a part's dates box or a list of suggestions, opens in the
+  browser's top layer (a popover, or a card over the page), never as a box
+  inside a scrolling table. A table can cut it off: v1's dates box worked in
+  Chrome and was cut off on the iPhone.
 - Icons: Lucide, only the ones we use, in `static/icons/icons.svg`
   (ADR-0018). An icon never carries meaning alone. Icons go on section
   titles, on buttons, and on the few things that appear on many screens

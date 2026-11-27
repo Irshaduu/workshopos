@@ -20,9 +20,11 @@ through a pull request, and only when CI is green.
    A **release tag** deploys to production, on every server.
 5. On the laptop: `git switch main`, then `git pull`.
 
-An **issue** is only for work that has to wait: a bug found, or a client
-request for later. The pull request that does it says `Fixes #N`, which
-closes the issue.
+An **issue** is only for a bug that has to wait. The pull request that fixes
+it says `Fixes #N`, which closes the issue. A client's request is never an
+issue, because issues are public: its accepted part goes into
+`docs/MODULES.md` in plain words, with no client details, so its section
+reads it first.
 
 ## Commit messages
 

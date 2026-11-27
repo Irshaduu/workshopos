@@ -35,6 +35,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | **Create a workshop** (new in v2) | One service creates a workshop, its first branch and its owner | `accounts` | Go-live |
 | **Platform accounts** (new in v2) | The company's own staff, kept apart from workshop members (ADR-0007) | `accounts` | Go-live |
 | **Module switches** (new in v2) | Each workshop turns modules on or off; off hides, never deletes (ADR-0011). Every page names its module from the first page; the switch is built when a module must first be off | `workshops` | Go-live |
+| **What Office sees** (new in v2) | An owner's page of switches that hide a few facts from Office, at first customer numbers, shop phone numbers and shop prices, each turned off or on again at any time. Off hides the fact everywhere: on screen, on paper and in what the server sends, and Office cannot type it, so an owner does that work. Each change is kept in the change history. A short list fixed in the code, never a screen for making roles. It changes ROLE-1 (`docs/rules/roles.md`), so it needs an ADR first | `accounts` | Go-live |
 
 ## Job cards and the floor
 
@@ -43,12 +44,12 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Job card | Car, concerns, jobs and one labour charge; locked once settled | `jobs` | Go-live |
 | Parts on the job card | Shop parts and shelf stock kept apart; ordered, received, expected | `jobs` | Go-live |
 | Known plate | A known or old plate fills the car's brand, model, chassis code, VIN and colour, and offers the last customer; a save asks before it uses one car's record for another; an open job card moves to the right car | `jobs` | Go-live |
-| Suggestions as you type | Car, part and concern names; jobs suggested from the card's parts | `jobs` | Go-live |
+| Suggestions as you type | Car, part and concern names; jobs suggested from the card's parts; the chassis codes already saved on cars of the same model | `jobs` | Go-live |
 | Suggested price and markup | Customer price suggested from cost, with a markup badge | `jobs` | Go-live |
 | Parts transport | Courier and parcel costs, counted in profit | `jobs` | Go-live |
 | Live board | Every car in the workshop, filtered by mechanic | `jobs` | Go-live |
 | Live report | Unfilled bills, parts on the way, each mechanic's open work | `reports` | Go-live |
-| Job card view | One read-only page for each car | `jobs` | Go-live |
+| Job card view | One read-only page for each car; a Copy button for the VIN, which copies its 17 characters with no spaces | `jobs` | Go-live |
 | Completed list | Cars ready to bill, with undo | `jobs` | Go-live |
 | Ready-date estimate | An expected ready date, from parts on the way and each shop's past delivery times; flags parts not ordered yet | `jobs` | After |
 
@@ -62,8 +63,9 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 
 | Module | What it does | App | When |
 |---|---|---|---|
-| Printed bill | A4 on the workshop's letterhead; PDF named after the car; WhatsApp button | `billing` | Go-live |
+| Printed bill | A4 on the workshop's letterhead; PDF named after the car; WhatsApp button; a shelf product prints by its category, like Engine oil, never by its brand | `billing` | Go-live |
 | Settle bill | Shows anything still unfilled before the bill is settled; takes what was paid by method, and the rest is the discount, shown before saving; gives the bill its number from the branch's own series; its payments are changed later with a reason, by Office within the edit window and by owners any time, and every change is kept | `billing` | Go-live |
+| **No charge** (new in v2) | A visit whose bill comes to 0 ends as No charge, with its reason, in place of Settle: a free scan, or a job that takes no customer payment (own car, demo car, free redo). It keeps its job card number and gets no bill number, and the owners are told of each. It may be marked Charge next time, with an amount if an owner names one. The car's next job card then shows a note, Add to this card or Don't charge, and the Charge next time list keeps every one still waiting, oldest first, for follow-up. Never a debt and never a discount: a person always types the labour | `jobs`, `billing` | Go-live |
 | Pending and paid bills | Who still owes, and every bill paid, by date | `billing` | Go-live |
 | Discount audit | Every bill settled for less, largest first | `billing` | Go-live |
 | Cashbook | Money in and out by the day it moved; asks before a double count | `finance` | Go-live |
@@ -88,6 +90,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 | Stock list and low stock | Products, categories, low stock, stock history, use by mechanic | `inventory` | Go-live |
 | Stock movement | Stock moves as job cards use parts and bills come in, through explicit service calls | `inventory` | Go-live |
 | Stock costing | Each part costed at what was really paid, bill by bill | `inventory` | Go-live |
+| **Product fits** (new in v2) | One more box on Add product: Fits, the chassis codes a product fits, like B9 or F30 F31. Empty means any car, as for oils and fluids. On a job card, the product search shows the car's own parts first: those used on this car before, those for its chassis code, and those for any car. Parts for other cars wait under one line and never mix in, so a wrong Fits never loses a part. Every typed word counts, in any order. The bill still names the category | `inventory`, `suppliers`, `jobs` | Go-live |
 
 ## Go-live tools
 
@@ -120,7 +123,8 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 
 | Module | What it does | App | When |
 |---|---|---|---|
-| Car profiles | Visits, billed, paid, still owed; every bill in one PDF | `vehicles` | After |
+| Car profiles | Visits, billed, paid, still owed; every bill in one PDF; the owners' figures (cost and gross profit) in a closed part that opens with a tap, so the page can be shown to a customer; a Copy button for the VIN; Change plate, with Known plate's rules (`docs/rules/known-plate.md`) | `vehicles` | After |
+| **Customer profile** (new in v2) | For owners: one customer's cars, visits, billed and discounts, and the first and last visit; the top customers for a period. A customer is a name and a number together (ADR-0030). An owner can join two records of one person, so the page shows them as one person with both numbers; a join changes no visit and no bill, can be undone, and never happens by itself | `vehicles`, `reports` | After |
 | Service history sheet | Every visit, and how long each part lasted | `vehicles` | After |
 | Service rules and reminders | The workshop's own rules (a service every so many km or days, per model if needed); shows when a service is due | `vehicles` | After |
 | Customer consent | Records whether the customer agreed to messages and to AI use | `vehicles` | After |
@@ -131,7 +135,7 @@ The Go-live marks are a draft until the client confirms them (`docs/PLAN.md`,
 |---|---|---|---|
 | Warranty claims | Claim a failed part from its original bill; track the shop's answer | `jobs` | After |
 | Estimates | Quotations on the letterhead, with past prices as a hint | `jobs` | After |
-| Photos | Car and part photos from the camera, stored in the cloud | `photos` | After |
+| Photos | Car and part photos from the camera, stored in the cloud; one photo, chosen with a tap, is the car's picture, shown small on its job card and its page | `photos` | After |
 
 ## New after go-live
 
