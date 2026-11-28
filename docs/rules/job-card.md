@@ -159,7 +159,9 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
 ## The labour charge
 
 - **JOB-31** A job card has one labour charge for all its work, typed once, under the
-  jobs. No job line has a price. *v1: `labour_amount`, "quoted as a whole".*
+  jobs. No job line has a price. *v1: `labour_amount`, "quoted as a whole". Job amounts
+  (Phase 6, `docs/MODULES.md`) replace it: an amount on each job, and the labour charge
+  worked out from them.*
 - **JOB-32** The labour charge is a money column that may be zero, and its box follows
   ADR-0029: an empty box means 0, a negative amount or a comma is refused in plain
   words, and a saved amount shows ready to type over. *v1, changed: ADR-0029.*
@@ -288,7 +290,8 @@ Words: `docs/GLOSSARY.md`. The code: `apps/jobs/` and `apps/vehicles/`.
 
 ## Left out for now
 
-- Parts, and the job lines suggested from them: Parts on the job card (Phase 6).
+- Parts, each with its own line in Job Performed and its job word: Parts on the job card
+  (Phase 6). An amount on each job: Job amounts (Phase 6).
 - On hold, Ready, and Ready's undo: the live board and the Completed list (Phase 6).
 - The Profile button: Car profiles (After). A button comes with its page (ROLE-32).
 - Suggestions as you type, and the concerns list: Phase 6. Photos: After. Warranty cards,

@@ -65,8 +65,9 @@ the discount, and the bill is final.
 - **SETTLE-10** Settle bill first lists what is still not filled on the job card, because
   settling locks it (SETTLE-36): an empty mileage (JOB-22), no lead mechanic, jobs listed
   with a labour charge of 0, and each concern not marked Fixed. A card with nothing to
-  list goes straight to the settle box. *v1: `settlement.py`. What parts leave not filled
-  comes with parts (Phase 6).*
+  list goes straight to the settle box. *v1: `settlement.py`. Phase 6 adds a part still
+  waiting for its job word (Parts on the job card) and a job with no amount yet (Job
+  amounts).*
 - **SETTLE-11** Each thing not filled is one short phrase, like "no mileage", and a concern
   is named by its own words, like "AC not cooling: not fixed". The head says how many things
   are not filled. *v1: `MISSING`, `NOT_FIXED`, `count`.*
@@ -164,7 +165,8 @@ the discount, and the bill is final.
   records, like a name fixed on another card, the car's next visit, a renamed brand
   (Master lists, Phase 6) or a customer's request to delete their data, never changes a
   settled bill. The plate and the mileage are already the visit's own (JOB-13, JOB-22).
-  *New (`docs/PLAN.md`).*
+  *New (`docs/PLAN.md`). Parts (Phase 6) add each part's name and job word to the copy,
+  so a renamed category or job word never changes a settled bill.*
 - **SETTLE-35** A preview reads the records as they are now. A settled bill reads only its
   copy. *New.*
 
