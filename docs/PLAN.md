@@ -426,6 +426,8 @@ Every module marked Go-live in `docs/MODULES.md`, each through the loop in
 - [ ] Supplies shops, inventory and stock costing
 - [ ] Parts on the job card, and on its bill, with Change job card
       (`docs/rules/settle-bill.md`)
+- [ ] Job amounts, with Parts on the job card, and an ADR first, because
+      they replace the one labour charge (`docs/MODULES.md`)
 - [ ] What Office sees, once the shops and parts are built, with an ADR
       first, because it changes ROLE-1 (`docs/MODULES.md`)
 - [ ] Cashbook

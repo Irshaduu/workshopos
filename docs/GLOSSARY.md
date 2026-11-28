@@ -71,8 +71,12 @@ the code (models, functions, files, URLs) and in the docs.
 | Customer profile | `customer_profile` | customer history, for this page | An owner's page about one customer: their cars, visits, billed and discounts. Not built yet |
 | Join | `join_customers()` | merge, for customers | An owner puts two customer records of one person together, so the customer profile shows them as one person with both numbers. It changes no visit and no bill, and it can be undone. Not built yet |
 | Concern | `Concern` | complaint | One thing the customer reported, with its status: Pending, Working or Fixed |
-| Job line | `JobLine` | labour item, labour line | One job that was done, in words, with no price. The list is called Job Performed |
-| Labour charge | `labour` | labour amount, subtotal, total labour | One amount for all the work on a job card |
+| Job line | `JobLine` | labour item, labour line | One job that was done, in words, with no price until Job amounts (Phase 6). The list is called Job Performed |
+| Labour charge | `labour` | labour amount, subtotal, total labour | One amount for all the work on a job card. With Job amounts (Phase 6) it is worked out from them, never typed |
+| Job amount | `job_amount` | job price, line price | The amount on one job, before the discount. The labour charge adds them up. Not built yet |
+| Suggested job amount | `suggested_job_amount()` | autofill, default price | What the same job came to on the last settled bill of a car of the same model, shown in grey in an empty amount box until Fill suggested amounts puts it in. Not built yet |
+| Job word | `JobWord` | verb, action, status (for a part's job) | The word after a part's name in Job Performed, like replaced in Engine oil replaced, picked in the part's What was done box. Each workshop keeps its own list, in Master lists. Not built yet |
+| No line needed | | skip, not applicable | The choice for a part that needs no line of its own, like grease, or a part another line covers. It prints nothing. Not built yet |
 | Step | `JobCardStep` | event, log | One change in a job card's life, with its time, like Car in or a concern Fixed |
 | Move | `move` | transfer, reassign | Putting an open job card on another car, when it was made on the wrong one. It keeps its number and everything on it |
 | Question | `Question` | conflict, clash | What a save asks before it uses one car's record for another, with a button for each answer |
